@@ -5,43 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="3d9756c0-1b8c-4adf-9e02-47c1b5a4b495" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/proguard-rules.pro" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/androidTest/java/com/example/guidemetravelersapp/ExampleInstrumentedTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/java/com/example/guidemetravelersapp/MainActivity.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/java/com/example/guidemetravelersapp/ui/theme/Color.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/java/com/example/guidemetravelersapp/ui/theme/Shape.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/java/com/example/guidemetravelersapp/ui/theme/Theme.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/java/com/example/guidemetravelersapp/ui/theme/Type.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/drawable/ic_launcher_background.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-hdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-hdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-mdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-mdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-xhdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-xhdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-xxhdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-xxhdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-xxxhdpi/ic_launcher.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/values-night/themes.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/values/colors.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/values/strings.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/main/res/values/themes.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/app/src/test/java/com/example/guidemetravelersapp/ExampleUnitTest.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/build.gradle" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/gradle.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/gradle/wrapper/gradle-wrapper.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/gradle/wrapper/gradle-wrapper.properties" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/gradlew" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/gradlew.bat" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GuideMeTravelersApp/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GuideMeTravelersApp/.idea/gradle.xml" beforeDir="false" afterPath="$PROJECT_DIR$/GuideMeTravelersApp/.idea/gradle.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,6 +24,7 @@
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -82,5 +47,6 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
 </project>
