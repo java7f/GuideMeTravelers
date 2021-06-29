@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="register_header">Welcome to Guide Me!</string>
+    <string name="name_label">Name</string>
+    <string name="lastname_label">Lastname</string>
+    <string name="email_label">Email</string>
+    <string name="sign_in">Continue</string>
+</resources>
