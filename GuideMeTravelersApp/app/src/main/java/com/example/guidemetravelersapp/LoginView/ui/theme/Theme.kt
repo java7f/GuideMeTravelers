@@ -2,15 +2,19 @@ package com.example.guidemetravelersapp.LoginView.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import com.example.guidemetravelersapp.ui.theme.Aquamarine200
+import com.example.guidemetravelersapp.ui.theme.Pink200
+import com.example.guidemetravelersapp.ui.theme.Pink700
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200,
+    primary = Pink200,
+    primaryVariant = Pink700,
+    secondary = Aquamarine200,
     onPrimary = Color.White,
     onSecondary = Color.White,
     onBackground = Color.White,
@@ -18,19 +22,13 @@ private val DarkColorPalette = darkColors(
 )
 
 private val LightColorPalette = lightColors(
-    primary = Purple500,
-    primaryVariant = Purple700,
-    secondary = Teal200,
-    onPrimary = Color.Black
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
+    primary = Pink200,
+    primaryVariant = Pink700,
+    secondary = Aquamarine200,
+    onPrimary = Color.Black,
     onSecondary = Color.Black,
     onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    onSurface = Color.Black
 )
 
 @Composable

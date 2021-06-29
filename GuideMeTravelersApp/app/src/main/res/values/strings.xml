@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">GuideMeTravelersApp</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="username_label">Username</string>
+    <string name="password_label">Password</string>
+    <string name="login_button">Login</string>
 </resources>
