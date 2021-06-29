@@ -1,8 +1,7 @@
-package com.example.guidemetravelersapp.ui.theme
+package com.example.guidemetravelersapp.LoginView.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
@@ -15,13 +14,14 @@ private val DarkColorPalette = darkColors(
     onPrimary = Color.White,
     onSecondary = Color.White,
     onBackground = Color.White,
-    onSurface = Color.White,
+    onSurface = Color.White
 )
 
 private val LightColorPalette = lightColors(
     primary = Purple500,
     primaryVariant = Purple700,
     secondary = Teal200,
+    onPrimary = Color.Black
 
     /* Other default colors to override
     background = Color.White,

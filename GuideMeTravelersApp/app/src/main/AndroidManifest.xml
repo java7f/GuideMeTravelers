@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GuideMeTravelersApp">
         <activity
+            android:name=".LoginView.LoginActivity"
+            android:exported="true"
+            android:label="@string/title_activity_login"
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
+        <activity
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"

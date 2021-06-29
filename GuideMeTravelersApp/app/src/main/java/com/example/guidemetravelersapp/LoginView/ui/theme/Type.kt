@@ -1,7 +1,6 @@
-package com.example.guidemetravelersapp.ui.theme
+package com.example.guidemetravelersapp.LoginView.ui.theme
 
 import androidx.compose.material.Typography
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
