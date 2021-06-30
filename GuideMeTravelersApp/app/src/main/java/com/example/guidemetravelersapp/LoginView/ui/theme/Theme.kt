@@ -8,13 +8,14 @@ import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import com.example.guidemetravelersapp.ui.theme.Aquamarine200
+import com.example.guidemetravelersapp.ui.theme.Gray200
 import com.example.guidemetravelersapp.ui.theme.Pink200
 import com.example.guidemetravelersapp.ui.theme.Pink700
 
 private val DarkColorPalette = darkColors(
     primary = Pink200,
     primaryVariant = Pink700,
-    secondary = Aquamarine200,
+    secondary = Gray200,
     onPrimary = Color.White,
     onSecondary = Color.White,
     onBackground = Color.White,
@@ -24,7 +25,7 @@ private val DarkColorPalette = darkColors(
 private val LightColorPalette = lightColors(
     primary = Pink200,
     primaryVariant = Pink700,
-    secondary = Aquamarine200,
+    secondary = Gray200,
     onPrimary = Color.Black,
     onSecondary = Color.Black,
     onBackground = Color.Black,
