@@ -5,4 +5,5 @@
     <string name="lastname_label">Lastname</string>
     <string name="email_label">Email</string>
     <string name="sign_in">Continue</string>
+    <string name="or">or</string>
 </resources>
