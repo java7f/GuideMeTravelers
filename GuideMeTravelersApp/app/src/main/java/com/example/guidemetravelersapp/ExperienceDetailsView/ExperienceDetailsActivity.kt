@@ -5,8 +5,10 @@ import android.widget.RatingBar
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Call
@@ -15,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -24,9 +27,11 @@ import androidx.compose.ui.unit.dp
 import com.example.guidemetravelersapp.R
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import com.example.guidemetravelersapp.ui.theme.Gray200
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
 import com.gowtham.ratingbar.RatingBar
 
 class ExperienceDetailsActivity : ComponentActivity() {
@@ -71,7 +76,7 @@ fun ProfileInfo() {
         }
         
         Spacer(modifier = Modifier.height(20.dp))
-        Divider(color = Gray200, thickness = 2.dp)
+        Divider(color = Gray200, thickness = 1.dp)
         Spacer(modifier = Modifier.height(15.dp))
         
         Row(
@@ -98,7 +103,56 @@ fun ProfileInfo() {
         }
 
         Spacer(modifier = Modifier.height(20.dp))
-        Divider(color = Gray200, thickness = 2.dp)
+        Divider(color = Gray200, thickness = 1.dp)
+        Spacer(modifier = Modifier.height(15.dp))
+
+        Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()){
+            Text(
+                text = stringResource(id = R.string.experience_description_text),
+                fontSize = 20.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colors.onPrimary,
+                modifier = Modifier.padding(start = 15.dp)
+            )
+        }
+        Spacer(modifier = Modifier.height(10.dp))
+        Text(text = stringResource(id = R.string.loremipsum_test),
+            color = MaterialTheme.colors.onPrimary,
+            modifier = Modifier.padding(horizontal = 15.dp)
+        )
+        Spacer(modifier = Modifier.height(15.dp))
+
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Box(modifier = Modifier.padding(horizontal = 10.dp)) {
+                Text(
+                    text = "culture",
+                    modifier = Modifier
+                        .background(
+                            color = MilitaryGreen200,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(8.dp),
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.White
+                )
+            }
+            Box() {
+                Text(
+                    text = "gastronomy",
+                    modifier = Modifier
+                        .background(
+                            color = MilitaryGreen200,
+                            shape = RoundedCornerShape(8.dp)
+                        )
+                        .padding(8.dp),
+                    overflow = TextOverflow.Ellipsis,
+                    color = Color.White
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+        Divider(color = Gray200, thickness = 1.dp)
         Spacer(modifier = Modifier.height(15.dp))
     }
 }
