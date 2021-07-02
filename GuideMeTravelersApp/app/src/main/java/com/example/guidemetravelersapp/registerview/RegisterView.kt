@@ -14,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -118,9 +119,33 @@ fun RegisterScreenContent() {
                     color = MaterialTheme.colors.secondary,
                 )
             }
-
-            // TODO: add login with google, facebook, ect
-            // TODO: find out hot to change on primary color
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
+                IconButton(
+                    onClick = { /*TODO*/ }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.google),
+                        contentDescription = "Google",
+                        tint = Color.Unspecified
+                    )
+                }
+                IconButton(
+                    onClick = { /*TODO*/ }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.facebook),
+                        contentDescription = "Facebook",
+                        tint = Color.Unspecified
+                    )
+                }
+                IconButton(
+                    onClick = { /*TODO*/ }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.twitter),
+                        contentDescription = "Twitter",
+                        tint = Color.Unspecified
+                    )
+                }
+            }
         }
     }
 }
