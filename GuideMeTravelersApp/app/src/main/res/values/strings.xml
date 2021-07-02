@@ -9,4 +9,5 @@
     <string name="experience_description_text">Experience Description</string>
     <string name="loremipsum_test">
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor id venenatis tempor, nunc nisi sodales lectus, sed euismod lorem nisi et sapien. Nulla tincidunt metus metus, eu rutrum mauris sagittis at. Donec pellentesque sagittis turpis, eu ullamcorper turpis blandit non. Pellentesque porttitor lectus id hendrerit laoreet.</string>
+    <string name="reviews_text">Reviews</string>
 </resources>

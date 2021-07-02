@@ -6,8 +6,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -35,7 +37,8 @@ class ExperienceDetailsActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             GuideMeTravelersAppTheme {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxHeight()) {
                     GuideDescriptionExperience()
                 }
             }
@@ -46,7 +49,7 @@ class ExperienceDetailsActivity : ComponentActivity() {
 @Composable
 fun GuideDescriptionExperience() {
     Column(horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()) {
+        modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
         Spacer(modifier = Modifier.height(30.dp))
         
         GuideInfo()
@@ -61,7 +64,7 @@ fun GuideDescriptionExperience() {
         
         Reservation()
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(15.dp))
         Divider(color = Gray200, thickness = 1.dp)
         Spacer(modifier = Modifier.height(15.dp))
 
@@ -77,13 +80,16 @@ fun GuideDescriptionExperience() {
         Spacer(modifier = Modifier.height(20.dp))
         Divider(color = Gray200, thickness = 1.dp)
         Spacer(modifier = Modifier.height(15.dp))
+
+        TouristExperienceRating()
+        TouristReview(touristRating = 3.7f)
+        TouristReview(touristRating = 4.7f)
     }
 }
 
 @Composable
 fun GuideRating(userRating: Float) {
     RatingBar(value = userRating, size = 20.dp, isIndicator = true) {
-
     }
 }
 
@@ -170,7 +176,53 @@ fun DescriptionTags(tagName: String) {
 
 @Composable
 fun TouristExperienceRating() {
+    Row(horizontalArrangement = Arrangement.Start,
+        modifier = Modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = stringResource(id = R.string.reviews_text),
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colors.onPrimary,
+            modifier = Modifier.padding(start = 15.dp)
+        )
+        Text(
+            text = "(12)",
+            fontSize = 10.sp,
+            color = MaterialTheme.colors.onPrimary,
+            modifier = Modifier.padding(start = 5.dp)
+        )
+    }
+}
 
+@Composable
+fun TouristReview(touristRating: Float) {
+    Row(verticalAlignment = Alignment.CenterVertically,
+    modifier = Modifier.padding(15.dp)) {
+        Box(modifier = Modifier.size(50.dp)) {
+            Image(
+                painter = painterResource(R.drawable.dummy_avatar),
+                contentDescription = "Temporal dummy avatar",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.clip(CircleShape)
+            )
+        }
+        Column(modifier = Modifier.padding(start = 15.dp)) {
+            Text(
+                text = "Name Lastname",
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colors.onPrimary,
+                fontSize = 15.sp
+            )
+            RatingBar(value = touristRating, size = 15.dp, isIndicator = true) {
+            }
+            Text(text = stringResource(id = R.string.loremipsum_test),
+                color = MaterialTheme.colors.onPrimary,
+                overflow = TextOverflow.Ellipsis,
+                maxLines = 2
+            )
+        }
+    }
 }
 
 @Preview(showBackground = true, showSystemUi = true)
