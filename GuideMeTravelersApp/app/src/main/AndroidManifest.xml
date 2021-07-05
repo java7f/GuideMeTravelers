@@ -10,6 +10,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GuideMeTravelersApp">
         <activity
+            android:name=".registerview.RegisterView"
+            android:exported="true"
+            android:label="@string/title_activity_register_view"
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"/>
+        <activity
             android:name=".ExperienceDetailsView.ExperienceDetailsActivity"
             android:exported="true"
             android:label="@string/title_activity_experience_details"
