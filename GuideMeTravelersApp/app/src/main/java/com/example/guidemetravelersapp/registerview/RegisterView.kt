@@ -111,12 +111,12 @@ fun RegisterScreenContent() {
                 }
             }
             Spacer(modifier = Modifier.height(20.dp))
-            Divider(color = MaterialTheme.colors.secondary, thickness = 2.dp)
+            Divider(color = MaterialTheme.colors.onPrimary, thickness = 2.dp)
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                 Text(
                     text = stringResource(id = R.string.or),
                     style = typography.h6,
-                    color = MaterialTheme.colors.secondary,
+                    color = MaterialTheme.colors.onPrimary,
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
