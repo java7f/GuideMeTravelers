@@ -13,21 +13,27 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -57,19 +63,19 @@ fun HomeScreenContent() {
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { AppBar(title = "Guide Me", scaffoldState, scope) },
-        content = { },
+        content = { ScaffoldContent() },
         drawerContent = { NavDrawer(scaffoldState, scope) },
         drawerShape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp)
     )
 
     /* TODO: try to integrate map on home screen */
-    /* TODO: add app logo (it is downloaded) */
 }
 
 @Composable
 fun AppBar(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope) {
     TopAppBar(
-        title = { Text(text = title, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center) },
+//        title = { Text(text = title, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center) },
+        title = { Icon(painter = painterResource(id = R.drawable.logo_transparent), contentDescription = "Guide Me logo", modifier = Modifier.fillMaxWidth() ) },
         navigationIcon = {
             IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }) {
                 Icon(imageVector = Icons.Default.Menu, contentDescription = "Drawer menu")
@@ -85,6 +91,41 @@ fun AppBar(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope) {
         },
         backgroundColor = MaterialTheme.colors.background,
         contentColor = MaterialTheme.colors.primary
+    )
+}
+
+@Composable
+fun ScaffoldContent() {
+    val textState = remember { mutableStateOf(TextFieldValue("")) }
+    SearchView(textState)
+}
+
+@Composable
+fun SearchView(state: MutableState<TextFieldValue>) {
+    val focusManager = LocalFocusManager.current
+    OutlinedTextField(
+        value = state.value,
+        onValueChange = { value -> state.value = value },
+        modifier = Modifier.fillMaxWidth().padding(20.dp),
+        textStyle = TextStyle(fontSize = 18.sp),
+        label = { Text(text = "Search") },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                // execute search function
+                focusManager.clearFocus()
+            }
+        ),
+        leadingIcon = {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = "Search",
+            )
+        },
+        singleLine = true,
     )
 }
 
@@ -112,11 +153,14 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
                 Text(
                     text = "Logout",
                     style = TextStyle(color = CancelRed, fontSize = 18.sp, fontWeight = FontWeight.Bold),
-                    modifier = Modifier.clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(color = MaterialTheme.colors.secondary),
-                        onClick = { scope.launch { scaffoldState.drawerState.close() } }
-                    ).padding(16.dp).fillMaxWidth()
+                    modifier = Modifier
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = rememberRipple(color = MaterialTheme.colors.secondary),
+                            onClick = { scope.launch { scaffoldState.drawerState.close() } }
+                        )
+                        .padding(16.dp)
+                        .fillMaxWidth()
                 )
             }
         }
