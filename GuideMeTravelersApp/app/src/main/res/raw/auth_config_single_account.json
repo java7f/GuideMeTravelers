@@ -1,0 +1,17 @@
+{
+  "client_id": "006ab7b5-4609-4eac-80f3-793d7e174b3b",
+  "authorization_user_agent": "DEFAULT",
+  "redirect_uri": "msauth://com.example.guidemetravelersapp/MTAKCdkYoHUYTxIBUedESYAYgC4%3D",
+  "account_mode" : "SINGLE",
+  "broker_redirect_uri_registered": true,
+  "authorities": [
+    {
+      "type": "AAD",
+      "audience": {
+        "type": "AzureADandPersonalMicrosoftAccount",
+        "authority_url": "https://login.microsoftonline.com/common",
+        "tenant_id": "common"
+      }
+    }
+  ]
+}

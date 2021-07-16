@@ -23,16 +23,28 @@
             android:name=".LoginView.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_login"
-            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar">
+        </activity>
+        <activity android:name="com.microsoft.identity.client.BrowserTabActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data
+                    android:host="com.example.guidemetravelersapp"
+                    android:path="/MTAKCdkYoHUYTxIBUedESYAYgC4="
+                    android:scheme="msauth" />
             </intent-filter>
         </activity>
     </application>
