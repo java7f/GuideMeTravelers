@@ -45,13 +45,13 @@ fun Username() {
             )
             Spacer(modifier = Modifier.height(60.dp))
             Text(
-                text = stringResource(id = R.string.username_label),
+                text = "Username",
                 style = typography.h6, color = MaterialTheme.colors.onPrimary
             )
             OutlinedTextField(
                 value = username.value,
                 onValueChange = { username.value = it },
-                label = { Text(text = stringResource(id = R.string.username_label)) },
+                label = { Text(text = "Username") },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
             )
@@ -83,7 +83,7 @@ fun Username() {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showSystemUi = true)
 @Composable
 fun DefaultPreview2() {
     Username()

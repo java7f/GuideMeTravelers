@@ -10,6 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GuideMeTravelersApp">
         <activity
+            android:name="net.openid.appauth.RedirectUriReceiverActivity"
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data android:scheme="com.example.guidemetravelersapp"/>
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".registerview.RegisterView"
             android:exported="true"
             android:label="@string/title_activity_register_view"
