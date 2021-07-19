@@ -52,7 +52,7 @@ dependencies {
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
-    implementation 'androidx.activity:activity-compose:1.3.0-rc01'
+    implementation 'androidx.activity:activity-compose:1.3.0-rc02'
     implementation 'io.github.a914-gowtham:compose-ratingbar:1.0.72'
     implementation "androidx.compose.material:material-icons-extended:$compose_version"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
@@ -61,5 +61,8 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_version"
+
+    // google maps
+    implementation 'com.google.android.gms:play-services-maps:17.0.1'
 
 }
