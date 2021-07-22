@@ -22,25 +22,24 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -62,19 +61,16 @@ fun HomeScreenContent() {
 
     Scaffold(
         scaffoldState = scaffoldState,
-        topBar = { AppBar(title = "Guide Me", scaffoldState, scope) },
+        topBar = { AppBar(scaffoldState, scope) },
         content = { ScaffoldContent() },
         drawerContent = { NavDrawer(scaffoldState, scope) },
         drawerShape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp)
     )
-
-    /* TODO: try to integrate map on home screen */
 }
 
 @Composable
-fun AppBar(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope) {
+fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
     TopAppBar(
-//        title = { Text(text = title, modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center) },
         title = { Icon(painter = painterResource(id = R.drawable.logo_transparent), contentDescription = "Guide Me logo", modifier = Modifier.fillMaxWidth() ) },
         navigationIcon = {
             IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }) {
@@ -97,7 +93,9 @@ fun AppBar(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope) {
 @Composable
 fun ScaffoldContent() {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
-    SearchView(textState)
+    //SearchView(textState)
+    MapScreen(50.937616532313434, 6.960581381481977, "Cologne Cathedral") // google maps
+    // TODO: add location permissions
 }
 
 @Composable
@@ -128,6 +126,23 @@ fun SearchView(state: MutableState<TextFieldValue>) {
         singleLine = true,
     )
 }
+
+// Google Maps
+@Composable
+fun MapScreen(latitude: Double, longitude: Double, title: String) {
+    val mapView = rememberMapViewWithLifecycle()
+    val context = LocalContext.current
+
+    AndroidView({ mapView }) { map ->
+        map.getMapAsync {
+            val coordinates = LatLng(latitude, longitude)
+            it.addMarker(MarkerOptions().position(coordinates).title(title))
+            it.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 18f), 4000, null)
+
+        }
+    }
+}
+
 
 @Composable
 fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
