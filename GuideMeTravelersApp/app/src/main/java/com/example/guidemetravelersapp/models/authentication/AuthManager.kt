@@ -42,6 +42,10 @@ class AuthManager private constructor(context: Context){
         return mAuthService
     }
 
+    fun getAuthConfig(): AuthorizationServiceConfiguration {
+        return mAuthConfig
+    }
+
     fun updateAuthState(tokenResponse: TokenResponse, ex: AuthorizationException?) {
         mAuthState?.update(tokenResponse, ex)
         mAuthState?.let { mSharedPrefRep?.saveAuthState(it) }
@@ -61,5 +65,6 @@ class AuthManager private constructor(context: Context){
         mAuth.scope = BuildConfig.SCOPE
         mAuth.tokenEndpointUri = BuildConfig.TOKEN_END_POINT_URI
         mAuth.responseType = BuildConfig.RESPONSE_TYPE
+        mAuth.redirectUri = BuildConfig.REDIRECT_URI
     }
 }
