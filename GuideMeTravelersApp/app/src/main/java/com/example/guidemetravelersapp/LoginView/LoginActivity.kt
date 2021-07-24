@@ -1,94 +1,153 @@
 package com.example.guidemetravelersapp.LoginView
 
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import com.example.guidemetravelersapp.ExperienceDetailsView.ExperienceDetailsActivity
 import com.example.guidemetravelersapp.LoginView.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.ui.theme.AcceptGreen
 import com.example.guidemetravelersapp.ui.theme.CancelRed
+import com.example.guidemetravelersapp.ui.theme.Pink200
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 class LoginActivity : ComponentActivity() {
+    private lateinit var auth: FirebaseAuth
+    private val TAG = LoginActivity::class.toString()
     override fun onCreate(savedInstanceState: Bundle?) {
+        auth = Firebase.auth
         super.onCreate(savedInstanceState)
         setContent {
-            Username()
+            Username(this)
         }
     }
-}
 
-@Composable
-fun Username() {
-    GuideMeTravelersAppTheme(){
+    override fun onStart() {
+        super.onStart()
+        val currentUser = auth.currentUser
+        if(currentUser != null){
+            //reload();
+        }
+    }
+
+    //region Login logic
+    fun login(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithEmail:success")
+                    val user = auth.currentUser
+                    Log.d(TAG, user.toString())
+                    //updateUI(user)
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    Toast.makeText(baseContext, "Authentication failed.",
+                        Toast.LENGTH_SHORT).show()
+                    //updateUI(null)
+                }
+            }
+    }
+    //endregion
+
+    //region Composable methods
+    @Composable
+    fun Username(context: Context? = null) {
         val typography = MaterialTheme.typography
         var username = remember { mutableStateOf(TextFieldValue())}
         var password = remember { mutableStateOf(TextFieldValue())}
-        Column(modifier = Modifier.padding(20.dp)){
-            Text(
-                text = "GUIDE ME LOGO",
-                style = typography.h3, color = MaterialTheme.colors.primary
-            )
-            Spacer(modifier = Modifier.height(60.dp))
-            Text(
-                text = stringResource(id = R.string.username_label),
-                style = typography.h6, color = MaterialTheme.colors.onPrimary
-            )
-            OutlinedTextField(
-                value = username.value,
-                onValueChange = { username.value = it },
-                label = { Text(text = stringResource(id = R.string.username_label)) },
-                modifier = Modifier.fillMaxWidth(),
-                textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
-            )
-            Spacer(modifier = Modifier.height(40.dp))
-            Text(
-                text = stringResource(id = R.string.password_label),
-                style = typography.h6, color = MaterialTheme.colors.onPrimary
-            )
-            OutlinedTextField(
-                value = password.value,
-                onValueChange = { password.value = it },
-                label = { Text(text = stringResource(id = R.string.password_label)) },
-                visualTransformation = PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                modifier = Modifier.fillMaxWidth(),
-                textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
-            )
-            Spacer(modifier = Modifier.height(50.dp))
-            Row(horizontalArrangement = Arrangement.SpaceEvenly) {
-                Button(
-                    onClick = {},
-                    colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(stringResource(id = R.string.login_button), color = Color.White)
+
+        com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme {
+            Column(modifier = Modifier.padding(10.dp)) {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+                    Box(modifier = Modifier.size(220.dp), contentAlignment = Alignment.Center) {
+                        Image(
+                            painter = painterResource(R.drawable.transparent_logo_drwable),
+                            contentDescription = "Guide Me Logo",
+                            colorFilter = ColorFilter.tint(Pink200)
+                        )
+                    }
                 }
+                OutlinedTextField(
+                    value = username.value,
+                    onValueChange = { username.value = it },
+                    label = { Text(text = stringResource(id = R.string.username_label)) },
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = TextStyle(color = MaterialTheme.colors.onPrimary),
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary)
+                )
+                Spacer(modifier = Modifier.height(40.dp))
+                OutlinedTextField(
+                    value = password.value,
+                    onValueChange = { password.value = it },
+                    label = { Text(text = stringResource(id = R.string.password_label)) },
+                    visualTransformation = PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    modifier = Modifier.fillMaxWidth(),
+                    textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
+                )
+                LoginButton(username.value.text, password.value.text)
             }
         }
     }
-}
 
-@Preview(showBackground = true, showSystemUi = true)
-@Composable
-fun DefaultPreview2() {
-    Username()
-}
+    @Composable
+    fun LoginButton(email: String, password: String) {
+        Spacer(modifier = Modifier.height(50.dp))
+        Row(horizontalArrangement = Arrangement.SpaceEvenly) {
+            Button(
+                onClick = {
+                    login(email, password)
+                },
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            ) {
+                Text(stringResource(id = R.string.login_button), color = Color.White)
+            }
+        }
+    }
 
-fun dummy() {
+    @Composable
+    fun DisplayResult(response: String) {
+        Text(text = response, color = MaterialTheme.colors.onPrimary)
+    }
+    //endregion
 
+    @Preview(showBackground = true, showSystemUi = true)
+    @Composable
+    fun DefaultPreview2() {
+        Username()
+    }
 }
