@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "803387741965",
+    "project_id": "guideme-6a15d",
+    "storage_bucket": "guideme-6a15d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803387741965:android:5130b411f1578d1c274244",
+        "android_client_info": {
+          "package_name": "com.example.guidemetravelersapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803387741965-mh45dmo16bvooft5dcfd8ukdscrjp1tb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqCyEH8K73TjeqEjpfEMPMzEkDNDnWBgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803387741965-mh45dmo16bvooft5dcfd8ukdscrjp1tb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
