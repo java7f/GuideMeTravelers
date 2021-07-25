@@ -7,6 +7,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -30,9 +31,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.guidemetravelersapp.ExperienceDetailsView.ExperienceDetailsActivity
 import com.example.guidemetravelersapp.LoginView.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.R
+import com.example.guidemetravelersapp.helperModels.ScreenStateEnum
 import com.example.guidemetravelersapp.ui.theme.AcceptGreen
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.Pink200
@@ -42,7 +45,8 @@ import com.google.firebase.ktx.Firebase
 
 class LoginActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
-    private val TAG = LoginActivity::class.toString()
+    private val TAG = LoginActivity::class.simpleName
+    private var uiState: ScreenStateEnum = ScreenStateEnum.SIGNED_OUT
     override fun onCreate(savedInstanceState: Bundle?) {
         auth = Firebase.auth
         super.onCreate(savedInstanceState)
@@ -55,7 +59,7 @@ class LoginActivity : ComponentActivity() {
         super.onStart()
         val currentUser = auth.currentUser
         if(currentUser != null){
-            //reload();
+            uiState = ScreenStateEnum.SIGNED_IN
         }
     }
 
@@ -68,13 +72,11 @@ class LoginActivity : ComponentActivity() {
                     Log.d(TAG, "signInWithEmail:success")
                     val user = auth.currentUser
                     Log.d(TAG, user.toString())
-                    //updateUI(user)
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
                     Toast.makeText(baseContext, "Authentication failed.",
                         Toast.LENGTH_SHORT).show()
-                    //updateUI(null)
                 }
             }
     }
@@ -103,7 +105,7 @@ class LoginActivity : ComponentActivity() {
                     onValueChange = { username.value = it },
                     label = { Text(text = stringResource(id = R.string.username_label)) },
                     modifier = Modifier.fillMaxWidth(),
-                    textStyle = TextStyle(color = MaterialTheme.colors.onPrimary),
+                    textStyle = TextStyle(color = MaterialTheme.colors.onSecondary, fontSize = 20.sp),
                     colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary)
                 )
                 Spacer(modifier = Modifier.height(40.dp))
@@ -114,7 +116,7 @@ class LoginActivity : ComponentActivity() {
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     modifier = Modifier.fillMaxWidth(),
-                    textStyle = TextStyle(color = MaterialTheme.colors.onPrimary)
+                    textStyle = TextStyle(color = MaterialTheme.colors.onSecondary, fontSize = 20.sp)
                 )
                 LoginButton(username.value.text, password.value.text)
             }
@@ -137,6 +139,11 @@ class LoginActivity : ComponentActivity() {
                 Text(stringResource(id = R.string.login_button), color = Color.White)
             }
         }
+    }
+
+    @Composable
+    fun LoginProgress() {
+
     }
 
     @Composable
