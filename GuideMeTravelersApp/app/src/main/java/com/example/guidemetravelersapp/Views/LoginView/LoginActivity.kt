@@ -1,13 +1,9 @@
-package com.example.guidemetravelersapp.LoginView
+package com.example.guidemetravelersapp.Views.LoginView
 
-import android.app.PendingIntent
-import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.Button
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -29,17 +25,16 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewParameterProvider
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.guidemetravelersapp.ExperienceDetailsView.ExperienceDetailsActivity
-import com.example.guidemetravelersapp.LoginView.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.Views.ExperienceDetailsView.ExperienceDetailsActivity
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.helperModels.ScreenStateEnum
-import com.example.guidemetravelersapp.ui.theme.AcceptGreen
-import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.Pink200
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.GetTokenResult
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 
@@ -90,6 +85,19 @@ class LoginActivity : ComponentActivity() {
                         Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+
+    fun getTokenFromUser() {
+        auth.currentUser?.getIdToken(true)?.addOnCompleteListener(OnCompleteListener<GetTokenResult>() {
+            fun onComplete(task: Task<GetTokenResult>) {
+                if(task.isSuccessful) {
+                    var idToken = task.getResult()?.token;
+                } else {
+                    //TODO: handle error
+                }
+            }
+        })
     }
 
     fun goToHomescreen() {

@@ -1,4 +1,4 @@
-package com.example.guidemetravelersapp.homescreen.ui.theme
+package com.example.guidemetravelersapp.Views.ExperienceDetailsView.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

@@ -1,4 +1,4 @@
-package com.example.guidemetravelersapp.LoginView.ui.theme
+package com.example.guidemetravelersapp.Views.LoginView.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

@@ -1,13 +1,11 @@
-package com.example.guidemetravelersapp.LoginView.ui.theme
+package com.example.guidemetravelersapp.Views.LoginView.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.TopAppBar
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
-import com.example.guidemetravelersapp.ui.theme.Aquamarine200
 import com.example.guidemetravelersapp.ui.theme.Gray200
 import com.example.guidemetravelersapp.ui.theme.Pink200
 import com.example.guidemetravelersapp.ui.theme.Pink700

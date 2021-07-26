@@ -1,4 +1,4 @@
-package com.example.guidemetravelersapp.ExperienceDetailsView
+package com.example.guidemetravelersapp.Views.ExperienceDetailsView
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

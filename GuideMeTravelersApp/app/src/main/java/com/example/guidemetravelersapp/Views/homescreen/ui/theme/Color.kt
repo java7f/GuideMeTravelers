@@ -1,4 +1,4 @@
-package com.example.guidemetravelersapp.LoginView.ui.theme
+package com.example.guidemetravelersapp.Views.homescreen.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

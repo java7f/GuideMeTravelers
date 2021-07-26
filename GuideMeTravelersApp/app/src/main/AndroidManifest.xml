@@ -17,25 +17,25 @@
             android:value="@string/google_maps_key"/>
 
         <activity
-            android:name=".homescreen.Maps"
+            android:name="com.example.guidemetravelersapp.Views.homescreen.Maps"
             android:exported="true" />
         <activity
-            android:name=".homescreen.HomeScreen"
+            android:name="com.example.guidemetravelersapp.Views.homescreen.HomeScreen"
             android:exported="true"
             android:label="@string/title_activity_home_screen"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
         <activity
-            android:name=".registerview.RegisterView"
+            android:name="com.example.guidemetravelersapp.Views.registerview.RegisterView"
             android:exported="true"
             android:label="@string/title_activity_register_view"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
         <activity
-            android:name=".ExperienceDetailsView.ExperienceDetailsActivity"
+            android:name="com.example.guidemetravelersapp.Views.ExperienceDetailsView.ExperienceDetailsActivity"
             android:exported="true"
             android:label="@string/title_activity_experience_details"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
         <activity
-            android:name=".LoginView.LoginActivity"
+            android:name="com.example.guidemetravelersapp.Views.LoginView.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar">
