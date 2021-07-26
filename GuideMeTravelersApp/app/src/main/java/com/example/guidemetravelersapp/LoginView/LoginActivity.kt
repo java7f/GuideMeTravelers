@@ -46,8 +46,9 @@ import com.google.firebase.ktx.Firebase
 class LoginActivity : ComponentActivity() {
     private lateinit var auth: FirebaseAuth
     private val TAG = LoginActivity::class.simpleName
-    private var uiState: ScreenStateEnum = ScreenStateEnum.SIGNED_OUT
+    private var uiState = mutableStateOf(ScreenStateEnum.SIGNED_OUT)
     override fun onCreate(savedInstanceState: Bundle?) {
+        //Get authentication instance
         auth = Firebase.auth
         super.onCreate(savedInstanceState)
         setContent {
@@ -59,33 +60,47 @@ class LoginActivity : ComponentActivity() {
         super.onStart()
         val currentUser = auth.currentUser
         if(currentUser != null){
-            uiState = ScreenStateEnum.SIGNED_IN
+            uiState.value = ScreenStateEnum.SIGNED_IN
+            goToHomescreen()
         }
     }
 
     //region Login logic
+    /**
+     * Performs the login action by using the Firebase Authentication instance
+     * @param email the user email
+     * @param password the user password
+     */
     fun login(email: String, password: String) {
+        uiState.value = ScreenStateEnum.IN_PROGRESS
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "signInWithEmail:success")
                     val user = auth.currentUser
+                    uiState.value = ScreenStateEnum.SIGNED_IN
+                    goToHomescreen()
                     Log.d(TAG, user.toString())
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    uiState.value = ScreenStateEnum.ERROR
                     Toast.makeText(baseContext, "Authentication failed.",
                         Toast.LENGTH_SHORT).show()
                 }
             }
+    }
+
+    fun goToHomescreen() {
+        //TODO: CHANGE NAVIGATION TO HOME SCREEN
+        startActivity(Intent(this, ExperienceDetailsActivity::class.java))
     }
     //endregion
 
     //region Composable methods
     @Composable
     fun Username(context: Context? = null) {
-        val typography = MaterialTheme.typography
         var username = remember { mutableStateOf(TextFieldValue())}
         var password = remember { mutableStateOf(TextFieldValue())}
 
@@ -105,7 +120,7 @@ class LoginActivity : ComponentActivity() {
                     onValueChange = { username.value = it },
                     label = { Text(text = stringResource(id = R.string.username_label)) },
                     modifier = Modifier.fillMaxWidth(),
-                    textStyle = TextStyle(color = MaterialTheme.colors.onSecondary, fontSize = 20.sp),
+                    textStyle = TextStyle(color = MaterialTheme.colors.onSecondary, fontSize = 15.sp),
                     colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary)
                 )
                 Spacer(modifier = Modifier.height(40.dp))
@@ -116,7 +131,7 @@ class LoginActivity : ComponentActivity() {
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                     modifier = Modifier.fillMaxWidth(),
-                    textStyle = TextStyle(color = MaterialTheme.colors.onSecondary, fontSize = 20.sp)
+                    textStyle = TextStyle(color = MaterialTheme.colors.onSecondary, fontSize = 15.sp)
                 )
                 LoginButton(username.value.text, password.value.text)
             }
@@ -131,24 +146,24 @@ class LoginActivity : ComponentActivity() {
                 onClick = {
                     login(email, password)
                 },
+                //If the login is in progress, disable the button and show spinner
+                enabled = uiState.value != ScreenStateEnum.IN_PROGRESS,
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
             ) {
-                Text(stringResource(id = R.string.login_button), color = Color.White)
+                Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()){
+                    Text(stringResource(id = R.string.login_button), color = Color.White)
+                    if (uiState.value == ScreenStateEnum.IN_PROGRESS) {
+                        CircularProgressIndicator(
+                            color = Color.White,
+                            modifier = Modifier.padding(horizontal = 10.dp).size(25.dp)
+                        )
+                    }
+                }
             }
         }
-    }
-
-    @Composable
-    fun LoginProgress() {
-
-    }
-
-    @Composable
-    fun DisplayResult(response: String) {
-        Text(text = response, color = MaterialTheme.colors.onPrimary)
     }
     //endregion
 
