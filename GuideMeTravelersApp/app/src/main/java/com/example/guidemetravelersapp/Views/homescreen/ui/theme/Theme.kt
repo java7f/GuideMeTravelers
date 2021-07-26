@@ -1,4 +1,4 @@
-package com.example.guidemetravelersapp.ExperienceDetailsView.ui.theme
+package com.example.guidemetravelersapp.Views.homescreen.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

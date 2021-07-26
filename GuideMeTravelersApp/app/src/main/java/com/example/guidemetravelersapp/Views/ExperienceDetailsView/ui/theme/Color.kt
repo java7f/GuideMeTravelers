@@ -1,4 +1,4 @@
-package com.example.guidemetravelersapp.ExperienceDetailsView.ui.theme
+package com.example.guidemetravelersapp.Views.ExperienceDetailsView.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

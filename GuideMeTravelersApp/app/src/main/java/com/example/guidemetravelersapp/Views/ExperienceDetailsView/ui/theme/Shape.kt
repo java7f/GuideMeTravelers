@@ -1,4 +1,4 @@
-package com.example.guidemetravelersapp.homescreen.ui.theme
+package com.example.guidemetravelersapp.Views.ExperienceDetailsView.ui.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes
