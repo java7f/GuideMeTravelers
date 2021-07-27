@@ -3,8 +3,6 @@ package com.example.guidemetravelersapp.Views.LoginView
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -14,6 +12,7 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,22 +28,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.guidemetravelersapp.Views.ExperienceDetailsView.ExperienceDetailsActivity
 import com.example.guidemetravelersapp.R
+import com.example.guidemetravelersapp.Services.AuthenticationService
 import com.example.guidemetravelersapp.helperModels.ScreenStateEnum
 import com.example.guidemetravelersapp.ui.theme.Pink200
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.GetTokenResult
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.launch
 
 class LoginActivity : ComponentActivity() {
-    private lateinit var auth: FirebaseAuth
-    private val TAG = LoginActivity::class.simpleName
     private var uiState = mutableStateOf(ScreenStateEnum.SIGNED_OUT)
+    private var authenticationService: AuthenticationService = AuthenticationService(this)
     override fun onCreate(savedInstanceState: Bundle?) {
-        //Get authentication instance
-        auth = Firebase.auth
         super.onCreate(savedInstanceState)
         setContent {
             Username(this)
@@ -53,54 +45,27 @@ class LoginActivity : ComponentActivity() {
 
     override fun onStart() {
         super.onStart()
-        val currentUser = auth.currentUser
-        if(currentUser != null){
-            uiState.value = ScreenStateEnum.SIGNED_IN
-            goToHomescreen()
+        if(authenticationService.isUserLoggedIn()){
+            //uiState.value = ScreenStateEnum.SIGNED_IN
+            authenticationService.signOut()
+            //goToHomescreen()
         }
     }
 
     //region Login logic
-    /**
-     * Performs the login action by using the Firebase Authentication instance
-     * @param email the user email
-     * @param password the user password
-     */
-    fun login(email: String, password: String) {
+    private suspend fun login(email: String, password: String) {
         uiState.value = ScreenStateEnum.IN_PROGRESS
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithEmail:success")
-                    val user = auth.currentUser
-                    uiState.value = ScreenStateEnum.SIGNED_IN
-                    goToHomescreen()
-                    Log.d(TAG, user.toString())
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
-                    uiState.value = ScreenStateEnum.ERROR
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
-                }
-            }
+        val result = authenticationService.login(email, password)
+        if (result?.user != null) {
+            uiState.value = ScreenStateEnum.SIGNED_IN
+            goToHomescreen()
+        }
+        else {
+            uiState.value = ScreenStateEnum.ERROR
+        }
     }
 
-
-    fun getTokenFromUser() {
-        auth.currentUser?.getIdToken(true)?.addOnCompleteListener(OnCompleteListener<GetTokenResult>() {
-            fun onComplete(task: Task<GetTokenResult>) {
-                if(task.isSuccessful) {
-                    var idToken = task.getResult()?.token;
-                } else {
-                    //TODO: handle error
-                }
-            }
-        })
-    }
-
-    fun goToHomescreen() {
+    private fun goToHomescreen() {
         //TODO: CHANGE NAVIGATION TO HOME SCREEN
         startActivity(Intent(this, ExperienceDetailsActivity::class.java))
     }
@@ -148,11 +113,14 @@ class LoginActivity : ComponentActivity() {
 
     @Composable
     fun LoginButton(email: String, password: String) {
+        val coroutineScope = rememberCoroutineScope()
         Spacer(modifier = Modifier.height(50.dp))
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
             Button(
                 onClick = {
-                    login(email, password)
+                    coroutineScope.launch {
+                        login(email, password)
+                    }
                 },
                 //If the login is in progress, disable the button and show spinner
                 enabled = uiState.value != ScreenStateEnum.IN_PROGRESS,
@@ -166,7 +134,9 @@ class LoginActivity : ComponentActivity() {
                     if (uiState.value == ScreenStateEnum.IN_PROGRESS) {
                         CircularProgressIndicator(
                             color = Color.White,
-                            modifier = Modifier.padding(horizontal = 10.dp).size(25.dp)
+                            modifier = Modifier
+                                .padding(horizontal = 10.dp)
+                                .size(25.dp)
                         )
                     }
                 }
