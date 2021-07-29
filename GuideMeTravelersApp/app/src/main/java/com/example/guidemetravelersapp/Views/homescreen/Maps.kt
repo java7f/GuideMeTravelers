@@ -1,4 +1,4 @@
-package com.example.guidemetravelersapp.Views.homescreen
+package com.example.guidemetravelersapp.views.homescreen
 
 import android.Manifest
 import android.content.pm.PackageManager

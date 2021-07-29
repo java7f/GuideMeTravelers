@@ -1,4 +1,4 @@
-package com.example.guidemetravelersapp.Views.LoginView
+package com.example.guidemetravelersapp.views.LoginView
 
 import android.content.Context
 import android.content.Intent
@@ -27,7 +27,7 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.guidemetravelersapp.Views.ExperienceDetailsView.ExperienceDetailsActivity
+import com.example.guidemetravelersapp.views.ExperienceDetailsView.ExperienceDetailsActivity
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.helperModels.ScreenStateEnum
 import com.example.guidemetravelersapp.ui.theme.Pink200

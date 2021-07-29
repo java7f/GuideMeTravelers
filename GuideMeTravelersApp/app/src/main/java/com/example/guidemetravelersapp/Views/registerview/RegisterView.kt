@@ -1,4 +1,4 @@
-package com.example.guidemetravelersapp.Views.registerview
+package com.example.guidemetravelersapp.views.registerview
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

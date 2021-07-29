@@ -1,4 +1,4 @@
-package com.example.guidemetravelersapp.Views.homescreen
+package com.example.guidemetravelersapp.views.homescreen
 
 import android.os.Bundle
 import androidx.compose.runtime.Composable
