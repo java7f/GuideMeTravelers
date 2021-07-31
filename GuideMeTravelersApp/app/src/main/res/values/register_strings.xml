@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="title_activity_register_view">RegisterViewActivity</string>
-    <string name="register_header">Welcome to Guide Me!</string>
+    <string name="register_header">Sign Up</string>
     <string name="name_label">Name</string>
     <string name="lastname_label">Lastname</string>
     <string name="email_label">Email</string>
-    <string name="sign_in">Continue</string>
+    <string name="sign_up">Sign Up</string>
     <string name="or">or</string>
 </resources>

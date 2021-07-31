@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">GuideMeTravelersApp</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="authorization_header">Authorization</string>
+
+<!--    TODO: MOVE TO THE LOGIN EXCLUSIVE STRING FILE   -->
     <string name="username_label">Username</string>
     <string name="password_label">Password</string>
     <string name="login_button">Login</string>

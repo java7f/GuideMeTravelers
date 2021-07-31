@@ -33,6 +33,35 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803387741965:android:f0679876eff46a62274244",
+        "android_client_info": {
+          "package_name": "com.example.guidemetravelersapp.dev.local"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803387741965-mh45dmo16bvooft5dcfd8ukdscrjp1tb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqCyEH8K73TjeqEjpfEMPMzEkDNDnWBgE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803387741965-mh45dmo16bvooft5dcfd8ukdscrjp1tb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
