@@ -40,12 +40,19 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMap
+import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
-import com.google.accompanist.permissions.PermissionState
 import com.google.accompanist.permissions.rememberPermissionState
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
@@ -71,13 +78,16 @@ class HomeScreen : ComponentActivity() {
 fun HomeScreenContent() {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope() // handles open() & close() suspend functions
+    val navController = rememberNavController()
 
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { AppBar(scaffoldState, scope) },
-        content = { ScaffoldContent() },
+        content = { ScreenController(navController) },
         drawerContent = { NavDrawer(scaffoldState, scope) },
-        drawerShape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp)
+        drawerShape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
+        drawerGesturesEnabled = false,
+        bottomBar = { BottomBar(navController) }
     )
 }
 
@@ -109,30 +119,29 @@ fun ScaffoldContent() {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     Column(modifier = Modifier.fillMaxSize()) {
         SearchView(textState)
-        MapScreen(
-            50.937616532313434,
-            6.960581381481977,
-            "Cologne Cathedral",
-            modifier = Modifier.height(300.dp))
+        Text(
+            text = "Available guides",
+            modifier = Modifier.padding(horizontal = 15.dp),
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+
         /* TODO:
         *   - Finish homescreen display with mock data
-        *   - Make map clicklable (full size map when clicking on it)
-        *   - Find out if drawer can be limited to just opening when clicking on the button
-        *     - if not, make menu on another view
-        *   - Make bottom navigation menu  */
+        *     - Make another UserCard with rating and tags.
+        *   - Make map clickable (full size map when clicking on it)
+        *   - Add navigation to drawer elements (the ones that can be added) */
     }
 }
 
 @Composable
-fun SearchView(state: MutableState<TextFieldValue>) {
+fun SearchView(textState: MutableState<TextFieldValue>) {
     val focusManager = LocalFocusManager.current
     OutlinedTextField(
-        value = state.value,
-        onValueChange = { value -> state.value = value },
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
-        textStyle = TextStyle(fontSize = 18.sp),
+        value = textState.value,
+        onValueChange = { value -> textState.value = value },
+        modifier = Modifier.fillMaxWidth().padding(15.dp).height(60.dp),
+        textStyle = TextStyle(fontSize = 16.sp),
         label = { Text(text = "Search") },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
@@ -140,7 +149,7 @@ fun SearchView(state: MutableState<TextFieldValue>) {
         ),
         keyboardActions = KeyboardActions(
             onSearch = {
-                // execute search function
+                // TODO: execute search function
                 focusManager.clearFocus()
             }
         ),
@@ -154,117 +163,6 @@ fun SearchView(state: MutableState<TextFieldValue>) {
     )
 }
 
-@ExperimentalPermissionsApi
-@Composable
-fun MapScreen(latitude: Double, longitude: Double, title: String, modifier: Modifier) {
-    val mapView = rememberMapViewWithLifecycle()
-    val context = LocalContext.current
-    val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
-    val openDialog = remember { mutableStateOf(true) }
-
-    // Track if the user doesn't want to see the rationale any more
-    var doNotShowRationale by rememberSaveable { mutableStateOf(false) }
-
-    PermissionRequired(
-        permissionState = locationPermissionState,
-        permissionNotGrantedContent = {
-            // user has location permission disabled
-            if (doNotShowRationale) {
-                Toast.makeText(context, "Go to app's settings and enable the location", Toast.LENGTH_LONG).show()
-                DisplayMap(
-                    context = context,
-                    mapView = mapView,
-                    latitude = latitude,
-                    longitude = longitude,
-                    title = title,
-                    locationEnabled = false,
-                    permissionManager = PackageManager.PERMISSION_DENIED,
-                    modifier = modifier
-                )
-            }
-            // asking for permission
-            else {
-                if (openDialog.value) {
-                    AlertDialog(
-                        onDismissRequest = { openDialog.value = false },
-                        title = { Text(text = "Current location permission request", fontWeight = FontWeight.Bold) },
-                        text = { Text("The current location is important for this app. Please grant the permission.") },
-                        confirmButton = {
-                            TextButton(
-                                onClick = {
-                                    openDialog.value = false
-                                    locationPermissionState.launchPermissionRequest()
-                                }) {
-                                Text(text = "Confirm", color = MaterialTheme.colors.primaryVariant)
-                            }
-                        },
-                        dismissButton = {
-                            TextButton(
-                                onClick = {
-                                    openDialog.value = false
-                                    doNotShowRationale = true
-                                }
-                            ) {
-                                Text(text = "Dismiss", color = MaterialTheme.colors.primaryVariant)
-                            }
-                        },
-                    )
-                }
-            }
-        },
-        permissionNotAvailableContent = {
-            Column {
-                Toast.makeText(context, "Go to app's settings and enable the location", Toast.LENGTH_LONG).show()
-                DisplayMap(
-                    context = context,
-                    mapView = mapView,
-                    latitude = latitude,
-                    longitude = longitude,
-                    title = title,
-                    locationEnabled = false,
-                    permissionManager = PackageManager.PERMISSION_DENIED,
-                    modifier = modifier
-                )
-            }
-        },
-        content = {
-            // user has location permission enabled
-            DisplayMap(
-                context = context,
-                mapView = mapView,
-                latitude = latitude,
-                longitude = longitude,
-                title = title,
-                locationEnabled = true,
-                permissionManager = PackageManager.PERMISSION_GRANTED,
-                modifier = modifier
-            )
-        }
-    )
-}
-
-// Google Maps
-@Composable
-fun DisplayMap(
-    context: Context, mapView: MapView, latitude: Double,
-    longitude: Double, title: String, locationEnabled: Boolean,
-    permissionManager: Int, modifier: Modifier ) {
-    AndroidView(modifier = modifier, factory = { mapView }) { map ->
-        map.getMapAsync {
-            val coordinates = LatLng(latitude, longitude)
-            it.addMarker(MarkerOptions().position(coordinates).title(title))
-            it.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 18f), 4000, null)
-
-            // condition to know when the location permission has been granted
-            if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-                == permissionManager) {
-                // enable real-time location in map
-                it.isMyLocationEnabled = locationEnabled
-            }
-        }
-    }
-}
-
 @Composable
 fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
     Column(modifier = Modifier
@@ -272,7 +170,7 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
         .fillMaxSize()) {
         Row(modifier = Modifier.weight(4f)) {
             Column {
-                UserCard()
+                UserCard("Pepito", "Perez", "pepitop24")
                 Divider(thickness = 2.dp)
                 NavOption(title = "Map", scaffoldState = scaffoldState, scope)
                 NavOption(title = "History", scaffoldState = scaffoldState, scope)
@@ -304,7 +202,7 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
 }
 
 @Composable
-fun UserCard() {
+fun UserCard(name: String, lastname: String, username: String) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 20.dp)) {
         Image(
             painter = painterResource(R.drawable.dummy_avatar),
@@ -315,11 +213,11 @@ fun UserCard() {
         )
         Column(modifier = Modifier.padding(start = 20.dp)) {
             Text(
-                text = "Nombre Apellido",
+                text = "$name $lastname",
                 style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
                 modifier = Modifier.padding(bottom = 10.dp)
             )
-            Text(text = "Usuario")
+            Text(text = username)
         }
     }
 }
@@ -338,6 +236,69 @@ fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope
             .padding(16.dp)
             .fillMaxWidth()
     )
+}
+
+@Composable
+fun BottomBar(navController: NavHostController) {
+    val items = listOf(BottomNavScreen.Map, BottomNavScreen.AudioGuide, BottomNavScreen.Chat)
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    BottomNavigation(
+        backgroundColor = MaterialTheme.colors.background,
+        content = { items.forEach { screen ->
+            BottomNavigationItem(
+                icon = { Icon(
+                    painter = painterResource(id = screen.resId),
+                    contentDescription = screen.label,
+                    modifier = Modifier.height(30.dp)
+                ) },
+                selected = currentRoute == screen.route,
+                unselectedContentColor = MaterialTheme.colors.secondary,
+                selectedContentColor = MaterialTheme.colors.secondaryVariant,
+                onClick = {
+                    navController.navigate(screen.route) {
+                        // Pop up to the start destination of the graph to
+                        // avoid building up a large stack of destinations
+                        // on the back stack as users select items
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        // Avoid multiple copies of the same destination when
+                        // reselecting the same item
+                        launchSingleTop = true
+                        // Restore state when reselecting a previously selected item
+                        restoreState = false
+                    }
+
+                })
+        } }
+    )
+}
+
+@ExperimentalPermissionsApi
+@Composable
+fun ScreenController(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = "guides",
+        builder = {
+            composable(route = "guides", content = { ScaffoldContent() })
+            composable(route = "map", content = { AudioGuideRouteTest() })
+            composable(route = "chat", content = { ChatRouteTest() })
+        }
+    )
+}
+
+@ExperimentalPermissionsApi
+@Composable
+fun AudioGuideRouteTest() {
+    AudioGuideMapContent()
+}
+
+@Composable
+fun ChatRouteTest() {
+    Text("Chat Guide Route Text")
 }
 
 @ExperimentalPermissionsApi

@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.guidemetravelersapp">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:allowBackup="true"
@@ -11,31 +11,33 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.GuideMeTravelersApp">
+        <activity
+            android:name=".views.audioguidemap.AudioGuideMap"
+            android:exported="true"
+            android:label="@string/title_activity_audio_guide_map"
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_key"/>
+            android:value="@string/google_maps_key" />
 
         <activity
-            android:name="com.example.guidemetravelersapp.views.homescreen.Maps"
-            android:exported="true" />
-        <activity
-            android:name="com.example.guidemetravelersapp.views.homescreen.HomeScreen"
+            android:name=".views.homescreen.HomeScreen"
             android:exported="true"
             android:label="@string/title_activity_home_screen"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
         <activity
-            android:name="com.example.guidemetravelersapp.views.registerview.RegisterView"
+            android:name=".views.registerview.RegisterView"
             android:exported="true"
             android:label="@string/title_activity_register_view"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
         <activity
-            android:name="com.example.guidemetravelersapp.views.ExperienceDetailsView.ExperienceDetailsActivity"
+            android:name=".views.ExperienceDetailsView.ExperienceDetailsActivity"
             android:exported="true"
             android:label="@string/title_activity_experience_details"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
         <activity
-            android:name="com.example.guidemetravelersapp.views.LoginView.LoginActivity"
+            android:name=".views.LoginView.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar">
@@ -49,9 +51,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar">
-
-        </activity>
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"></activity>
     </application>
 
 </manifest>
