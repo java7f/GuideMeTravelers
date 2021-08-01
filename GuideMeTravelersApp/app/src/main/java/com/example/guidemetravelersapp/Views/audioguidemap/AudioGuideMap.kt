@@ -7,10 +7,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -52,7 +49,7 @@ fun AudioGuideMapContent() {
     Column(
         modifier = Modifier.fillMaxSize(),
         content = {
-            SearchView(textState)
+            SearchView(textState, modifier = Modifier.fillMaxWidth().padding(15.dp))
             MapScreen(
                 50.937616532313434,
                 6.960581381481977,

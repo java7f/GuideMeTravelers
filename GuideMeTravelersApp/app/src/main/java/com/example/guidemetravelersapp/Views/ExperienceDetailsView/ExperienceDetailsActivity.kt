@@ -1,6 +1,7 @@
 package com.example.guidemetravelersapp.views.ExperienceDetailsView
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -13,7 +14,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,14 +51,16 @@ class ExperienceDetailsActivity : ComponentActivity() {
 @Composable
 fun GuideDescriptionExperience() {
     Column(horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth().verticalScroll(rememberScrollState())) {
+        modifier = Modifier
+            .fillMaxWidth()
+            .verticalScroll(rememberScrollState())) {
         Spacer(modifier = Modifier.height(30.dp))
         
         GuideInfo()
 
         //Rating stars for the guide
         Spacer(modifier = Modifier.height(15.dp))
-        GuideRating(userRating = 3.5f)
+        GuideRating(3.5f)
         
         Spacer(modifier = Modifier.height(20.dp))
         Divider(color = Gray200, thickness = 1.dp)
@@ -72,9 +76,11 @@ fun GuideDescriptionExperience() {
 
         Spacer(modifier = Modifier.height(15.dp))
 
-        Row(modifier = Modifier.fillMaxWidth()) {
-            DescriptionTags(tagName = "culture")
-            DescriptionTags(tagName = "gastronomy")
+        Row(modifier = Modifier
+            .fillMaxWidth()
+            .padding(start = 10.dp)) {
+            DescriptionTags(tagName = "cultural")
+            DescriptionTags(tagName = "culinary")
         }
 
         Spacer(modifier = Modifier.height(20.dp))
@@ -89,8 +95,12 @@ fun GuideDescriptionExperience() {
 
 @Composable
 fun GuideRating(userRating: Float) {
-    RatingBar(value = userRating, size = 20.dp, isIndicator = true) {
-    }
+    RatingBar(value = userRating, size = 20.dp, isIndicator = true) { }
+//    var userRating by remember { mutableStateOf(1f) }
+//    RatingBar(size = 20.dp, value = userRating,
+//        onRatingChanged = { value ->
+//            userRating = value
+//        })
 }
 
 @Composable
@@ -159,7 +169,7 @@ fun Reservation() {
 
 @Composable
 fun DescriptionTags(tagName: String) {
-    Box(modifier = Modifier.padding(start = 10.dp)) {
+    Box(modifier = Modifier.padding(end = 10.dp)) {
         Text(
             text = tagName,
             modifier = Modifier

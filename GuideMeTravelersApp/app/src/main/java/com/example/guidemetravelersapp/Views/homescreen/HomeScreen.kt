@@ -1,10 +1,6 @@
 package com.example.guidemetravelersapp.views.homescreen
 
-import android.Manifest
-import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -23,11 +19,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -36,10 +30,9 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.core.content.ContextCompat
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -49,15 +42,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
-import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMap
+import com.example.guidemetravelersapp.views.ExperienceDetailsView.DescriptionTags
+import com.example.guidemetravelersapp.views.ExperienceDetailsView.GuideRating
 import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionRequired
-import com.google.accompanist.permissions.rememberPermissionState
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.MapView
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -117,31 +105,32 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
 @Composable
 fun ScaffoldContent() {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
-    Column(modifier = Modifier.fillMaxSize()) {
-        SearchView(textState)
-        Text(
-            text = "Available guides",
-            modifier = Modifier.padding(horizontal = 15.dp),
-            fontSize = 18.sp,
-            fontWeight = FontWeight.Bold
-        )
+    Column(modifier = Modifier.fillMaxSize().padding(15.dp)) {
+        SearchView(textState, Modifier.fillMaxWidth().padding(bottom = 15.dp))
+        Text(text = "Available guides", modifier = Modifier.padding(bottom = 15.dp), fontSize = 18.sp,
+            fontWeight = FontWeight.Bold)
+        UserCard(name = "Pepito", lastname = "Perez", imgSize = 70.dp, rating = 3.5f,
+            tags = listOf("cultural", "culinary"))
+        UserCard(name = "Juanita", lastname = "Sanchez", imgSize = 70.dp, rating = 4.0f, listOf("business"))
+        UserCard(name = "Laura", lastname = "Molina", imgSize = 70.dp, rating = 5f,
+            listOf("camping", "ecotourism"))
 
         /* TODO:
-        *   - Finish homescreen display with mock data
-        *     - Make another UserCard with rating and tags.
+        *   - Make guide card clickable. Should navigate to guide's details.
         *   - Make map clickable (full size map when clicking on it)
-        *   - Add navigation to drawer elements (the ones that can be added) */
+        *   - Add navigation to drawer elements (the ones that can be added)
+        *   - Make location card in map view */
     }
 }
 
 @Composable
-fun SearchView(textState: MutableState<TextFieldValue>) {
+fun SearchView(textState: MutableState<TextFieldValue>, modifier: Modifier) {
     val focusManager = LocalFocusManager.current
     OutlinedTextField(
         value = textState.value,
         onValueChange = { value -> textState.value = value },
-        modifier = Modifier.fillMaxWidth().padding(15.dp).height(60.dp),
-        textStyle = TextStyle(fontSize = 16.sp),
+        modifier = modifier,
+        textStyle = TextStyle(fontSize = 18.sp),
         label = { Text(text = "Search") },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
@@ -170,7 +159,7 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
         .fillMaxSize()) {
         Row(modifier = Modifier.weight(4f)) {
             Column {
-                UserCard("Pepito", "Perez", "pepitop24")
+                UserCard(name = "Pepito", lastname = "Perez", username = "pepitop24", imgSize = 60.dp)
                 Divider(thickness = 2.dp)
                 NavOption(title = "Map", scaffoldState = scaffoldState, scope)
                 NavOption(title = "History", scaffoldState = scaffoldState, scope)
@@ -201,23 +190,49 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
     }
 }
 
+/* User card with standard information */
 @Composable
-fun UserCard(name: String, lastname: String, username: String) {
+fun UserCard(name: String, lastname: String, username: String, imgSize: Dp) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 20.dp)) {
         Image(
             painter = painterResource(R.drawable.dummy_avatar),
             contentDescription = "Temporal dummy avatar",
             modifier = Modifier
                 .clip(CircleShape)
-                .height(60.dp)
+                .height(imgSize)
         )
         Column(modifier = Modifier.padding(start = 20.dp)) {
             Text(
                 text = "$name $lastname",
-                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(bottom = 10.dp)
+                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
             )
             Text(text = username)
+        }
+    }
+}
+
+/* User card with standard user information, excluding username and adding rating and tags */
+@Composable
+fun UserCard(name: String, lastname: String, imgSize: Dp, rating: Float, tags: List<String>) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 20.dp)) {
+        Image(
+            painter = painterResource(R.drawable.dummy_avatar),
+            contentDescription = "Temporal dummy avatar",
+            modifier = Modifier
+                .clip(CircleShape)
+                .height(imgSize)
+        )
+        Column(modifier = Modifier.padding(start = 20.dp)) {
+            Text(
+                text = "$name $lastname",
+                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            )
+            GuideRating(rating)
+            Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
+                for (tag in tags) {
+                    DescriptionTags(tagName = tag)
+                }
+            }
         }
     }
 }
@@ -254,8 +269,7 @@ fun BottomBar(navController: NavHostController) {
                     modifier = Modifier.height(30.dp)
                 ) },
                 selected = currentRoute == screen.route,
-                unselectedContentColor = MaterialTheme.colors.secondary,
-                selectedContentColor = MaterialTheme.colors.secondaryVariant,
+                selectedContentColor = MaterialTheme.colors.primaryVariant,
                 onClick = {
                     navController.navigate(screen.route) {
                         // Pop up to the start destination of the graph to
