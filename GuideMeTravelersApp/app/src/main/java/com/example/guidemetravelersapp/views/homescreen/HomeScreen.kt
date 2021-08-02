@@ -22,7 +22,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -31,19 +30,27 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
+import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
+import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class HomeScreen : ComponentActivity() {
+    @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -54,17 +61,21 @@ class HomeScreen : ComponentActivity() {
     }
 }
 
+@ExperimentalPermissionsApi
 @Composable
 fun HomeScreenContent() {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope() // handles open() & close() suspend functions
+    val navController = rememberNavController()
 
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { AppBar(scaffoldState, scope) },
-        content = { ScaffoldContent() },
+        content = { ScreenController(navController) },
         drawerContent = { NavDrawer(scaffoldState, scope) },
-        drawerShape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp)
+        drawerShape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
+        drawerGesturesEnabled = false,
+        bottomBar = { BottomBar(navController) }
     )
 }
 
@@ -90,21 +101,35 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
     )
 }
 
+@ExperimentalPermissionsApi
 @Composable
 fun ScaffoldContent() {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
-    //SearchView(textState)
-    MapScreen(50.937616532313434, 6.960581381481977, "Cologne Cathedral") // google maps
-    // TODO: add location permissions
+    Column(modifier = Modifier.fillMaxSize().padding(15.dp)) {
+        SearchView(textState, Modifier.fillMaxWidth().padding(bottom = 15.dp))
+        Text(text = "Available guides", modifier = Modifier.padding(bottom = 15.dp), fontSize = 18.sp,
+            fontWeight = FontWeight.Bold)
+        UserCard(name = "Pepito", lastname = "Perez", imgSize = 70.dp, rating = 3.5f,
+            tags = listOf("cultural", "culinary"))
+        UserCard(name = "Juanita", lastname = "Sanchez", imgSize = 70.dp, rating = 4.0f, listOf("business"))
+        UserCard(name = "Laura", lastname = "Molina", imgSize = 70.dp, rating = 5f,
+            listOf("camping", "ecotourism"))
+
+        /* TODO:
+        *   - Make guide card clickable. Should navigate to guide's details.
+        *   - Make map clickable (full size map when clicking on it)
+        *   - Add navigation to drawer elements (the ones that can be added)
+        *   - Make location card in map view */
+    }
 }
 
 @Composable
-fun SearchView(state: MutableState<TextFieldValue>) {
+fun SearchView(textState: MutableState<TextFieldValue>, modifier: Modifier) {
     val focusManager = LocalFocusManager.current
     OutlinedTextField(
-        value = state.value,
-        onValueChange = { value -> state.value = value },
-        modifier = Modifier.fillMaxWidth().padding(20.dp),
+        value = textState.value,
+        onValueChange = { value -> textState.value = value },
+        modifier = modifier,
         textStyle = TextStyle(fontSize = 18.sp),
         label = { Text(text = "Search") },
         keyboardOptions = KeyboardOptions(
@@ -113,7 +138,7 @@ fun SearchView(state: MutableState<TextFieldValue>) {
         ),
         keyboardActions = KeyboardActions(
             onSearch = {
-                // execute search function
+                // TODO: execute search function
                 focusManager.clearFocus()
             }
         ),
@@ -127,23 +152,6 @@ fun SearchView(state: MutableState<TextFieldValue>) {
     )
 }
 
-// Google Maps
-@Composable
-fun MapScreen(latitude: Double, longitude: Double, title: String) {
-    val mapView = rememberMapViewWithLifecycle()
-    val context = LocalContext.current
-
-    AndroidView({ mapView }) { map ->
-        map.getMapAsync {
-            val coordinates = LatLng(latitude, longitude)
-            it.addMarker(MarkerOptions().position(coordinates).title(title))
-            it.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 18f), 4000, null)
-
-        }
-    }
-}
-
-
 @Composable
 fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
     Column(modifier = Modifier
@@ -151,7 +159,7 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
         .fillMaxSize()) {
         Row(modifier = Modifier.weight(4f)) {
             Column {
-                UserCard()
+                UserCard(name = "Pepito", lastname = "Perez", username = "pepitop24", imgSize = 60.dp)
                 Divider(thickness = 2.dp)
                 NavOption(title = "Map", scaffoldState = scaffoldState, scope)
                 NavOption(title = "History", scaffoldState = scaffoldState, scope)
@@ -182,23 +190,49 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
     }
 }
 
+/* User card with standard information */
 @Composable
-fun UserCard() {
+fun UserCard(name: String, lastname: String, username: String, imgSize: Dp) {
     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 20.dp)) {
         Image(
             painter = painterResource(R.drawable.dummy_avatar),
             contentDescription = "Temporal dummy avatar",
             modifier = Modifier
                 .clip(CircleShape)
-                .height(60.dp)
+                .height(imgSize)
         )
         Column(modifier = Modifier.padding(start = 20.dp)) {
             Text(
-                text = "Nombre Apellido",
-                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold),
-                modifier = Modifier.padding(bottom = 10.dp)
+                text = "$name $lastname",
+                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
             )
-            Text(text = "Usuario")
+            Text(text = username)
+        }
+    }
+}
+
+/* User card with standard user information, excluding username and adding rating and tags */
+@Composable
+fun UserCard(name: String, lastname: String, imgSize: Dp, rating: Float, tags: List<String>) {
+    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 20.dp)) {
+        Image(
+            painter = painterResource(R.drawable.dummy_avatar),
+            contentDescription = "Temporal dummy avatar",
+            modifier = Modifier
+                .clip(CircleShape)
+                .height(imgSize)
+        )
+        Column(modifier = Modifier.padding(start = 20.dp)) {
+            Text(
+                text = "$name $lastname",
+                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+            )
+            GuideRating(rating)
+            Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
+                for (tag in tags) {
+                    DescriptionTags(tagName = tag)
+                }
+            }
         }
     }
 }
@@ -219,6 +253,69 @@ fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope
     )
 }
 
+@Composable
+fun BottomBar(navController: NavHostController) {
+    val items = listOf(BottomNavScreen.Map, BottomNavScreen.AudioGuide, BottomNavScreen.Chat)
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    BottomNavigation(
+        backgroundColor = MaterialTheme.colors.background,
+        content = { items.forEach { screen ->
+            BottomNavigationItem(
+                icon = { Icon(
+                    painter = painterResource(id = screen.resId),
+                    contentDescription = screen.label,
+                    modifier = Modifier.height(30.dp)
+                ) },
+                selected = currentRoute == screen.route,
+                selectedContentColor = MaterialTheme.colors.primaryVariant,
+                onClick = {
+                    navController.navigate(screen.route) {
+                        // Pop up to the start destination of the graph to
+                        // avoid building up a large stack of destinations
+                        // on the back stack as users select items
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        // Avoid multiple copies of the same destination when
+                        // reselecting the same item
+                        launchSingleTop = true
+                        // Restore state when reselecting a previously selected item
+                        restoreState = false
+                    }
+
+                })
+        } }
+    )
+}
+
+@ExperimentalPermissionsApi
+@Composable
+fun ScreenController(navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = "guides",
+        builder = {
+            composable(route = "guides", content = { ScaffoldContent() })
+            composable(route = "map", content = { AudioGuideRouteTest() })
+            composable(route = "chat", content = { ChatRouteTest() })
+        }
+    )
+}
+
+@ExperimentalPermissionsApi
+@Composable
+fun AudioGuideRouteTest() {
+    AudioGuideMapContent()
+}
+
+@Composable
+fun ChatRouteTest() {
+    Text("Chat Guide Route Text")
+}
+
+@ExperimentalPermissionsApi
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {

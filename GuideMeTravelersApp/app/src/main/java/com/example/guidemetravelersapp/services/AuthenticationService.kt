@@ -15,8 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
-import okhttp3.internal.wait
-import retrofit2.Response
 
 class AuthenticationService(activity: Activity, private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO ) {
     private var auth: FirebaseAuth = Firebase.auth
