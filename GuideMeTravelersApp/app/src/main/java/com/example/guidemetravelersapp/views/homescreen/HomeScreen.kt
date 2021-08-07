@@ -18,7 +18,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
-import androidx.compose.runtime.internal.composableLambda
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,9 +41,9 @@ import androidx.navigation.compose.rememberNavController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
-import com.example.guidemetravelersapp.views.ExperienceDetailsView.DescriptionTags
-import com.example.guidemetravelersapp.views.ExperienceDetailsView.GuideDescriptionExperience
-import com.example.guidemetravelersapp.views.ExperienceDetailsView.GuideRating
+import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
+import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescriptionExperience
+import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
 import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.CoroutineScope
