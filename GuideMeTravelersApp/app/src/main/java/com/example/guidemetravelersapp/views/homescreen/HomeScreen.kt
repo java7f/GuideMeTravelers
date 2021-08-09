@@ -72,7 +72,7 @@ fun HomeScreenContent() {
         scaffoldState = scaffoldState,
         topBar = { AppBar(scaffoldState, scope) },
         content = { ScreenController(navController) },
-        drawerContent = { NavDrawer(scaffoldState, scope) },
+        drawerContent = { NavDrawer(scaffoldState, scope, navController) },
         drawerShape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
         drawerGesturesEnabled = false,
         bottomBar = { BottomBar(navController) }
@@ -129,10 +129,7 @@ fun ScaffoldContent(navController: NavHostController) {
 
         /* TODO:
         *   - Make map clickable (full size map when clicking on it)
-        *   - Add navigation to drawer elements (the ones that can be added)
-        *   - Make location card in map view
-        *   - Remove map from drawer
-        *   - user card clickable (drawer) */
+        *   - Make location card in map view */
     }
 }
 
@@ -166,7 +163,7 @@ fun SearchView(textState: MutableState<TextFieldValue>, modifier: Modifier) {
 }
 
 @Composable
-fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
+fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope, navController: NavHostController) {
     Column(modifier = Modifier
         .padding(20.dp)
         .fillMaxSize()) {
@@ -174,18 +171,16 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
             Column {
                 UserCard(name = "Pepito", lastname = "Perez", username = "pepitop24", imgSize = 60.dp)
                 Divider(thickness = 2.dp)
-                NavOption(title = "Map", scaffoldState = scaffoldState, scope)
-                NavOption(title = "History", scaffoldState = scaffoldState, scope)
-                NavOption(title = "Your Guides", scaffoldState = scaffoldState, scope)
-                NavOption(title = "Become a Guide", scaffoldState = scaffoldState, scope)
-                NavOption(title = "Alerts", scaffoldState = scaffoldState, scope)
-                NavOption(title = "Account Settings", scaffoldState = scaffoldState, scope)
+                NavOption(title = "Guides", scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = "History", scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = "Become a Guide", scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = "Alerts", scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = "Account Settings", scaffoldState = scaffoldState, scope, navController)
             }
         }
         Row(modifier = Modifier.weight(1f)) {
             Column {
                 Divider(thickness = 2.dp)
-                NavOption(title = "Send Feedback", scaffoldState = scaffoldState, scope)
                 Text(
                     text = "Logout",
                     style = TextStyle(color = CancelRed, fontSize = 18.sp, fontWeight = FontWeight.Bold),
@@ -265,7 +260,7 @@ fun UserCard(name: String, lastname: String, imgSize: Dp, rating: Float, tags: L
 }
 
 @Composable
-fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope) {
+fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope, navController: NavHostController) {
     Text(
         text = title,
         style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
@@ -273,7 +268,10 @@ fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(color = MaterialTheme.colors.secondary),
-                onClick = { scope.launch { scaffoldState.drawerState.close() } }
+                onClick = {
+                    scope.launch { scaffoldState.drawerState.close() }
+                    navController.navigate("guides")
+                }
             )
             .padding(16.dp)
             .fillMaxWidth()
@@ -311,7 +309,6 @@ fun BottomBar(navController: NavHostController) {
                         // Restore state when reselecting a previously selected item
                         restoreState = false
                     }
-
                 })
         } }
     )
