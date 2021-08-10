@@ -3,8 +3,7 @@ package com.example.guidemetravelersapp.views.homescreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -43,6 +42,7 @@ import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
+import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescriptionExperience
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
 import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -72,7 +72,7 @@ fun HomeScreenContent() {
         scaffoldState = scaffoldState,
         topBar = { AppBar(scaffoldState, scope) },
         content = { ScreenController(navController) },
-        drawerContent = { NavDrawer(scaffoldState, scope) },
+        drawerContent = { NavDrawer(scaffoldState, scope, navController) },
         drawerShape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
         drawerGesturesEnabled = false,
         bottomBar = { BottomBar(navController) }
@@ -103,22 +103,32 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
 
 @ExperimentalPermissionsApi
 @Composable
-fun ScaffoldContent() {
+fun ScaffoldContent(navController: NavHostController) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
-    Column(modifier = Modifier.fillMaxSize().padding(15.dp)) {
-        SearchView(textState, Modifier.fillMaxWidth().padding(bottom = 15.dp))
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(15.dp)
+        .verticalScroll(rememberScrollState())) { // vertical scroll doesn't seem to be working?
+        SearchView(textState,
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 15.dp))
         Text(text = "Available guides", modifier = Modifier.padding(bottom = 15.dp), fontSize = 18.sp,
             fontWeight = FontWeight.Bold)
         UserCard(name = "Pepito", lastname = "Perez", imgSize = 70.dp, rating = 3.5f,
-            tags = listOf("cultural", "culinary"))
-        UserCard(name = "Juanita", lastname = "Sanchez", imgSize = 70.dp, rating = 4.0f, listOf("business"))
+            tags = listOf("cultural", "culinary"), navController = navController)
+        Spacer(modifier = Modifier.height(15.dp))
+        UserCard(name = "Juanita", lastname = "Sanchez", imgSize = 70.dp, rating = 4.0f,
+            tags = listOf("business"), navController = navController)
+        Spacer(modifier = Modifier.height(15.dp))
         UserCard(name = "Laura", lastname = "Molina", imgSize = 70.dp, rating = 5f,
-            listOf("camping", "ecotourism"))
+            tags = listOf("camping", "ecotourism"), navController = navController)
+        Spacer(modifier = Modifier.height(15.dp))
+        UserCard(name = "Juana", lastname = "Mendez", imgSize = 70.dp, rating = 3f,
+            tags = listOf("cultural", "music", "fashion"), navController = navController)
 
         /* TODO:
-        *   - Make guide card clickable. Should navigate to guide's details.
         *   - Make map clickable (full size map when clicking on it)
-        *   - Add navigation to drawer elements (the ones that can be added)
         *   - Make location card in map view */
     }
 }
@@ -153,7 +163,7 @@ fun SearchView(textState: MutableState<TextFieldValue>, modifier: Modifier) {
 }
 
 @Composable
-fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
+fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope, navController: NavHostController) {
     Column(modifier = Modifier
         .padding(20.dp)
         .fillMaxSize()) {
@@ -161,18 +171,16 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope) {
             Column {
                 UserCard(name = "Pepito", lastname = "Perez", username = "pepitop24", imgSize = 60.dp)
                 Divider(thickness = 2.dp)
-                NavOption(title = "Map", scaffoldState = scaffoldState, scope)
-                NavOption(title = "History", scaffoldState = scaffoldState, scope)
-                NavOption(title = "Your Guides", scaffoldState = scaffoldState, scope)
-                NavOption(title = "Become a Guide", scaffoldState = scaffoldState, scope)
-                NavOption(title = "Alerts", scaffoldState = scaffoldState, scope)
-                NavOption(title = "Account Settings", scaffoldState = scaffoldState, scope)
+                NavOption(title = "Guides", scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = "History", scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = "Become a Guide", scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = "Alerts", scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = "Account Settings", scaffoldState = scaffoldState, scope, navController)
             }
         }
         Row(modifier = Modifier.weight(1f)) {
             Column {
                 Divider(thickness = 2.dp)
-                NavOption(title = "Send Feedback", scaffoldState = scaffoldState, scope)
                 Text(
                     text = "Logout",
                     style = TextStyle(color = CancelRed, fontSize = 18.sp, fontWeight = FontWeight.Bold),
@@ -213,32 +221,46 @@ fun UserCard(name: String, lastname: String, username: String, imgSize: Dp) {
 
 /* User card with standard user information, excluding username and adding rating and tags */
 @Composable
-fun UserCard(name: String, lastname: String, imgSize: Dp, rating: Float, tags: List<String>) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 20.dp)) {
-        Image(
-            painter = painterResource(R.drawable.dummy_avatar),
-            contentDescription = "Temporal dummy avatar",
-            modifier = Modifier
-                .clip(CircleShape)
-                .height(imgSize)
-        )
-        Column(modifier = Modifier.padding(start = 20.dp)) {
-            Text(
-                text = "$name $lastname",
-                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
-            )
-            GuideRating(rating)
-            Row(modifier = Modifier.fillMaxWidth().padding(top = 10.dp)) {
-                for (tag in tags) {
-                    DescriptionTags(tagName = tag)
+fun UserCard(name: String, lastname: String, imgSize: Dp, rating: Float, tags: List<String>, navController: NavHostController) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(color = MaterialTheme.colors.secondary),
+                onClick = { navController.navigate("guideExperience") }
+            ),
+        elevation = 10.dp,
+        content = {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
+                Image(
+                    painter = painterResource(R.drawable.dummy_avatar),
+                    contentDescription = "Temporal dummy avatar",
+                    modifier = Modifier
+                        .clip(CircleShape)
+                        .height(imgSize)
+                )
+                Column(modifier = Modifier.padding(start = 20.dp)) {
+                    Text(
+                        text = "$name $lastname",
+                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    )
+                    GuideRating(rating)
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)) {
+                        for (tag in tags) {
+                            DescriptionTags(tagName = tag)
+                        }
+                    }
                 }
             }
         }
-    }
+    )
 }
 
 @Composable
-fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope) {
+fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope, navController: NavHostController) {
     Text(
         text = title,
         style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
@@ -246,7 +268,10 @@ fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(color = MaterialTheme.colors.secondary),
-                onClick = { scope.launch { scaffoldState.drawerState.close() } }
+                onClick = {
+                    scope.launch { scaffoldState.drawerState.close() }
+                    navController.navigate("guides")
+                }
             )
             .padding(16.dp)
             .fillMaxWidth()
@@ -284,7 +309,6 @@ fun BottomBar(navController: NavHostController) {
                         // Restore state when reselecting a previously selected item
                         restoreState = false
                     }
-
                 })
         } }
     )
@@ -297,17 +321,12 @@ fun ScreenController(navController: NavHostController) {
         navController = navController,
         startDestination = "guides",
         builder = {
-            composable(route = "guides", content = { ScaffoldContent() })
-            composable(route = "map", content = { AudioGuideRouteTest() })
+            composable(route = "guides", content = { ScaffoldContent(navController) })
+            composable(route = "map", content = { AudioGuideMapContent() })
             composable(route = "chat", content = { ChatRouteTest() })
+            composable(route = "guideExperience", content = { GuideDescriptionExperience() })
         }
     )
-}
-
-@ExperimentalPermissionsApi
-@Composable
-fun AudioGuideRouteTest() {
-    AudioGuideMapContent()
 }
 
 @Composable
