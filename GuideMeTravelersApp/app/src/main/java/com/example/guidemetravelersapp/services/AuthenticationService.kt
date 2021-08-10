@@ -65,6 +65,8 @@ class AuthenticationService(activity: Activity, private val defaultDispatcher: C
     suspend fun registerUser(user: User, password: String): Boolean {
         var result: Boolean = false
         try {
+            if (!validateNewUser(user.email))
+                return false
             val registerResult = auth.createUserWithEmailAndPassword(user.email, password).await()
             if (registerResult.user != null) {
                 result = createUserInfo(user)
@@ -83,6 +85,10 @@ class AuthenticationService(activity: Activity, private val defaultDispatcher: C
         return auth.currentUser?.getIdToken(true)?.await()?.token
     }
 
+    private suspend fun validateNewUser(email: String): Boolean {
+        val isNewUser = auth.fetchSignInMethodsForEmail(email).await()
+        return isNewUser.signInMethods?.isEmpty()!!
+    }
 
     //region API Methods
 

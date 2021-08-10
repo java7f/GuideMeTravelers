@@ -12,12 +12,14 @@ import okhttp3.Response
 class BasicAuthInterceptor(context: Context) : Interceptor {
     //The session manager that stores the token
     private val sessionManager = SessionManager(context)
+    //The session manager that stores the token
+    private val context = context
 
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestBuilder = chain.request().newBuilder()
         // If token has been saved, add it to the request
         sessionManager.fetchAuthToken()?.let {
-            requestBuilder.addHeader(Resources.getSystem().getString(R.string.authorization_header), "Bearer $it")
+            requestBuilder.addHeader(context.getString(R.string.authorization_header), "Bearer $it")
         }
 
         return chain.proceed(requestBuilder.build())

@@ -235,7 +235,9 @@ fun TouristReview(touristRating: Float) {
     }
 }
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true,
+    showSystemUi = true,
+    locale = "es")
 @Composable
 fun DefaultPreview3() {
     GuideMeTravelersAppTheme {
