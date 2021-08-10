@@ -1,18 +1,18 @@
 <resources>
     <string name="app_name">GuideMeTravelersApp</string>
-    <string name="title_activity_login">LoginActivity</string>
-    <string name="authorization_header">Authorization</string>
+    <string name="title_activity_login" translatable="false">LoginActivity</string>
+    <string name="authorization_header" translatable="false">Authorization</string>
 
 <!--    TODO: MOVE TO THE LOGIN EXCLUSIVE STRING FILE   -->
-    <string name="username_label">Username</string>
+    <string name="username_label" translatable="false">Username</string>
     <string name="password_label">Password</string>
     <string name="login_button">Login</string>
-    <string name="title_activity_experience_details">ExperienceDetailsActivity</string>
-    <string name="reserve_text">Reserve</string>
+    <string name="title_activity_experience_details" translatable="false">ExperienceDetailsActivity</string>
+    <string name="reserve_text">Request Reservation</string>
     <string name="experience_description_text">Experience Description</string>
-    <string name="loremipsum_test">
+    <string name="loremipsum_test" translatable="false">
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor id venenatis tempor, nunc nisi sodales lectus, sed euismod lorem nisi et sapien. Nulla tincidunt metus metus, eu rutrum mauris sagittis at. Donec pellentesque sagittis turpis, eu ullamcorper turpis blandit non. Pellentesque porttitor lectus id hendrerit laoreet.</string>
     <string name="reviews_text">Reviews</string>
-    <string name="title_activity_home_screen">HomeScreen</string>
-    <string name="title_activity_audio_guide_map">AudioGuideMap</string>
+    <string name="title_activity_home_screen" translatable="false">HomeScreen</string>
+    <string name="title_activity_audio_guide_map" translatable="false">AudioGuideMap</string>
 </resources>

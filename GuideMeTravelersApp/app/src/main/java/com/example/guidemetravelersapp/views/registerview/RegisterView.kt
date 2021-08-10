@@ -6,7 +6,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.runtime.*
@@ -71,7 +73,8 @@ class RegisterView : ComponentActivity() {
             val lastname = remember { mutableStateOf(TextFieldValue()) }
             val email = remember { mutableStateOf(TextFieldValue()) }
             val coroutineScope = rememberCoroutineScope()
-            Column(modifier = Modifier.padding(horizontal = 20.dp)){
+            Column(modifier = Modifier.padding(horizontal = 20.dp)
+                .verticalScroll(rememberScrollState())){
                 Row(modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically) {

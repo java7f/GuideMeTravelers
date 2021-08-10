@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">GuideMeTravelersApp</string>
+    <string name="register_header">S\'inscrire</string>
+    <string name="name_label">Nom</string>
+    <string name="lastname_label">Nom de famille</string>
+    <string name="email_label">e-mail</string>
+    <string name="sign_up">S\'inscrire</string>
+    <string name="or">ou</string>
+    <string name="password_label">Mot de passe</string>
+    <string name="login_button">S\'identifier</string>
+    <string name="reserve_text">Demander une réservation</string>
+    <string name="experience_description_text">Description de l\'expérience</string>
+    <string name="reviews_text">Critiques</string>
+</resources>
