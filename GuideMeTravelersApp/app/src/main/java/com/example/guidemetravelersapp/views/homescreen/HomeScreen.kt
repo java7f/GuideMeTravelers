@@ -171,7 +171,18 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope, navController
         .fillMaxSize()) {
         Row(modifier = Modifier.weight(4f)) {
             Column {
-                UserCard(name = "Pepito", lastname = "Perez", username = "pepitop24", imgSize = 60.dp)
+                Row (
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    content = {
+                        UserCard(name = "Pepito", lastname = "Perez", username = "pepitop24", imgSize = 60.dp)
+                        Icon(
+                            Icons.Default.MenuOpen,
+                            contentDescription = "Menu Open",
+                            modifier = Modifier.clickable(onClick = { scope.launch { scaffoldState.drawerState.close() } })
+                        )
+                    }
+                )
                 Divider(thickness = 2.dp)
                 NavOption(title = "Guides", scaffoldState = scaffoldState, scope, navController)
                 NavOption(title = "History", scaffoldState = scaffoldState, scope, navController)
