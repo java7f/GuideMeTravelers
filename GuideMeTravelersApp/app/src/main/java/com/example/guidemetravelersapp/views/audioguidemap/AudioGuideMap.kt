@@ -7,11 +7,18 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
@@ -21,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.ui.theme.Skyblue200
 import com.example.guidemetravelersapp.views.homescreen.SearchView
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
@@ -29,8 +37,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.launch
 
 class AudioGuideMap : ComponentActivity() {
+    @ExperimentalMaterialApi
     @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,28 +52,60 @@ class AudioGuideMap : ComponentActivity() {
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
 fun AudioGuideMapContent() {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        content = {
-            SearchView(textState, modifier = Modifier.fillMaxWidth().padding(15.dp))
-            MapScreen(
-                50.937616532313434,
-                6.960581381481977,
-                "Cologne Cathedral",
-                modifier = Modifier.height(300.dp))
-            Text(
-                text = "Available places with audio guide",
-                modifier = Modifier.padding(15.dp),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+    val scope = rememberCoroutineScope()
+    val scaffoldState = rememberBottomSheetScaffoldState()
 
-        }
-    )
+    BottomSheetScaffold(
+        sheetContent = {
+            Box(
+                modifier = Modifier.fillMaxWidth().height(70.dp).background(color = Skyblue200),
+                contentAlignment = Alignment.Center,
+                content = { Text(text = "Available places with audio guide", fontSize = 18.sp) }
+            )
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(100.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                content = {
+                    Text("Sheet content")
+                    Spacer(Modifier.height(20.dp))
+                }
+            )
+        },
+        scaffoldState = scaffoldState,
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    scope.launch {
+                        if (scaffoldState.bottomSheetState.isCollapsed) scaffoldState.bottomSheetState.expand()
+                        else scaffoldState.bottomSheetState.collapse() } },
+                content = {
+                    if (scaffoldState.bottomSheetState.isCollapsed)
+                        Icon(Icons.Default.Expand, contentDescription = "Open bottom sheet scaffold", tint = Color.White)
+                    else Icon(Icons.Default.Close, contentDescription = "Close bottom sheet scaffold", tint = Color.White)
+                }
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        sheetPeekHeight = 120.dp,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            content = {
+                SearchView(textState, modifier = Modifier.fillMaxWidth().padding(15.dp))
+                MapScreen(
+                    latitude = 50.937616532313434,
+                    longitude = 6.960581381481977,
+                    title = "Cologne Cathedral",
+                    modifier = Modifier.height(450.dp)
+                )
+            }
+        )
+    }
 }
 
 @ExperimentalPermissionsApi
@@ -160,7 +202,7 @@ fun MapScreen(latitude: Double, longitude: Double, title: String, modifier: Modi
 fun DisplayMap(
     context: Context, mapView: MapView, latitude: Double,
     longitude: Double, title: String, locationEnabled: Boolean,
-    permissionManager: Int, modifier: Modifier ) {
+    permissionManager: Int, modifier: Modifier) {
     AndroidView(modifier = modifier, factory = { mapView }) { map ->
         map.getMapAsync {
             val coordinates = LatLng(latitude, longitude)
@@ -177,6 +219,7 @@ fun DisplayMap(
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Preview(showBackground = true)
 @Composable

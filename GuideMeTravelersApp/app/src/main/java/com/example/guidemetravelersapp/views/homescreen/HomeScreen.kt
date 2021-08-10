@@ -50,6 +50,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class HomeScreen : ComponentActivity() {
+    @ExperimentalMaterialApi
     @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +62,7 @@ class HomeScreen : ComponentActivity() {
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
 fun HomeScreenContent() {
@@ -128,8 +130,8 @@ fun ScaffoldContent(navController: NavHostController) {
             tags = listOf("cultural", "music", "fashion"), navController = navController)
 
         /* TODO:
-        *   - Make map clickable (full size map when clicking on it)
-        *   - Make location card in map view */
+        *   - Make location card in map view
+        *   - Find out why scrolling is not working properly */
     }
 }
 
@@ -314,6 +316,7 @@ fun BottomBar(navController: NavHostController) {
     )
 }
 
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
 fun ScreenController(navController: NavHostController) {
@@ -334,6 +337,7 @@ fun ChatRouteTest() {
     Text("Chat Guide Route Text")
 }
 
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Preview(showBackground = true)
 @Composable
