@@ -7,20 +7,42 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.MaterialTheme.colors
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavHostController
+import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.ui.theme.Skyblue200
+import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
+import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
 import com.example.guidemetravelersapp.views.homescreen.SearchView
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
@@ -29,8 +51,10 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.coroutines.launch
 
 class AudioGuideMap : ComponentActivity() {
+    @ExperimentalMaterialApi
     @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,26 +66,109 @@ class AudioGuideMap : ComponentActivity() {
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
 fun AudioGuideMapContent() {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        content = {
-            SearchView(textState, modifier = Modifier.fillMaxWidth().padding(15.dp))
-            MapScreen(
-                50.937616532313434,
-                6.960581381481977,
-                "Cologne Cathedral",
-                modifier = Modifier.height(300.dp))
-            Text(
-                text = "Available places with audio guide",
-                modifier = Modifier.padding(15.dp),
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold
-            )
+    val scope = rememberCoroutineScope()
+    val scaffoldState = rememberBottomSheetScaffoldState()
 
+    BottomSheetScaffold(
+        sheetContent = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(70.dp)
+                    .background(color = Skyblue200),
+                contentAlignment = Alignment.Center,
+                content = { Text(text = "Available places with audio guide", fontSize = 18.sp, fontWeight = FontWeight.Bold) }
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                content = {
+                    LocationCard(name = "Alcazar de Colon", rating = 4.0f, tags = listOf("cultural"))
+                    Spacer(modifier = Modifier.height(15.dp))
+                    LocationCard(name = "Alcazar de Colon", rating = 4.0f, tags = listOf("cultural"))
+                    Spacer(modifier = Modifier.height(15.dp))
+                    LocationCard(name = "Alcazar de Colon", rating = 4.0f, tags = listOf("cultural"))
+                }
+            )
+        },
+        scaffoldState = scaffoldState,
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+                    scope.launch {
+                        if (scaffoldState.bottomSheetState.isCollapsed) scaffoldState.bottomSheetState.expand()
+                        else scaffoldState.bottomSheetState.collapse() } },
+                content = {
+                    if (scaffoldState.bottomSheetState.isCollapsed)
+                        Icon(Icons.Default.Expand, contentDescription = "Open bottom sheet scaffold", tint = Color.White)
+                    else Icon(Icons.Default.Close, contentDescription = "Close bottom sheet scaffold", tint = Color.White)
+                }
+            )
+        },
+        floatingActionButtonPosition = FabPosition.End,
+        sheetPeekHeight = 120.dp,
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            content = {
+                SearchView(textState, modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(15.dp))
+                MapScreen(
+                    latitude = 50.937616532313434,
+                    longitude = 6.960581381481977,
+                    title = "Cologne Cathedral",
+                    modifier = Modifier.height(450.dp)
+                )
+            }
+        )
+    }
+}
+
+@Composable
+fun LocationCard(name: String, rating: Float, tags: List<String>) {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = rememberRipple(color = colors.secondary),
+                onClick = { /* TODO: navigate to place details */ }
+            ),
+        elevation = 10.dp,
+        content = {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
+                Image(
+                    painter = painterResource(R.drawable.dummy_avatar),
+                    contentDescription = "Temporal dummy avatar",
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(10.dp))
+                        .height(100.dp)
+                )
+                Column(modifier = Modifier.padding(start = 20.dp)) {
+                    Text(
+                        text = name,
+                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                    )
+                    Text(
+                        text = "Total audio guides"
+                    )
+                    Row(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 10.dp)) {
+                        for (tag in tags) {
+                            DescriptionTags(tagName = tag)
+                        }
+                    }
+                }
+            }
         }
     )
 }
@@ -160,7 +267,7 @@ fun MapScreen(latitude: Double, longitude: Double, title: String, modifier: Modi
 fun DisplayMap(
     context: Context, mapView: MapView, latitude: Double,
     longitude: Double, title: String, locationEnabled: Boolean,
-    permissionManager: Int, modifier: Modifier ) {
+    permissionManager: Int, modifier: Modifier) {
     AndroidView(modifier = modifier, factory = { mapView }) { map ->
         map.getMapAsync {
             val coordinates = LatLng(latitude, longitude)
@@ -177,6 +284,7 @@ fun DisplayMap(
     }
 }
 
+@ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Preview(showBackground = true)
 @Composable
