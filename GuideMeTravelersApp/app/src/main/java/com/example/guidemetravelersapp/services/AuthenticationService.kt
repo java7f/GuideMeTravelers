@@ -32,6 +32,7 @@ class AuthenticationService(activity: Activity, private val defaultDispatcher: C
     suspend fun login(email: String, password: String): AuthResult? {
         val result = auth.signInWithEmailAndPassword(email, password).await()
         val accessToken = getTokenFromUser()
+        Log.d(TAG, accessToken!!)
         if (accessToken != null) {
             sessionManager.saveAuthToken(accessToken)
         }

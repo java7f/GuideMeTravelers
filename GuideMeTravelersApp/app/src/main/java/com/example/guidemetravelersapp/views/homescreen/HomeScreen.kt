@@ -3,6 +3,7 @@ package com.example.guidemetravelersapp.views.homescreen
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -34,13 +38,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.currentBackStackEntryAsState
-import androidx.navigation.compose.rememberNavController
+import androidx.navigation.compose.*
 import com.example.guidemetravelersapp.R
+import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescriptionExperience
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
@@ -50,20 +53,23 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class HomeScreen : ComponentActivity() {
+    @ExperimentalFoundationApi
     @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val model: HomescreenViewModel by viewModels()
         setContent {
             GuideMeTravelersAppTheme {
-                HomeScreenContent()
+                HomeScreenContent(model)
             }
         }
     }
 }
 
+@ExperimentalFoundationApi
 @ExperimentalPermissionsApi
 @Composable
-fun HomeScreenContent() {
+fun HomeScreenContent(model: HomescreenViewModel? = null) {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope() // handles open() & close() suspend functions
     val navController = rememberNavController()
@@ -71,7 +77,9 @@ fun HomeScreenContent() {
     Scaffold(
         scaffoldState = scaffoldState,
         topBar = { AppBar(scaffoldState, scope) },
-        content = { ScreenController(navController) },
+        content = { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) {
+            ScreenController(navController, model!!) }
+        },
         drawerContent = { NavDrawer(scaffoldState, scope, navController) },
         drawerShape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
         drawerGesturesEnabled = false,
@@ -102,34 +110,29 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
 }
 
 @ExperimentalPermissionsApi
+@ExperimentalFoundationApi
 @Composable
-fun ScaffoldContent(navController: NavHostController) {
+fun ScaffoldContent(navController: NavHostController, guideExperiences: List<GuideExperienceViewData>) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
-    Column(modifier = Modifier
+    var listState = rememberLazyListState()
+    LazyColumn(modifier = Modifier
         .fillMaxSize()
-        .padding(15.dp)
-        .verticalScroll(rememberScrollState())) { // vertical scroll doesn't seem to be working?
-        SearchView(textState,
-            Modifier
-                .fillMaxWidth()
-                .padding(bottom = 15.dp))
-        Text(text = "Available guides", modifier = Modifier.padding(bottom = 15.dp), fontSize = 18.sp,
-            fontWeight = FontWeight.Bold)
-        UserCard(name = "Pepito", lastname = "Perez", imgSize = 70.dp, rating = 3.5f,
-            tags = listOf("cultural", "culinary"), navController = navController)
-        Spacer(modifier = Modifier.height(15.dp))
-        UserCard(name = "Juanita", lastname = "Sanchez", imgSize = 70.dp, rating = 4.0f,
-            tags = listOf("business"), navController = navController)
-        Spacer(modifier = Modifier.height(15.dp))
-        UserCard(name = "Laura", lastname = "Molina", imgSize = 70.dp, rating = 5f,
-            tags = listOf("camping", "ecotourism"), navController = navController)
-        Spacer(modifier = Modifier.height(15.dp))
-        UserCard(name = "Juana", lastname = "Mendez", imgSize = 70.dp, rating = 3f,
-            tags = listOf("cultural", "music", "fashion"), navController = navController)
-
-        /* TODO:
-        *   - Make map clickable (full size map when clicking on it)
-        *   - Make location card in map view */
+        .padding(15.dp),
+        state = listState) { // vertical scroll doesn't seem to be working?
+        item {
+            SearchView(textState,
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 15.dp)
+                    .height(60.dp))
+            Text(text = "Available guides", modifier = Modifier.padding(bottom = 15.dp), fontSize = 18.sp,
+                fontWeight = FontWeight.Bold)
+        }
+        itemsIndexed(guideExperiences) { index, item ->
+            UserCard(name = item.guideFirstName, lastname = item.guideLastName, imgSize = 70.dp, rating = item.guideRating,
+                tags = item.experienceTags, experienceId = item.id ,navController = navController)
+            Spacer(modifier = Modifier.height(15.dp))
+        }
     }
 }
 
@@ -140,7 +143,7 @@ fun SearchView(textState: MutableState<TextFieldValue>, modifier: Modifier) {
         value = textState.value,
         onValueChange = { value -> textState.value = value },
         modifier = modifier,
-        textStyle = TextStyle(fontSize = 18.sp),
+        textStyle = TextStyle(fontSize = 14.sp),
         label = { Text(text = "Search") },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
@@ -221,14 +224,14 @@ fun UserCard(name: String, lastname: String, username: String, imgSize: Dp) {
 
 /* User card with standard user information, excluding username and adding rating and tags */
 @Composable
-fun UserCard(name: String, lastname: String, imgSize: Dp, rating: Float, tags: List<String>, navController: NavHostController) {
+fun UserCard(name: String, lastname: String, imgSize: Dp, rating: Float, tags: List<String>, experienceId: String?,navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(color = MaterialTheme.colors.secondary),
-                onClick = { navController.navigate("guideExperience") }
+                onClick = { navController.navigate("guideExperience/$experienceId") }
             ),
         elevation = 10.dp,
         content = {
@@ -310,21 +313,24 @@ fun BottomBar(navController: NavHostController) {
                         restoreState = false
                     }
                 })
-        } }
+        } },
     )
 }
 
+@ExperimentalFoundationApi
 @ExperimentalPermissionsApi
 @Composable
-fun ScreenController(navController: NavHostController) {
+fun ScreenController(navController: NavHostController, model: HomescreenViewModel) {
     NavHost(
         navController = navController,
         startDestination = "guides",
         builder = {
-            composable(route = "guides", content = { ScaffoldContent(navController) })
+            composable(route = "guides", content = { ScaffoldContent(navController, model.guideExperienceViewData) })
             composable(route = "map", content = { AudioGuideMapContent() })
             composable(route = "chat", content = { ChatRouteTest() })
-            composable(route = "guideExperience", content = { GuideDescriptionExperience() })
+            composable(route = "guideExperience/{experienceId}", content = { backStackEntry ->
+                GuideDescriptionExperience(backStackEntry.arguments?.getString("experienceId")!!)
+            })
         }
     )
 }
@@ -334,6 +340,7 @@ fun ChatRouteTest() {
     Text("Chat Guide Route Text")
 }
 
+@ExperimentalFoundationApi
 @ExperimentalPermissionsApi
 @Preview(showBackground = true)
 @Composable

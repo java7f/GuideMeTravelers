@@ -48,7 +48,7 @@ class LoginActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         if(authenticationService.isUserLoggedIn()){
-            //uiState.value = ScreenStateEnum.SIGNED_IN
+            //uiState.value = ScreenStateEnum.SUCCESS
             authenticationService.signOut()
             //goToHomescreen()
         }

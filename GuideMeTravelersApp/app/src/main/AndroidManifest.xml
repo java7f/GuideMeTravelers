@@ -7,9 +7,9 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/icon"
+        android:icon="@mipmap/guide_me_logo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/icon"
+        android:roundIcon="@mipmap/guide_me_logo_round"
         android:supportsRtl="true"
         android:usesCleartextTraffic="true"
         android:theme="@style/Theme.GuideMeTravelersApp">
@@ -37,6 +37,7 @@
         <activity
             android:name="com.example.guidemetravelersapp.views.experienceDetailsView.ExperienceDetailsActivity"
             android:exported="true"
+            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_experience_details"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
         <activity
@@ -54,7 +55,7 @@
             android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"></activity>
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
     </application>
 
 </manifest>

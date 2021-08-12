@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.activity.viewModels
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
@@ -29,12 +29,18 @@ import com.example.guidemetravelersapp.R
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.guidemetravelersapp.dataModels.GuideExperience
+import com.example.guidemetravelersapp.dataModels.Review
 import com.example.guidemetravelersapp.ui.theme.Gray200
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
+import com.example.guidemetravelersapp.viewModels.GuideExperienceViewModel
+import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
 import com.gowtham.ratingbar.RatingBar
 
 class ExperienceDetailsActivity : ComponentActivity() {
+    @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -46,65 +52,74 @@ class ExperienceDetailsActivity : ComponentActivity() {
             }
         }
     }
+
+    fun getViewModel(): GuideExperienceViewModel {
+        val model: GuideExperienceViewModel by viewModels()
+        return model
+    }
 }
 
+@ExperimentalFoundationApi
 @Composable
-fun GuideDescriptionExperience() {
-    Column(horizontalAlignment = Alignment.CenterHorizontally,
+fun GuideDescriptionExperience(experienceId: String = "", model: GuideExperienceViewModel = viewModel()) {
+    model.experienceId = experienceId
+    model.updateExperience()
+    LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .fillMaxWidth()
-            .verticalScroll(rememberScrollState())) {
-        Spacer(modifier = Modifier.height(30.dp))
-        
-        GuideInfo()
+            .fillMaxWidth()) {
+        item {
+            Spacer(modifier = Modifier.height(30.dp))
 
-        //Rating stars for the guide
-        Spacer(modifier = Modifier.height(15.dp))
-        GuideRating(3.5f)
-        
-        Spacer(modifier = Modifier.height(20.dp))
-        Divider(color = Gray200, thickness = 1.dp)
-        Spacer(modifier = Modifier.height(15.dp))
-        
-        Reservation()
+            GuideInfo(model.guideExperience)
 
-        Spacer(modifier = Modifier.height(15.dp))
-        Divider(color = Gray200, thickness = 1.dp)
-        Spacer(modifier = Modifier.height(15.dp))
+            //Rating stars for the guide
+            Spacer(modifier = Modifier.height(15.dp))
+            GuideRating(model.guideExperience.guideRating)
 
-        Description()
+            Spacer(modifier = Modifier.height(20.dp))
+            Divider(color = Gray200, thickness = 1.dp)
+            Spacer(modifier = Modifier.height(15.dp))
 
-        Spacer(modifier = Modifier.height(15.dp))
+            Reservation(model.guideExperience.experiencePrice)
 
-        Row(modifier = Modifier
-            .fillMaxWidth()
-            .padding(start = 10.dp)) {
-            DescriptionTags(tagName = "cultural")
-            DescriptionTags(tagName = "culinary")
+            Spacer(modifier = Modifier.height(15.dp))
+            Divider(color = Gray200, thickness = 1.dp)
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Description(model.guideExperience.experienceDescription)
+
+            Spacer(modifier = Modifier.height(15.dp))
+
+            Row(modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 10.dp)) {
+                model.guideExperience.experienceTags.forEach { tag ->
+                    DescriptionTags(tagName = tag)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(20.dp))
+            Divider(color = Gray200, thickness = 1.dp)
+            Spacer(modifier = Modifier.height(15.dp))
         }
 
-        Spacer(modifier = Modifier.height(20.dp))
-        Divider(color = Gray200, thickness = 1.dp)
-        Spacer(modifier = Modifier.height(15.dp))
+        stickyHeader {
+            TouristExperienceRating(model.guideExperience.guideReviews.size)
+        }
 
-        TouristExperienceRating()
-        TouristReview(touristRating = 3.7f)
-        TouristReview(touristRating = 4.7f)
+        itemsIndexed(model.guideExperience.guideReviews) { index, item ->
+            TouristReview(item)
+        }
     }
 }
 
 @Composable
 fun GuideRating(userRating: Float) {
     RatingBar(value = userRating, size = 20.dp, isIndicator = true) { }
-//    var userRating by remember { mutableStateOf(1f) }
-//    RatingBar(size = 20.dp, value = userRating,
-//        onRatingChanged = { value ->
-//            userRating = value
-//        })
 }
 
 @Composable
-fun GuideInfo() {
+fun GuideInfo(guideExperience: GuideExperience) {
     Box(modifier = Modifier.size(120.dp)) {
         Image(
             painter = painterResource(R.drawable.dummy_avatar),
@@ -116,7 +131,7 @@ fun GuideInfo() {
 
     Spacer(modifier = Modifier.height(20.dp))
     Text(
-        text = "Name Lastname",
+        text = "${guideExperience.guideFirstName} ${guideExperience.guideLastName}",
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colors.onPrimary,
         fontSize = 25.sp
@@ -124,7 +139,7 @@ fun GuideInfo() {
 }
 
 @Composable
-fun Description() {
+fun Description(experienceDescription: String) {
     Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()){
         Text(
             text = stringResource(id = R.string.experience_description_text),
@@ -135,21 +150,21 @@ fun Description() {
         )
     }
     Spacer(modifier = Modifier.height(10.dp))
-    Text(text = stringResource(id = R.string.loremipsum_test),
+    Text(text = experienceDescription,
         color = MaterialTheme.colors.onPrimary,
         modifier = Modifier.padding(horizontal = 15.dp)
     )
 }
 
 @Composable
-fun Reservation() {
+fun Reservation(experiencePrice: Float) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.fillMaxWidth()
     ) {
         Text(
-            text = "20$",
+            text = experiencePrice.toString(),
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colors.onPrimary,
@@ -185,7 +200,7 @@ fun DescriptionTags(tagName: String) {
 }
 
 @Composable
-fun TouristExperienceRating() {
+fun TouristExperienceRating(reviewsCount: Int) {
     Row(horizontalArrangement = Arrangement.Start,
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically) {
@@ -197,7 +212,7 @@ fun TouristExperienceRating() {
             modifier = Modifier.padding(start = 15.dp)
         )
         Text(
-            text = "(12)",
+            text = "($reviewsCount)",
             fontSize = 10.sp,
             color = MaterialTheme.colors.onPrimary,
             modifier = Modifier.padding(start = 5.dp)
@@ -206,7 +221,7 @@ fun TouristExperienceRating() {
 }
 
 @Composable
-fun TouristReview(touristRating: Float) {
+fun TouristReview(touristReview: Review) {
     Row(verticalAlignment = Alignment.CenterVertically,
     modifier = Modifier.padding(15.dp)) {
         Box(modifier = Modifier.size(50.dp)) {
@@ -219,14 +234,14 @@ fun TouristReview(touristRating: Float) {
         }
         Column(modifier = Modifier.padding(start = 15.dp)) {
             Text(
-                text = "Name Lastname",
+                text = "${touristReview.userName}",
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colors.onPrimary,
                 fontSize = 15.sp
             )
-            RatingBar(value = touristRating, size = 15.dp, isIndicator = true) {
+            RatingBar(value = touristReview.ratingValue, size = 15.dp, isIndicator = true) {
             }
-            Text(text = stringResource(id = R.string.loremipsum_test),
+            Text(text = touristReview.ratingComment,
                 color = MaterialTheme.colors.onPrimary,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 2
@@ -235,6 +250,7 @@ fun TouristReview(touristRating: Float) {
     }
 }
 
+@ExperimentalFoundationApi
 @Preview(showBackground = true,
     showSystemUi = true,
     locale = "es")
