@@ -3,7 +3,7 @@
     package="com.example.guidemetravelersapp">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -11,8 +11,13 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/guide_me_logo_round"
         android:supportsRtl="true"
-        android:usesCleartextTraffic="true"
-        android:theme="@style/Theme.GuideMeTravelersApp">
+        android:theme="@style/Theme.GuideMeTravelersApp"
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".views.profileView.ProfileActivity"
+            android:exported="true"
+            android:label="@string/title_activity_profile"
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
         <activity
             android:name=".views.audioguidemap.AudioGuideMap"
             android:exported="true"
@@ -31,17 +36,17 @@
         <activity
             android:name=".views.registerview.RegisterView"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_register_view"
-            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.example.guidemetravelersapp.views.experienceDetailsView.ExperienceDetailsActivity"
+            android:name=".views.experienceDetailsView.ExperienceDetailsActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"
             android:label="@string/title_activity_experience_details"
-            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name="com.example.guidemetravelersapp.views.loginView.LoginActivity"
+            android:name=".views.loginView.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_login"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar">

@@ -3,7 +3,7 @@
     <string name="title_activity_login" translatable="false">LoginActivity</string>
     <string name="authorization_header" translatable="false">Authorization</string>
 
-<!--    TODO: MOVE TO THE LOGIN EXCLUSIVE STRING FILE   -->
+    <!--    TODO: MOVE TO THE LOGIN EXCLUSIVE STRING FILE   -->
     <string name="username_label" translatable="false">Username</string>
     <string name="password_label">Password</string>
     <string name="login_button">Login</string>
@@ -15,4 +15,5 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="reviews_text">Reviews</string>
     <string name="title_activity_home_screen" translatable="false">HomeScreen</string>
     <string name="title_activity_audio_guide_map" translatable="false">AudioGuideMap</string>
+    <string name="title_activity_profile" translatable="false">ProfileActivity</string>
 </resources>
