@@ -32,6 +32,7 @@ import com.example.guidemetravelersapp.services.AuthenticationService
 import com.example.guidemetravelersapp.helpers.models.ScreenStateEnum
 import com.example.guidemetravelersapp.ui.theme.Pink200
 import com.example.guidemetravelersapp.views.homescreen.HomeScreen
+import com.example.guidemetravelersapp.views.profileView.ProfileActivity
 import kotlinx.coroutines.launch
 
 class LoginActivity : ComponentActivity() {
@@ -69,7 +70,7 @@ class LoginActivity : ComponentActivity() {
 
     private fun goToHomescreen() {
         //TODO: CHANGE NAVIGATION TO HOME SCREEN
-        startActivity(Intent(this, HomeScreen::class.java))
+        startActivity(Intent(this, ProfileActivity::class.java))
     }
     //endregion
 

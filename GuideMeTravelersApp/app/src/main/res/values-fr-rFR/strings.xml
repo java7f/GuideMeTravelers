@@ -12,4 +12,5 @@
     <string name="reserve_text">Demander une réservation</string>
     <string name="experience_description_text">Description de l\'expérience</string>
     <string name="reviews_text">Critiques</string>
+    <string name="about_user">À propos de moi</string>
 </resources>
