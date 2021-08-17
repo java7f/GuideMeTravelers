@@ -4,19 +4,22 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -28,8 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.Review
 import com.example.guidemetravelersapp.dataModels.User
-import com.example.guidemetravelersapp.ui.theme.Gray200
-import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.ui.theme.*
 import com.example.guidemetravelersapp.viewModels.ProfileViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.skydoves.landscapist.coil.CoilImage
@@ -70,8 +72,9 @@ fun UserProfileInformation(experienceId: String = "", profileViewModel: ProfileV
                 UserInfo(profileViewModel.profileData.data!!)
 
                 //Rating stars for the guide
-                Spacer(modifier = Modifier.height(15.dp))
+                Spacer(modifier = Modifier.height(10.dp))
                 UserRating(profileViewModel.calculateUserRating())
+                EditProfile()
 
                 Spacer(modifier = Modifier.height(15.dp))
                 Divider(color = Gray200, thickness = 1.dp)
@@ -105,8 +108,27 @@ fun UserRating(userRating: Float = 0.0f) {
 }
 
 @Composable
+fun EditProfile() {
+    Spacer(modifier = Modifier.height(10.dp))
+    OutlinedButton(onClick = { /*TODO*/ },
+        modifier = Modifier.wrapContentWidth(),
+        border = BorderStroke(1.dp, Pink200)
+    ) {
+        Row(horizontalArrangement = Arrangement.Center){
+            Icon(imageVector = Icons.Filled.Edit,
+                contentDescription = null,
+                tint = Pink200,
+                modifier = Modifier.size(20.dp).padding(end = 5.dp))
+            Text(stringResource(id = R.string.edit_profile_button), color = Pink200)
+        }
+    }
+}
+
+@Composable
 fun UserInfo(user: User = User()) {
-    Box(modifier = Modifier.size(120.dp)) {
+    Box(modifier = Modifier
+        .size(120.dp)
+        .border(2.dp, MilitaryGreen200, CircleShape)) {
         if (user.profilePhotoUrl.isNotEmpty()) {
             CoilImage(imageModel = user.profilePhotoUrl,
                 contentDescription = "User profile photo",
@@ -115,11 +137,11 @@ fun UserInfo(user: User = User()) {
         }
     }
 
-    Spacer(modifier = Modifier.height(20.dp))
+    Spacer(modifier = Modifier.height(10.dp))
     Text(
         text = "${user.firstName} ${user.lastName}",
         fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colors.onPrimary,
+        color = MaterialTheme.colors.onSecondary,
         fontSize = 25.sp
     )
 }
@@ -131,14 +153,15 @@ fun AboutUser(experienceDescription: String = "") {
             text = stringResource(id = R.string.about_user),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colors.onPrimary,
+            color = MaterialTheme.colors.onSecondary,
             modifier = Modifier.padding(start = 15.dp)
         )
     }
     Spacer(modifier = Modifier.height(10.dp))
     Text(text = experienceDescription,
         color = MaterialTheme.colors.onPrimary,
-        modifier = Modifier.padding(horizontal = 15.dp)
+        modifier = Modifier.padding(horizontal = 15.dp),
+        fontSize = 17.sp
     )
 }
 
@@ -151,7 +174,7 @@ fun UserOverviewRating(reviewsCount: Int = 0) {
             text = stringResource(id = R.string.reviews_text),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colors.onPrimary,
+            color = MaterialTheme.colors.onSecondary,
             modifier = Modifier.padding(start = 15.dp)
         )
         Text(

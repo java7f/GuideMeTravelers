@@ -13,4 +13,5 @@
     <string name="experience_description_text">Descripción de Experiencia</string>
     <string name="reviews_text">Reseñas</string>
     <string name="about_user">Acerca de mí</string>
+    <string name="edit_profile_button">Editar Perfil</string>
 </resources>
