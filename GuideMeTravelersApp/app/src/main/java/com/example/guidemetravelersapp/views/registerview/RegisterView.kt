@@ -86,7 +86,7 @@ class RegisterView : ComponentActivity() {
                         )
                     }
                 }
-                Row(modifier = Modifier.padding(top = 30.dp)) {
+                Row() {
                     Column(modifier = Modifier.weight(1f)) {
                         OutlinedTextField(
                             value = name.value,

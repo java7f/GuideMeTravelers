@@ -80,7 +80,7 @@ class LoginActivity : ComponentActivity() {
         var password = remember { mutableStateOf(TextFieldValue())}
 
         com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme {
-            Column(modifier = Modifier.padding(10.dp)) {
+            Column(modifier = Modifier.padding(20.dp)) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     Box(modifier = Modifier.size(220.dp), contentAlignment = Alignment.Center) {
                         Image(

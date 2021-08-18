@@ -12,4 +12,10 @@
     <string name="reserve_text">Demander une réservation</string>
     <string name="experience_description_text">Description de l\'expérience</string>
     <string name="reviews_text">Critiques</string>
+    <string name="phone_label">Téléphone</string>
+    <string name="birthday">Anniversaire</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Annuler</string>
+    <string name="description">Descriptionn</string>
+    <string name="country">Pays</string>
 </resources>

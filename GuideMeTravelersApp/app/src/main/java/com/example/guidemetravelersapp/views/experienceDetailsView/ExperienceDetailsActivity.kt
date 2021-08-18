@@ -234,7 +234,7 @@ fun TouristReview(touristReview: Review) {
         }
         Column(modifier = Modifier.padding(start = 15.dp)) {
             Text(
-                text = "${touristReview.userName}",
+                text = touristReview.userName,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colors.onPrimary,
                 fontSize = 15.sp
@@ -255,7 +255,7 @@ fun TouristReview(touristReview: Review) {
     showSystemUi = true,
     locale = "es")
 @Composable
-fun DefaultPreview3() {
+fun GuideExperienceDetailPreview() {
     GuideMeTravelersAppTheme {
         GuideDescriptionExperience()
     }

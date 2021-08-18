@@ -116,7 +116,7 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
 @Composable
 fun ScaffoldContent(navController: NavHostController, guideExperiences: List<GuideExperienceViewData>) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
-    var listState = rememberLazyListState()
+    val listState = rememberLazyListState()
     LazyColumn(modifier = Modifier
         .fillMaxSize()
         .padding(15.dp),
