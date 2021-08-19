@@ -48,6 +48,7 @@ import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTa
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescriptionExperience
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
 import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
+import com.example.guidemetravelersapp.views.profileView.EditProfileContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -345,6 +346,7 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
             composable(route = "guideExperience/{experienceId}", content = { backStackEntry ->
                 GuideDescriptionExperience(backStackEntry.arguments?.getString("experienceId")!!)
             })
+            composable(route = "editProfile", content = { EditProfileContent() })
         }
     )
 }

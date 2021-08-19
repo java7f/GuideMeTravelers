@@ -4,10 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -28,11 +25,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.Review
 import com.example.guidemetravelersapp.dataModels.User
 import com.example.guidemetravelersapp.ui.theme.*
+import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
 import com.example.guidemetravelersapp.viewModels.ProfileViewModel
+import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
+import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescriptionExperience
+import com.example.guidemetravelersapp.views.homescreen.ChatRouteTest
+import com.example.guidemetravelersapp.views.homescreen.ScaffoldContent
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.gowtham.ratingbar.RatingBar
 import com.skydoves.landscapist.coil.CoilImage
 
@@ -56,6 +63,8 @@ class ProfileActivity : ComponentActivity() {
 @ExperimentalFoundationApi
 @Composable
 fun UserProfileInformation(experienceId: String = "", profileViewModel: ProfileViewModel = viewModel()) {
+    val navController = rememberNavController()
+
     if(profileViewModel.profileData.inProgress) {
         Column(verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxWidth()) {
@@ -74,7 +83,7 @@ fun UserProfileInformation(experienceId: String = "", profileViewModel: ProfileV
                 //Rating stars for the guide
                 Spacer(modifier = Modifier.height(10.dp))
                 UserRating(profileViewModel.calculateUserRating())
-                EditProfile()
+                EditProfileButton(navController)
 
                 Spacer(modifier = Modifier.height(15.dp))
                 Divider(color = Gray200, thickness = 1.dp)
@@ -108,10 +117,13 @@ fun UserRating(userRating: Float = 0.0f) {
 }
 
 @Composable
-fun EditProfile() {
+fun EditProfileButton(navController: NavHostController) {
     Spacer(modifier = Modifier.height(10.dp))
     OutlinedButton(onClick = { /*TODO*/ },
-        modifier = Modifier.wrapContentWidth(),
+        modifier = Modifier.wrapContentWidth()
+            .clickable {
+                       navController.navigate("editProfile")
+            },
         border = BorderStroke(1.dp, Pink200)
     ) {
         Row(horizontalArrangement = Arrangement.Center){
