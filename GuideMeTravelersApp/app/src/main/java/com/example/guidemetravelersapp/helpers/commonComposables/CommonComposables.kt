@@ -1,9 +1,8 @@
 package com.example.guidemetravelersapp.helpers.commonComposables
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -14,10 +13,14 @@ import com.skydoves.landscapist.coil.CoilImage
 
 @Composable
 fun FullsizeImage(imageUrl: String) {
-    Box(modifier = Modifier.fillMaxWidth()) {
-        CoilImage(imageModel = imageUrl,
-            contentDescription = "User profile photo",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.clip(RectangleShape))
+
+    Column(Modifier.fillMaxSize(),
+    verticalArrangement = Arrangement.Center) {
+        Box(modifier = Modifier.fillMaxWidth()) {
+            CoilImage(imageModel = imageUrl,
+                contentDescription = "User profile photo",
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.clip(RectangleShape))
+        }
     }
 }

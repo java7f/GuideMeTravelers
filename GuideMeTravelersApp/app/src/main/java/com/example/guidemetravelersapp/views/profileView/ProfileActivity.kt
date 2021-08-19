@@ -1,5 +1,6 @@
 package com.example.guidemetravelersapp.views.profileView
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -40,8 +41,10 @@ import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescript
 import com.example.guidemetravelersapp.views.homescreen.ChatRouteTest
 import com.example.guidemetravelersapp.views.homescreen.ScaffoldContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.gson.Gson
 import com.gowtham.ratingbar.RatingBar
 import com.skydoves.landscapist.coil.CoilImage
+import java.net.URLEncoder
 
 class ProfileActivity : ComponentActivity() {
     @ExperimentalAnimationApi
@@ -59,7 +62,6 @@ class ProfileActivity : ComponentActivity() {
     }
 }
 
-@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
 fun UserProfileInformation(experienceId: String = "", profileViewModel: ProfileViewModel = viewModel()) {
@@ -78,7 +80,7 @@ fun UserProfileInformation(experienceId: String = "", profileViewModel: ProfileV
             item {
                 Spacer(modifier = Modifier.height(30.dp))
 
-                UserInfo(profileViewModel.profileData.data!!)
+                UserInfo(profileViewModel.profileData.data!!, navController!!)
 
                 //Rating stars for the guide
                 Spacer(modifier = Modifier.height(10.dp))
@@ -137,10 +139,11 @@ fun EditProfileButton(navController: NavHostController) {
 }
 
 @Composable
-fun UserInfo(user: User = User()) {
+fun UserInfo(user: User = User(), navController: NavHostController) {
     Box(modifier = Modifier
         .size(120.dp)
-        .border(2.dp, MilitaryGreen200, CircleShape)) {
+        .border(2.dp, MilitaryGreen200, CircleShape)
+        .clickable { navController.navigate("profile_photo/photo=${URLEncoder.encode(user.profilePhotoUrl, "utf-8")}") }) {
         if (user.profilePhotoUrl.isNotEmpty()) {
             CoilImage(imageModel = user.profilePhotoUrl,
                 contentDescription = "User profile photo",

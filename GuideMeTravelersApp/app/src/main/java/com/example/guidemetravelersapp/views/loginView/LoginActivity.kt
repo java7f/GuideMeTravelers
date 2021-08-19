@@ -49,9 +49,9 @@ class LoginActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         if(authenticationService.isUserLoggedIn()){
-            //uiState.value = ScreenStateEnum.SUCCESS
-            authenticationService.signOut()
-            //goToHomescreen()
+            uiState.value = ScreenStateEnum.SUCCESS
+            goToHomescreen()
+            //authenticationService.signOut()
         }
     }
 
@@ -70,7 +70,7 @@ class LoginActivity : ComponentActivity() {
 
     private fun goToHomescreen() {
         //TODO: CHANGE NAVIGATION TO HOME SCREEN
-        startActivity(Intent(this, ProfileActivity::class.java))
+        startActivity(Intent(this, HomeScreen::class.java))
     }
     //endregion
 
