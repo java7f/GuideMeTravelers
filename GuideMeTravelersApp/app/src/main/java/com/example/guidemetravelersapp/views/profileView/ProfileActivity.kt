@@ -1,13 +1,11 @@
 package com.example.guidemetravelersapp.views.profileView
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.*
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -28,13 +26,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.Review
 import com.example.guidemetravelersapp.dataModels.User
 import com.example.guidemetravelersapp.ui.theme.*
 import com.example.guidemetravelersapp.viewModels.ProfileViewModel
+import com.google.gson.Gson
 import com.gowtham.ratingbar.RatingBar
 import com.skydoves.landscapist.coil.CoilImage
+import java.net.URLEncoder
 
 class ProfileActivity : ComponentActivity() {
     @ExperimentalAnimationApi
@@ -52,10 +53,9 @@ class ProfileActivity : ComponentActivity() {
     }
 }
 
-@ExperimentalAnimationApi
 @ExperimentalFoundationApi
 @Composable
-fun UserProfileInformation(experienceId: String = "", profileViewModel: ProfileViewModel = viewModel()) {
+fun UserProfileInformation(profileViewModel: ProfileViewModel = viewModel(), navController: NavHostController? = null) {
     if(profileViewModel.profileData.inProgress) {
         Column(verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxWidth()) {
@@ -69,7 +69,7 @@ fun UserProfileInformation(experienceId: String = "", profileViewModel: ProfileV
             item {
                 Spacer(modifier = Modifier.height(30.dp))
 
-                UserInfo(profileViewModel.profileData.data!!)
+                UserInfo(profileViewModel.profileData.data!!, navController!!)
 
                 //Rating stars for the guide
                 Spacer(modifier = Modifier.height(10.dp))
@@ -125,10 +125,11 @@ fun EditProfile() {
 }
 
 @Composable
-fun UserInfo(user: User = User()) {
+fun UserInfo(user: User = User(), navController: NavHostController) {
     Box(modifier = Modifier
         .size(120.dp)
-        .border(2.dp, MilitaryGreen200, CircleShape)) {
+        .border(2.dp, MilitaryGreen200, CircleShape)
+        .clickable { navController.navigate("profile_photo/photo=${URLEncoder.encode(user.profilePhotoUrl, "utf-8")}") }) {
         if (user.profilePhotoUrl.isNotEmpty()) {
             CoilImage(imageModel = user.profilePhotoUrl,
                 contentDescription = "User profile photo",

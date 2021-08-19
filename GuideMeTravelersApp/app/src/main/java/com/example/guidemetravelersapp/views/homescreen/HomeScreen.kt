@@ -41,6 +41,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
+import com.example.guidemetravelersapp.helpers.commonComposables.FullsizeImage
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
@@ -48,6 +49,7 @@ import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTa
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescriptionExperience
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
 import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
+import com.example.guidemetravelersapp.views.profileView.UserProfileInformation
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -178,7 +180,16 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope, navController
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     content = {
-                        UserCard(name = "Pepito", lastname = "Perez", username = "pepitop24", imgSize = 60.dp)
+                        UserCard(
+                            name = "Pepito",
+                            lastname = "Perez",
+                            username = "pepitop24",
+                            imgSize = 60.dp,
+                            navController = navController,
+                            navRoute = "profile",
+                            scaffoldState = scaffoldState,
+                            scope = scope
+                        )
                         Icon(
                             Icons.Default.MenuOpen,
                             contentDescription = "Menu Open",
@@ -187,7 +198,7 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope, navController
                     }
                 )
                 Divider(thickness = 2.dp)
-                NavOption(title = "Guides", scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = "Guides", scaffoldState = scaffoldState, scope, navController, "guides")
                 NavOption(title = "History", scaffoldState = scaffoldState, scope, navController)
                 NavOption(title = "Become a Guide", scaffoldState = scaffoldState, scope, navController)
                 NavOption(title = "Alerts", scaffoldState = scaffoldState, scope, navController)
@@ -216,8 +227,24 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope, navController
 
 /* User card with standard information */
 @Composable
-fun UserCard(name: String, lastname: String, username: String, imgSize: Dp) {
-    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(bottom = 20.dp)) {
+fun UserCard(
+    name: String,
+    lastname: String,
+    username: String,
+    imgSize: Dp,
+    navController: NavHostController,
+    navRoute: String = "",
+    scaffoldState: ScaffoldState,
+    scope: CoroutineScope
+) {
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .padding(bottom = 20.dp)
+            .clickable {
+                scope.launch { scaffoldState.drawerState.close() }
+                navController.navigate(navRoute)
+            }) {
         Image(
             painter = painterResource(R.drawable.dummy_avatar),
             contentDescription = "Temporal dummy avatar",
@@ -276,7 +303,7 @@ fun UserCard(name: String, lastname: String, imgSize: Dp, rating: Float, tags: L
 }
 
 @Composable
-fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope, navController: NavHostController) {
+fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope, navController: NavHostController, navRoute: String = "") {
     Text(
         text = title,
         style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
@@ -286,7 +313,7 @@ fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope
                 indication = rememberRipple(color = MaterialTheme.colors.secondary),
                 onClick = {
                     scope.launch { scaffoldState.drawerState.close() }
-                    navController.navigate("guides")
+                    navController.navigate(navRoute)
                 }
             )
             .padding(16.dp)
@@ -344,6 +371,12 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
             composable(route = "chat", content = { ChatRouteTest() })
             composable(route = "guideExperience/{experienceId}", content = { backStackEntry ->
                 GuideDescriptionExperience(backStackEntry.arguments?.getString("experienceId")!!)
+            })
+
+            composable(route = "profile", content = { UserProfileInformation(navController = navController) })
+
+            composable(route = "profile_photo/photo={photo_url}", content = { backStackEntry ->
+                FullsizeImage(backStackEntry.arguments?.getString("photo_url")!!)
             })
         }
     )
