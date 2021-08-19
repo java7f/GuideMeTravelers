@@ -16,6 +16,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="title_activity_home_screen" translatable="false">HomeScreen</string>
     <string name="title_activity_audio_guide_map" translatable="false">AudioGuideMap</string>
     <string name="title_activity_profile" translatable="false">ProfileActivity</string>
+    <string name="about_user">About Me</string>
+    <string name="edit_profile_button">Edit Profile</string>
     <string name="title_activity_edit_profile" translatable="false">EditProfile</string>
     <string name="phone_label">Phone</string>
     <string name="birthday">Birthday</string>

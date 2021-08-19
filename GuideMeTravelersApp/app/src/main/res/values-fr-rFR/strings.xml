@@ -12,6 +12,8 @@
     <string name="reserve_text">Demander une réservation</string>
     <string name="experience_description_text">Description de l\'expérience</string>
     <string name="reviews_text">Critiques</string>
+    <string name="about_user">À propos de moi</string>
+    <string name="edit_profile_button">Modifier le profil</string>
     <string name="phone_label">Téléphone</string>
     <string name="birthday">Anniversaire</string>
     <string name="ok">OK</string>
