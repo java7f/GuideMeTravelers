@@ -13,7 +13,6 @@ import com.skydoves.landscapist.coil.CoilImage
 
 @Composable
 fun FullsizeImage(imageUrl: String) {
-
     Column(Modifier.fillMaxSize(),
     verticalArrangement = Arrangement.Center) {
         Box(modifier = Modifier.fillMaxWidth()) {

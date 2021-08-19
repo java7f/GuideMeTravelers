@@ -1,6 +1,5 @@
 package com.example.guidemetravelersapp.views.profileView
 
-import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -27,21 +26,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.Review
 import com.example.guidemetravelersapp.dataModels.User
 import com.example.guidemetravelersapp.ui.theme.*
-import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
 import com.example.guidemetravelersapp.viewModels.ProfileViewModel
-import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
-import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescriptionExperience
-import com.example.guidemetravelersapp.views.homescreen.ChatRouteTest
-import com.example.guidemetravelersapp.views.homescreen.ScaffoldContent
-import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.gson.Gson
 import com.gowtham.ratingbar.RatingBar
 import com.skydoves.landscapist.coil.CoilImage
 import java.net.URLEncoder
@@ -64,8 +54,7 @@ class ProfileActivity : ComponentActivity() {
 
 @ExperimentalFoundationApi
 @Composable
-fun UserProfileInformation(experienceId: String = "", profileViewModel: ProfileViewModel = viewModel()) {
-    val navController = rememberNavController()
+fun UserProfileInformation(experienceId: String = "", profileViewModel: ProfileViewModel = viewModel(), navController: NavHostController? = null) {
 
     if(profileViewModel.profileData.inProgress) {
         Column(verticalArrangement = Arrangement.Top,

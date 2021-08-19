@@ -25,6 +25,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -36,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
@@ -44,7 +46,9 @@ import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewDa
 import com.example.guidemetravelersapp.helpers.commonComposables.FullsizeImage
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
+import com.example.guidemetravelersapp.viewModels.ProfileViewModel
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescriptionExperience
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
@@ -52,8 +56,10 @@ import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
 import com.example.guidemetravelersapp.views.profileView.EditProfileContent
 import com.example.guidemetravelersapp.views.profileView.UserProfileInformation
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
 
 class HomeScreen : ComponentActivity() {
     @ExperimentalFoundationApi
@@ -171,7 +177,10 @@ fun SearchView(textState: MutableState<TextFieldValue>, modifier: Modifier) {
 }
 
 @Composable
-fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope, navController: NavHostController) {
+fun NavDrawer(scaffoldState: ScaffoldState,
+              scope: CoroutineScope,
+              navController: NavHostController,
+              profileViewModel: ProfileViewModel = viewModel()) {
     Column(modifier = Modifier
         .padding(20.dp)
         .fillMaxSize()) {
@@ -182,12 +191,13 @@ fun NavDrawer(scaffoldState: ScaffoldState, scope: CoroutineScope, navController
                     horizontalArrangement = Arrangement.SpaceBetween,
                     content = {
                         UserCard(
-                            name = "Pepito",
-                            lastname = "Perez",
-                            username = "pepitop24",
+                            name = profileViewModel.profileData.data!!.firstName,
+                            lastname = profileViewModel.profileData.data!!.lastName,
+                            username = profileViewModel.profileData.data!!.username,
                             imgSize = 60.dp,
                             navController = navController,
                             navRoute = "profile",
+                            imageUrl = profileViewModel.profileData.data!!.profilePhotoUrl,
                             scaffoldState = scaffoldState,
                             scope = scope
                         )
@@ -235,6 +245,7 @@ fun UserCard(
     imgSize: Dp,
     navController: NavHostController,
     navRoute: String = "",
+    imageUrl: String = "",
     scaffoldState: ScaffoldState,
     scope: CoroutineScope
 ) {
@@ -245,14 +256,26 @@ fun UserCard(
             .clickable {
                 scope.launch { scaffoldState.drawerState.close() }
                 navController.navigate(navRoute)
-            }) {
-        Image(
-            painter = painterResource(R.drawable.dummy_avatar),
-            contentDescription = "Temporal dummy avatar",
-            modifier = Modifier
-                .clip(CircleShape)
-                .height(imgSize)
-        )
+            })
+    {
+        if(imageUrl.isEmpty()) {
+            Image(
+                painter = painterResource(R.drawable.dummy_avatar),
+                contentDescription = "Temporal dummy avatar",
+                modifier = Modifier
+                    .clip(CircleShape)
+                    .height(imgSize)
+            )
+        } else {
+            Box(modifier = Modifier
+                .size(imgSize)
+                .border(2.dp, MilitaryGreen200, CircleShape)) {
+                    CoilImage(imageModel = imageUrl,
+                        contentDescription = "User profile photo",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.clip(CircleShape))
+            }
+        }
         Column(modifier = Modifier.padding(start = 20.dp)) {
             Text(
                 text = "$name $lastname",
