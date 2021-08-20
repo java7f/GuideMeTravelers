@@ -54,7 +54,7 @@ class ProfileActivity : ComponentActivity() {
 
 @ExperimentalFoundationApi
 @Composable
-fun UserProfileInformation(experienceId: String = "", profileViewModel: ProfileViewModel = viewModel(), navController: NavHostController? = null) {
+fun UserProfileInformation(profileViewModel: ProfileViewModel = viewModel(), navController: NavHostController? = null) {
 
     if(profileViewModel.profileData.inProgress) {
         Column(verticalArrangement = Arrangement.Top,
@@ -110,11 +110,8 @@ fun UserRating(userRating: Float = 0.0f) {
 @Composable
 fun EditProfileButton(navController: NavHostController) {
     Spacer(modifier = Modifier.height(10.dp))
-    OutlinedButton(onClick = { /*TODO*/ },
-        modifier = Modifier.wrapContentWidth()
-            .clickable {
-                       navController.navigate("editProfile")
-            },
+    OutlinedButton(onClick = { navController.navigate("editProfile") },
+        modifier = Modifier.wrapContentWidth(),
         border = BorderStroke(1.dp, Pink200)
     ) {
         Row(horizontalArrangement = Arrangement.Center){

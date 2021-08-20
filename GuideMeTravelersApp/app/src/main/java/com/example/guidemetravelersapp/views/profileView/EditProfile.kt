@@ -95,8 +95,7 @@ fun EditProfileContent() {
                                     GlideImage(
                                         imageModel = it,
                                         contentScale = ContentScale.Crop,
-                                        modifier = Modifier.clip(CircleShape).size(160.dp),
-                                        placeHolder = painterResource(R.drawable.dummy_avatar)
+                                        modifier = Modifier.clip(CircleShape).size(160.dp)
                                     )
                                 }
                             }
@@ -173,7 +172,7 @@ fun EditProfileContent() {
             Spacer(modifier = Modifier.height(10.dp))
             OutlinedTextField(
                 value = phone.value,
-                onValueChange = { value -> email.value = value },
+                onValueChange = { value -> phone.value = value },
                 label = { Text(text = stringResource(id = R.string.phone_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
