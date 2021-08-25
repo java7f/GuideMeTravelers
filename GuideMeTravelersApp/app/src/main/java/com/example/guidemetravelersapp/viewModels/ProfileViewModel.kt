@@ -1,6 +1,7 @@
 package com.example.guidemetravelersapp.viewModels
 
 import android.app.Application
+import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,7 +17,9 @@ import java.lang.Exception
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
     private val profileService: AuthenticationService = AuthenticationService(application)
 
-    var profileData: ApiResponse<User> by mutableStateOf(ApiResponse<User>(data = User(), inProgress = true))
+    var profileData: ApiResponse<User> by mutableStateOf(ApiResponse(data = User(), inProgress = true))
+    var updateProfileResult: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = true))
+    var editableUser: User by mutableStateOf(User())
 
     init {
         getCurrentUserProfile()
@@ -28,8 +31,26 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                 var currentUser = profileService.getCurrentFirebaseUser()
                 val result = profileService.getUserByEmail(currentUser?.email!!)
                 profileData = ApiResponse(data = result, inProgress = false)
+                editableUser = result!!
             }
             catch (e: Exception) {
+                Log.d(HomescreenViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
+                profileData = ApiResponse(inProgress = false, hasError = true, errorMessage = "")
+            }
+        }
+    }
+
+    fun saveProfileChange(fileUri: Uri?) {
+        viewModelScope.launch {
+            try {
+                val result = profileService.updateUser(editableUser)
+                var photo_result = false
+                if(fileUri != null) {
+                    photo_result = profileService.updateUserProfilePhoto(editableUser, fileUri)
+                }
+                val updateSuccessful = result && photo_result
+                updateProfileResult = ApiResponse(data = updateSuccessful, inProgress = false)
+            } catch (e: Exception) {
                 Log.d(HomescreenViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
                 profileData = ApiResponse(inProgress = false, hasError = true, errorMessage = "")
             }
