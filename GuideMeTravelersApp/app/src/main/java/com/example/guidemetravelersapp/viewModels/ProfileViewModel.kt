@@ -18,7 +18,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     private val profileService: AuthenticationService = AuthenticationService(application)
 
     var profileData: ApiResponse<User> by mutableStateOf(ApiResponse(data = User(), inProgress = true))
-    var updateProfileResult: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = true))
+    var updateProfileResult: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = false))
     var editableUser: User by mutableStateOf(User())
 
     init {
@@ -43,6 +43,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun saveProfileChange(fileUri: Uri?) {
         viewModelScope.launch {
             try {
+                updateProfileResult = ApiResponse(false, true)
                 val result = profileService.updateUser(editableUser)
                 var photo_result = false
                 if(fileUri != null) {
