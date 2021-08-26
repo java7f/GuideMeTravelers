@@ -12,8 +12,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
@@ -32,17 +30,14 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
-import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.Skyblue200
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
-import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
 import com.example.guidemetravelersapp.views.homescreen.SearchView
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
@@ -90,11 +85,11 @@ fun AudioGuideMapContent() {
                     .padding(15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 content = {
-                    LocationCard(name = "Alcazar de Colon", rating = 4.0f, tags = listOf("cultural"))
+                    LocationCard(name = "Alcazar de Colon", tags = listOf("cultural"))
                     Spacer(modifier = Modifier.height(15.dp))
-                    LocationCard(name = "Alcazar de Colon", rating = 4.0f, tags = listOf("cultural"))
+                    LocationCard(name = "Alcazar de Colon", tags = listOf("cultural"))
                     Spacer(modifier = Modifier.height(15.dp))
-                    LocationCard(name = "Alcazar de Colon", rating = 4.0f, tags = listOf("cultural"))
+                    LocationCard(name = "Alcazar de Colon", tags = listOf("cultural"))
                 }
             )
         },
@@ -133,7 +128,7 @@ fun AudioGuideMapContent() {
 }
 
 @Composable
-fun LocationCard(name: String, rating: Float, tags: List<String>) {
+fun LocationCard(name: String, tags: List<String>) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -214,7 +209,7 @@ fun MapScreen(latitude: Double, longitude: Double, title: String, modifier: Modi
                                     openDialog.value = false
                                     locationPermissionState.launchPermissionRequest()
                                 }) {
-                                Text(text = "Confirm", color = MaterialTheme.colors.primaryVariant)
+                                Text(text = "Confirm", color = colors.primaryVariant)
                             }
                         },
                         dismissButton = {
@@ -224,7 +219,7 @@ fun MapScreen(latitude: Double, longitude: Double, title: String, modifier: Modi
                                     doNotShowRationale = true
                                 }
                             ) {
-                                Text(text = "Dismiss", color = MaterialTheme.colors.primaryVariant)
+                                Text(text = "Dismiss", color = colors.primaryVariant)
                             }
                         },
                     )

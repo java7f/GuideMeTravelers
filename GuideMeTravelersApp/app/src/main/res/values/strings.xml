@@ -25,4 +25,5 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="cancel">Cancel</string>
     <string name="description">Description</string>
     <string name="country">Country</string>
+    <string name="title_activity_audio_guide_location">AudioGuideLocationActivity</string>
 </resources>

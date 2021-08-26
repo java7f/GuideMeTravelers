@@ -121,6 +121,9 @@ dependencies {
 
     // date picker (calendar)
     implementation "io.github.vanpra.compose-material-dialogs:datetime:0.5.1"
+
+    // exoplayer
+    implementation 'com.google.android.exoplayer:exoplayer:2.15.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
