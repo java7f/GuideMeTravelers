@@ -358,7 +358,7 @@ fun BottomBar(navController: NavHostController) {
                 icon = { Icon(
                     painter = painterResource(id = screen.resId),
                     contentDescription = screen.label,
-                    modifier = Modifier.height(30.dp)
+                    modifier = Modifier.height(25.dp)
                 ) },
                 selected = currentRoute == screen.route,
                 selectedContentColor = MaterialTheme.colors.primaryVariant,

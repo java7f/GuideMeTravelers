@@ -1,8 +1,10 @@
 package com.example.guidemetravelersapp.services
 
-import android.app.Activity
 import android.content.Context
+import android.net.Uri
 import android.util.Log
+import androidx.core.net.toUri
+import androidx.documentfile.provider.DocumentFile
 import com.example.guidemetravelersapp.dataModels.User
 import com.example.guidemetravelersapp.helpers.RetrofitInstance
 import com.example.guidemetravelersapp.helpers.SessionManager
@@ -15,6 +17,14 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import org.apache.commons.io.FileUtils
+import java.io.File
+import java.io.InputStream
+import java.net.URI
 
 class AuthenticationService(context: Context) {
     private var auth: FirebaseAuth = Firebase.auth
@@ -22,6 +32,7 @@ class AuthenticationService(context: Context) {
     private val retrofitInstance = RetrofitInstance.getRetrofit(context)
     private val apiService = retrofitInstance.create(IAuthenticationServiceApi::class.java)
     private val sessionManager: SessionManager = SessionManager(context)
+    private val context: Context = context
 
     /**
      * Performs the login action by using the Firebase Authentication instance
@@ -35,6 +46,11 @@ class AuthenticationService(context: Context) {
         Log.d(TAG, accessToken!!)
         if (accessToken != null) {
             sessionManager.saveAuthToken(accessToken)
+            auth.addIdTokenListener(FirebaseAuth.IdTokenListener {
+                auth.currentUser?.getIdToken(true)?.addOnSuccessListener { result ->
+                    result.token?.let { sessionManager.saveAuthToken(it) }
+                }
+            })
         }
 
         return result
@@ -125,6 +141,28 @@ class AuthenticationService(context: Context) {
         return coroutineScope {
             val user = async { apiService.getByEmail("api/User/getByEmail/$email").body() }
             user.await()
+        }
+    }
+
+    suspend fun updateUser(user: User): Boolean {
+        return coroutineScope {
+            val updateUserTask = async { apiService.update("api/User", user).isSuccessful }
+            updateUserTask.await()
+        }
+    }
+
+    suspend fun updateUserProfilePhoto(user: User, uri: Uri): Boolean {
+        return coroutineScope {
+            var name = DocumentFile.fromSingleUri(context, uri)?.name
+            val prefixAndSuffix = name!!.split(".")
+            val file = File.createTempFile(prefixAndSuffix[0], ".${prefixAndSuffix[0]}")
+            file.deleteOnExit()
+            val inputStream: InputStream = context.contentResolver.openInputStream(uri)!!
+            FileUtils.copyInputStreamToFile(inputStream, file)
+            val requestBody: RequestBody = file.asRequestBody(context.contentResolver.getType(uri)!!.toMediaTypeOrNull())
+            val body: MultipartBody.Part = MultipartBody.Part.createFormData("profile_photo", name, requestBody)
+            val updateUserPhotoTask = async { apiService.update_photo("api/User/uploadFile/${user.email}", body).isSuccessful }
+            updateUserPhotoTask.await()
         }
     }
 

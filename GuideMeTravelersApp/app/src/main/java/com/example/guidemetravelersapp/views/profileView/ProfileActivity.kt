@@ -73,7 +73,7 @@ fun UserProfileInformation(profileViewModel: ProfileViewModel = viewModel(), nav
                 //Rating stars for the guide
                 Spacer(modifier = Modifier.height(10.dp))
                 UserRating(profileViewModel.calculateUserRating())
-                EditProfileButton(navController)
+                EditProfileButton(navController, profileViewModel)
 
                 Spacer(modifier = Modifier.height(15.dp))
                 Divider(color = Gray200, thickness = 1.dp)
@@ -107,9 +107,12 @@ fun UserRating(userRating: Float = 0.0f) {
 }
 
 @Composable
-fun EditProfileButton(navController: NavHostController) {
+fun EditProfileButton(navController: NavHostController, profileViewModel: ProfileViewModel) {
     Spacer(modifier = Modifier.height(10.dp))
-    OutlinedButton(onClick = { navController.navigate("editProfile") },
+    OutlinedButton(onClick = {
+        profileViewModel.editableUser = profileViewModel.profileData.data!!
+        navController.navigate("editProfile")
+     },
         modifier = Modifier.wrapContentWidth(),
         border = BorderStroke(1.dp, Pink200)
     ) {
