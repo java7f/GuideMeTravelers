@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
@@ -54,6 +55,7 @@ import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescript
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
 import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
 import com.example.guidemetravelersapp.views.experienceHistoryView.ShowPastExperiences
+import com.example.guidemetravelersapp.views.audioguidemap.MapScreen
 import com.example.guidemetravelersapp.views.profileView.EditProfileContent
 import com.example.guidemetravelersapp.views.profileView.UserProfileInformation
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -214,7 +216,6 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                 NavOption(title = "History", scaffoldState = scaffoldState, scope, navController, "past_experiences")
                 NavOption(title = "Become a Guide", scaffoldState = scaffoldState, scope, navController)
                 NavOption(title = "Alerts", scaffoldState = scaffoldState, scope, navController)
-                NavOption(title = "Account Settings", scaffoldState = scaffoldState, scope, navController)
             }
         }
         Row(modifier = Modifier.weight(1f)) {
@@ -392,7 +393,7 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
         startDestination = "guides",
         builder = {
             composable(route = "guides", content = { ScaffoldContent(navController, model.guideExperienceViewData) })
-            composable(route = "map", content = { AudioGuideMapContent() })
+            composable(route = "map", content = { AudioGuideMapContent(navController = navController) })
             composable(route = "chat", content = { ChatRouteTest() })
             composable(route = "guideExperience/{experienceId}", content = { backStackEntry ->
                 GuideDescriptionExperience(backStackEntry.arguments?.getString("experienceId")!!)
@@ -406,6 +407,14 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
             composable(route = "profile_photo/photo={photo_url}", content = { backStackEntry ->
                 FullsizeImage(backStackEntry.arguments?.getString("photo_url")!!)
             })
+            composable(
+                route = "searchMap/{latitude}/{longitude}/{title}",
+                content = { backStackEntry -> MapScreen(
+                    latitude = backStackEntry.arguments?.getString("latitude")!!,
+                    longitude = backStackEntry.arguments?.getString("longitude")!!,
+                    title = backStackEntry.arguments?.getString("title")!!
+                )}
+            )
         }
     )
 }

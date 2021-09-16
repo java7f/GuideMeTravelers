@@ -3,16 +3,21 @@ package com.example.guidemetravelersapp.views.audioguidemap
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Address
+import android.location.Geocoder
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.MaterialTheme.colors
 import androidx.compose.material.icons.Icons
@@ -25,20 +30,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.Skyblue200
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
-import com.example.guidemetravelersapp.views.homescreen.SearchView
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
@@ -64,7 +73,7 @@ class AudioGuideMap : ComponentActivity() {
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
-fun AudioGuideMapContent() {
+fun AudioGuideMapContent(navController: NavHostController? = null) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
@@ -113,18 +122,53 @@ fun AudioGuideMapContent() {
         Column(
             modifier = Modifier.fillMaxSize(),
             content = {
-                SearchView(textState, modifier = Modifier
+                MapSearchView(textState, modifier = Modifier
                     .fillMaxWidth()
-                    .padding(15.dp))
+                    .padding(15.dp), navController)
                 MapScreen(
-                    latitude = 50.937616532313434,
-                    longitude = 6.960581381481977,
-                    title = "Cologne Cathedral",
-                    modifier = Modifier.height(450.dp)
+                    modifier = Modifier.height(400.dp),
+                    latitude = "50.94135408574933",
+                    longitude = "6.958866858783249",
+                    title = "Cologne Cathedral"
                 )
             }
         )
     }
+}
+
+@Composable
+fun MapSearchView(textState: MutableState<TextFieldValue>, modifier: Modifier, navController: NavHostController? = null) {
+    val focusManager = LocalFocusManager.current
+    var addressList: List<Address>?
+    val context = LocalContext.current
+
+    OutlinedTextField(
+        value = textState.value,
+        onValueChange = { value -> textState.value = value },
+        modifier = modifier,
+        textStyle = TextStyle(fontSize = 14.sp),
+        label = { Text(text = "Search") },
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Text,
+            imeAction = ImeAction.Search
+        ),
+        keyboardActions = KeyboardActions(
+            onSearch = {
+                val geoCoder = Geocoder(context)
+                addressList = geoCoder.getFromLocationName(textState.value.text, 1)
+                val address = addressList!![0]
+                navController?.navigate("searchMap/${address.latitude}/${address.longitude}/${textState.value.text}")
+                focusManager.clearFocus()
+            }
+        ),
+        leadingIcon = {
+            Icon(
+                Icons.Default.Search,
+                contentDescription = "Search",
+            )
+        },
+        singleLine = true,
+    )
 }
 
 @Composable
@@ -170,7 +214,7 @@ fun LocationCard(name: String, tags: List<String>) {
 
 @ExperimentalPermissionsApi
 @Composable
-fun MapScreen(latitude: Double, longitude: Double, title: String, modifier: Modifier) {
+fun MapScreen(modifier: Modifier? = Modifier, latitude: String = "", longitude: String = "", title: String = "") {
     val mapView = rememberMapViewWithLifecycle()
     val context = LocalContext.current
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -188,12 +232,12 @@ fun MapScreen(latitude: Double, longitude: Double, title: String, modifier: Modi
                 DisplayMap(
                     context = context,
                     mapView = mapView,
-                    latitude = latitude,
-                    longitude = longitude,
+                    latitude = latitude.toDouble(),
+                    longitude = longitude.toDouble(),
                     title = title,
                     locationEnabled = false,
                     permissionManager = PackageManager.PERMISSION_DENIED,
-                    modifier = modifier
+                    modifier = modifier!!
                 )
             }
             // asking for permission
@@ -232,12 +276,12 @@ fun MapScreen(latitude: Double, longitude: Double, title: String, modifier: Modi
                 DisplayMap(
                     context = context,
                     mapView = mapView,
-                    latitude = latitude,
-                    longitude = longitude,
+                    latitude = latitude.toDouble(),
+                    longitude = longitude.toDouble(),
                     title = title,
                     locationEnabled = false,
                     permissionManager = PackageManager.PERMISSION_DENIED,
-                    modifier = modifier
+                    modifier = modifier!!
                 )
             }
         },
@@ -246,12 +290,12 @@ fun MapScreen(latitude: Double, longitude: Double, title: String, modifier: Modi
             DisplayMap(
                 context = context,
                 mapView = mapView,
-                latitude = latitude,
-                longitude = longitude,
+                latitude = latitude.toDouble(),
+                longitude = longitude.toDouble(),
                 title = title,
                 locationEnabled = true,
                 permissionManager = PackageManager.PERMISSION_GRANTED,
-                modifier = modifier
+                modifier = modifier!!
             )
         }
     )
