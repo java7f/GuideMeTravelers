@@ -21,4 +21,9 @@
     <string name="description">Descripción</string>
     <string name="country">País</string>
     <string name="Save">Guardar</string>
+    <string name="past_experiences">Experiencias pasadas</string>
+    <string name="destination">Destino</string>
+    <string name="from_to">Fecha</string>
+    <string name="guide_name">Experiencia con</string>
+    <string name="price">Precio</string>
 </resources>

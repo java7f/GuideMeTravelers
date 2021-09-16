@@ -57,10 +57,17 @@
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".views.experienceHistoryView.ExperienceHistoryActivity"
+            android:exported="true"
+            android:label="@string/title_activity_experience_history"
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"
+            android:windowSoftInputMode="adjustResize"/>
+        <activity
             android:name=".views.loginView.LoginActivity"
             android:exported="true"
             android:label="@string/title_activity_login"
-            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar">
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

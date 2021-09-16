@@ -53,6 +53,7 @@ import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTa
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescriptionExperience
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
 import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
+import com.example.guidemetravelersapp.views.experienceHistoryView.ShowPastExperiences
 import com.example.guidemetravelersapp.views.profileView.EditProfileContent
 import com.example.guidemetravelersapp.views.profileView.UserProfileInformation
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -129,7 +130,7 @@ fun ScaffoldContent(navController: NavHostController, guideExperiences: List<Gui
     LazyColumn(modifier = Modifier
         .fillMaxSize()
         .padding(15.dp),
-        state = listState) { // vertical scroll doesn't seem to be working?
+        state = listState) {
         item {
             SearchView(textState,
                 Modifier
@@ -210,7 +211,7 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                 )
                 Divider(thickness = 2.dp)
                 NavOption(title = "Guides", scaffoldState = scaffoldState, scope, navController, "guides")
-                NavOption(title = "History", scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = "History", scaffoldState = scaffoldState, scope, navController, "past_experiences")
                 NavOption(title = "Become a Guide", scaffoldState = scaffoldState, scope, navController)
                 NavOption(title = "Alerts", scaffoldState = scaffoldState, scope, navController)
                 NavOption(title = "Account Settings", scaffoldState = scaffoldState, scope, navController)
@@ -399,6 +400,8 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
             composable(route = "editProfile", content = { EditProfileContent() })
 
             composable(route = "profile", content = { UserProfileInformation(navController = navController) })
+
+            composable(route = "past_experiences", content = { ShowPastExperiences() })
 
             composable(route = "profile_photo/photo={photo_url}", content = { backStackEntry ->
                 FullsizeImage(backStackEntry.arguments?.getString("photo_url")!!)

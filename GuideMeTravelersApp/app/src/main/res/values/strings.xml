@@ -26,5 +26,11 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="description">Description</string>
     <string name="country">Country</string>
     <string name="Save">Save</string>
-    <string name="title_activity_audio_guide_location">AudioGuideLocationActivity</string>
+    <string name="title_activity_audio_guide_location" translatable="false">AudioGuideLocationActivity</string>
+    <string name="past_experiences">Past experiences</string>
+    <string name="destination">Destination</string>
+    <string name="from_to">Date</string>
+    <string name="guide_name">Experience with</string>
+    <string name="price">Price</string>
+    <string name="title_activity_experience_history" translatable="false">ExperienceHistoryActivity</string>
 </resources>

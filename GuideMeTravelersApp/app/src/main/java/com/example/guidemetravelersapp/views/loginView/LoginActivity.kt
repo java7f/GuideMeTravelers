@@ -7,7 +7,9 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -81,7 +83,8 @@ class LoginActivity : ComponentActivity() {
         var password = remember { mutableStateOf(TextFieldValue())}
 
         com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme {
-            Column(modifier = Modifier.padding(20.dp)) {
+            Column(modifier = Modifier.padding(20.dp)
+                .verticalScroll(rememberScrollState())) {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     Box(modifier = Modifier.size(220.dp), contentAlignment = Alignment.Center) {
                         Image(

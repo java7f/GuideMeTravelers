@@ -118,6 +118,17 @@ class AuthenticationService(context: Context) {
             null
     }
 
+    /**
+     * Gets the current logged in firebase user email
+     * @return the current email
+     */
+    fun getCurrentFirebaseUserEmail(): String? {
+        return if (isUserLoggedIn())
+            auth.currentUser!!.email
+        else
+            null
+    }
+
     //region API Methods
 
     /**
