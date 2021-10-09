@@ -9,12 +9,15 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -29,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -42,11 +46,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.example.guidemetravelersapp.R
+import com.example.guidemetravelersapp.dataModels.Location
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
+import com.example.guidemetravelersapp.ui.theme.Shapes
 import com.example.guidemetravelersapp.ui.theme.Skyblue200
+import com.example.guidemetravelersapp.viewModels.LocationViewModel
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
@@ -55,6 +63,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.launch
 
 class AudioGuideMap : ComponentActivity() {
@@ -73,7 +82,7 @@ class AudioGuideMap : ComponentActivity() {
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
-fun AudioGuideMapContent(navController: NavHostController? = null) {
+fun AudioGuideMapContent(navController: NavHostController? = null, locationViewModel: LocationViewModel = viewModel()) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val scope = rememberCoroutineScope()
     val scaffoldState = rememberBottomSheetScaffoldState()
@@ -88,19 +97,21 @@ fun AudioGuideMapContent(navController: NavHostController? = null) {
                 contentAlignment = Alignment.Center,
                 content = { Text(text = "Available places with audio guide", fontSize = 18.sp, fontWeight = FontWeight.Bold) }
             )
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(15.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                content = {
-                    LocationCard(name = "Alcazar de Colon", tags = listOf("cultural"))
+            LazyColumn(modifier = Modifier
+                .fillMaxWidth()
+                .padding(15.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                itemsIndexed(locationViewModel.locations.data!!) { index, item ->
+                    LocationCard(
+                        location = item,
+                        tags = listOf("cultural"),
+                        locationViewModel = locationViewModel,
+                        navController!!
+                    )
                     Spacer(modifier = Modifier.height(15.dp))
-                    LocationCard(name = "Alcazar de Colon", tags = listOf("cultural"))
-                    Spacer(modifier = Modifier.height(15.dp))
-                    LocationCard(name = "Alcazar de Colon", tags = listOf("cultural"))
                 }
-            )
+            }
         },
         scaffoldState = scaffoldState,
         floatingActionButton = {
@@ -172,28 +183,44 @@ fun MapSearchView(textState: MutableState<TextFieldValue>, modifier: Modifier, n
 }
 
 @Composable
-fun LocationCard(name: String, tags: List<String>) {
+//TODO: remove tag list as parameter
+fun LocationCard(location: Location,
+                 tags: List<String>,
+                 locationViewModel: LocationViewModel,
+                 navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(color = colors.secondary),
-                onClick = { /* TODO: navigate to place details */ }
+                onClick = { navController.navigate("locationDetails/${location.id}") }
             ),
         elevation = 10.dp,
         content = {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-                Image(
-                    painter = painterResource(R.drawable.dummy_avatar),
-                    contentDescription = "Temporal dummy avatar",
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(10.dp))
-                        .height(100.dp)
-                )
+                if(location.locationPhotoUrl.isEmpty()) {
+                    Image(
+                        painter = painterResource(R.drawable.dummy_avatar),
+                        contentDescription = "Temporal dummy avatar",
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(10.dp))
+                            .height(100.dp)
+                    )
+                } else {
+                    Box(modifier = Modifier
+                        .size(160.dp)) {
+                        CoilImage(
+                            imageModel = location.locationPhotoUrl,
+                            contentDescription = "Location photo",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                        )
+                    }
+                }
                 Column(modifier = Modifier.padding(start = 20.dp)) {
                     Text(
-                        text = name,
+                        text = location.name,
                         style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
                     )
                     Text(

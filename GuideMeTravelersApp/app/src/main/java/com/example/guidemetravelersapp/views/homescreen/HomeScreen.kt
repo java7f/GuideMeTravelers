@@ -50,6 +50,7 @@ import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
 import com.example.guidemetravelersapp.viewModels.ProfileViewModel
+import com.example.guidemetravelersapp.views.audioGuideLocation.LocationContent
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescriptionExperience
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
@@ -397,6 +398,9 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
             composable(route = "chat", content = { ChatRouteTest() })
             composable(route = "guideExperience/{experienceId}", content = { backStackEntry ->
                 GuideDescriptionExperience(backStackEntry.arguments?.getString("experienceId")!!)
+            })
+            composable(route = "locationDetails/{locationId}", content = { backStackEntry ->
+                LocationContent(backStackEntry.arguments?.getString("locationId")!!)
             })
             composable(route = "editProfile", content = { EditProfileContent() })
 

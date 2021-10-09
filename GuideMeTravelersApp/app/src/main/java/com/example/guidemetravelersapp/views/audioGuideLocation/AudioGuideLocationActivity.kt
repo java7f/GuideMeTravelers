@@ -1,5 +1,6 @@
 package com.example.guidemetravelersapp.views.audioGuideLocation
 
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -8,12 +9,14 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -29,12 +32,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.guidemetravelersapp.R
+import com.example.guidemetravelersapp.dataModels.Audioguide
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.viewModels.LocationViewModel
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory
+import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.ui.PlayerView
+import com.google.android.exoplayer2.upstream.DataSource
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
+import com.google.android.exoplayer2.util.Util
+import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -52,13 +63,15 @@ class AudioGuideLocationActivity : ComponentActivity() {
 
 @ExperimentalMaterialApi
 @Composable
-fun LocationContent() {
+fun LocationContent(locationId: String = "", model: LocationViewModel = viewModel()) {
     val scaffoldState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
+    model.getLocation(locationId = locationId)
+    model.getAudioguidesForLocation(locationId = locationId)
 
     BottomSheetScaffold(
         sheetContent = {
-            VideoPlayer()
+            VideoPlayer(model.currentAudioguideUrl)
         },
         scaffoldState = scaffoldState,
         sheetPeekHeight = 0.dp,
@@ -72,15 +85,29 @@ fun LocationContent() {
                             modifier = Modifier.fillMaxWidth(),
                             content = {
                                 Box(
+                                    modifier = Modifier.fillMaxWidth(),
                                     content = {
-                                        Image(
-                                            painter = painterResource(R.drawable.alcazar_de_colon),
-                                            contentDescription = "Alcazar de colon",
-                                            contentScale = ContentScale.Crop,
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(250.dp)
-                                        )
+                                        if(model.currentLocation.data?.locationPhotoUrl!!.isEmpty()) {
+                                            Image(
+                                                painter = painterResource(R.drawable.dummy_avatar),
+                                                contentDescription = "Temporal dummy avatar",
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .height(250.dp)
+                                            )
+                                        } else {
+                                            Box(modifier = Modifier
+                                                .fillMaxWidth()) {
+                                                CoilImage(
+                                                    imageModel = model.currentLocation.data?.locationPhotoUrl!!,
+                                                    contentDescription = "Location photo",
+                                                    contentScale = ContentScale.Crop,
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .height(250.dp)
+                                                )
+                                            }
+                                        }
                                     }
                                 )
                             }
@@ -93,7 +120,7 @@ fun LocationContent() {
                             horizontalArrangement = Arrangement.SpaceEvenly,
                             content = {
                                 Text(
-                                    text = "Alcázar de Colón",
+                                    text = model.currentLocation.data?.name!!,
                                     fontWeight = FontWeight.Bold,
                                     color = MaterialTheme.colors.onSecondary,
                                     fontSize = 25.sp
@@ -141,7 +168,7 @@ fun LocationContent() {
                                 )
                                 Icon(
                                     imageVector = Icons.Default.Download,
-                                    contentDescription = "Location",
+                                    contentDescription = "Download audioguides",
                                     tint = MaterialTheme.colors.onBackground,
                                     modifier = Modifier.size(40.dp)
                                 )
@@ -152,10 +179,10 @@ fun LocationContent() {
                             thickness = 2.dp,
                             modifier = Modifier.padding(horizontal = 20.dp)
                         )
+                    }
+                    itemsIndexed(model.audioguides.data!!) { index, item ->
                         Spacer(modifier = Modifier.height(20.dp))
-                        LocationCard(title = "Bunny Test", scaffoldState, scope)
-                        Spacer(modifier = Modifier.height(15.dp))
-                        LocationCard(title = "Test", scaffoldState, scope)
+                        LocationCard(item, scaffoldState, scope, model)
                     }
                 }
             )
@@ -174,7 +201,8 @@ fun AudioGuideLocationPreview() {
 
 @ExperimentalMaterialApi
 @Composable
-fun LocationCard(title: String, scaffoldState: BottomSheetScaffoldState, scope: CoroutineScope) {
+fun LocationCard(audioguide: Audioguide, scaffoldState: BottomSheetScaffoldState,
+                 scope: CoroutineScope, model: LocationViewModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -183,9 +211,11 @@ fun LocationCard(title: String, scaffoldState: BottomSheetScaffoldState, scope: 
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(color = MaterialTheme.colors.secondary),
                 onClick = {
+                    model.currentAudioguideUrl = audioguide.audioguideUrl
                     scope.launch {
                         if (scaffoldState.bottomSheetState.isCollapsed) scaffoldState.bottomSheetState.expand()
-                        else scaffoldState.bottomSheetState.collapse() }
+                        else scaffoldState.bottomSheetState.collapse()
+                    }
                 }
             ),
         elevation = 10.dp,
@@ -202,7 +232,7 @@ fun LocationCard(title: String, scaffoldState: BottomSheetScaffoldState, scope: 
                     )
                     Column(modifier = Modifier.padding(start = 20.dp)) {
                         Text(
-                            text = title,
+                            text = audioguide.name,
                             style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
                         )
                         Text(text = "2 min")
@@ -214,22 +244,28 @@ fun LocationCard(title: String, scaffoldState: BottomSheetScaffoldState, scope: 
 }
 
 @Composable
-fun VideoPlayer() {
+fun VideoPlayer(audioUrl: String) {
     val context = LocalContext.current
 
     // Do not recreate the player everytime this Composable commits
-    val exoPlayer = remember(context) {
-        SimpleExoPlayer.Builder(context).build().apply {
-            val videoUrl = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3\n"
-            val mediaItem = MediaItem.fromUri(videoUrl)
-            val mediaSource = DefaultMediaSourceFactory(context).createMediaSource(mediaItem)
-            setMediaSource(mediaSource)
-            prepare()
-        }
+    val exoPlayer = remember {
+        SimpleExoPlayer.Builder(context).build()
+    }
+
+    LaunchedEffect(audioUrl) {
+        val dataSourceFactory: DataSource.Factory = DefaultDataSourceFactory(context,
+            Util.getUserAgent(context, context.packageName))
+
+        val mediaItem = MediaItem.fromUri(audioUrl)
+        val mediaSource = DefaultMediaSourceFactory(context).createMediaSource(mediaItem)
+
+        exoPlayer.prepare(mediaSource)
     }
 
     // Gateway to traditional Android Views
-    AndroidView(modifier = Modifier.height(150.dp).padding(bottom = 20.dp, top = 20.dp), factory = {
+    AndroidView(modifier = Modifier
+        .height(150.dp)
+        .padding(bottom = 20.dp, top = 20.dp), factory = {
         PlayerView(context).apply {
             player = exoPlayer
             controllerAutoShow = true
