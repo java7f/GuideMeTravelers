@@ -93,9 +93,9 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(70.dp)
-                    .background(color = Skyblue200),
+                    .background(color = colors.primary),
                 contentAlignment = Alignment.Center,
-                content = { Text(text = "Available places with audio guide", fontSize = 18.sp, fontWeight = FontWeight.Bold) }
+                content = { Text(text = "Available places with audio guides", fontSize = 18.sp, fontWeight = FontWeight.Bold) }
             )
             LazyColumn(modifier = Modifier
                 .fillMaxWidth()
@@ -103,11 +103,7 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
                 itemsIndexed(locationViewModel.locations.data!!) { index, item ->
-                    LocationCard(
-                        location = item,
-                        tags = listOf("cultural"),
-                        locationViewModel = locationViewModel,
-                        navController!!
+                    LocationCard(location = item, tags = listOf("cultural"), navController!!
                     )
                     Spacer(modifier = Modifier.height(15.dp))
                 }
@@ -184,10 +180,7 @@ fun MapSearchView(textState: MutableState<TextFieldValue>, modifier: Modifier, n
 
 @Composable
 //TODO: remove tag list as parameter
-fun LocationCard(location: Location,
-                 tags: List<String>,
-                 locationViewModel: LocationViewModel,
-                 navController: NavHostController) {
+fun LocationCard(location: Location, tags: List<String>, navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -214,7 +207,7 @@ fun LocationCard(location: Location,
                             imageModel = location.locationPhotoUrl,
                             contentDescription = "Location photo",
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier.clip(RoundedCornerShape(10.dp))
+                            modifier = Modifier.clip(RoundedCornerShape(10.dp)).height(150.dp)
                         )
                     }
                 }
@@ -222,9 +215,6 @@ fun LocationCard(location: Location,
                     Text(
                         text = location.name,
                         style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
-                    )
-                    Text(
-                        text = "Total audio guides"
                     )
                     Row(modifier = Modifier
                         .fillMaxWidth()
