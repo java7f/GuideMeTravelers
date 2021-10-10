@@ -235,7 +235,6 @@ fun LocationCard(audioguide: Audioguide, scaffoldState: BottomSheetScaffoldState
                             text = audioguide.name,
                             style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
                         )
-                        Text(text = "2 min")
                     }
                 }
             )
