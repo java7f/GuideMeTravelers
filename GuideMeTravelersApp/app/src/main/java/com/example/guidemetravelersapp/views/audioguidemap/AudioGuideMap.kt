@@ -125,6 +125,7 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
         },
         floatingActionButtonPosition = FabPosition.End,
         sheetPeekHeight = 120.dp,
+        backgroundColor = Color.Unspecified
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
@@ -175,6 +176,7 @@ fun MapSearchView(textState: MutableState<TextFieldValue>, modifier: Modifier, n
             )
         },
         singleLine = true,
+
     )
 }
 

@@ -25,6 +25,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
@@ -57,6 +58,8 @@ import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
 import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
 import com.example.guidemetravelersapp.views.experienceHistoryView.ShowPastExperiences
 import com.example.guidemetravelersapp.views.audioguidemap.MapScreen
+import com.example.guidemetravelersapp.views.chatView.ChatList
+import com.example.guidemetravelersapp.views.chatView.ChatView
 import com.example.guidemetravelersapp.views.profileView.EditProfileContent
 import com.example.guidemetravelersapp.views.profileView.UserProfileInformation
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -98,7 +101,8 @@ fun HomeScreenContent(model: HomescreenViewModel? = null) {
         drawerContent = { NavDrawer(scaffoldState, scope, navController) },
         drawerShape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
         drawerGesturesEnabled = false,
-        bottomBar = { BottomBar(navController) }
+        bottomBar = { BottomBar(navController) },
+        backgroundColor = Color.Unspecified
     )
 }
 
@@ -119,8 +123,8 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
                 Icon(imageVector = Icons.Default.Notifications, contentDescription = "Notifications")
             }
         },
-        backgroundColor = MaterialTheme.colors.background,
-        contentColor = MaterialTheme.colors.primary
+        contentColor = MaterialTheme.colors.primary,
+        backgroundColor = MaterialTheme.colors.background
     )
 }
 
@@ -130,25 +134,28 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
 fun ScaffoldContent(navController: NavHostController, guideExperiences: List<GuideExperienceViewData>) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val listState = rememberLazyListState()
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .padding(15.dp),
-        state = listState) {
-        item {
-            SearchView(textState,
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 15.dp)
-                    .height(60.dp))
-            Text(text = "Available guides", modifier = Modifier.padding(bottom = 15.dp), fontSize = 18.sp,
-                fontWeight = FontWeight.Bold)
+        LazyColumn(modifier = Modifier
+            .fillMaxSize()
+            .padding(15.dp),
+            state = listState) {
+            item {
+                SearchView(textState,
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 15.dp)
+                        .height(60.dp))
+                Text(text = "Available guides",
+                    modifier = Modifier.padding(bottom = 15.dp),
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colors.onSecondary,
+                    fontWeight = FontWeight.Bold)
+            }
+            itemsIndexed(guideExperiences) { index, item ->
+                UserCard(name = item.guideFirstName, lastname = item.guideLastName, imgSize = 70.dp, rating = item.guideRating,
+                    tags = item.experienceTags, experienceId = item.id ,navController = navController)
+                Spacer(modifier = Modifier.height(15.dp))
+            }
         }
-        itemsIndexed(guideExperiences) { index, item ->
-            UserCard(name = item.guideFirstName, lastname = item.guideLastName, imgSize = 70.dp, rating = item.guideRating,
-                tags = item.experienceTags, experienceId = item.id ,navController = navController)
-            Spacer(modifier = Modifier.height(15.dp))
-        }
-    }
 }
 
 @Composable
@@ -355,7 +362,6 @@ fun BottomBar(navController: NavHostController) {
     val currentRoute = navBackStackEntry?.destination?.route
 
     BottomNavigation(
-        backgroundColor = MaterialTheme.colors.background,
         content = { items.forEach { screen ->
             BottomNavigationItem(
                 icon = { Icon(
@@ -380,7 +386,7 @@ fun BottomBar(navController: NavHostController) {
                         restoreState = false
                     }
                 })
-        } },
+        } }
     )
 }
 
@@ -395,9 +401,9 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
         builder = {
             composable(route = "guides", content = { ScaffoldContent(navController, model.guideExperienceViewData) })
             composable(route = "map", content = { AudioGuideMapContent(navController = navController) })
-            composable(route = "chat", content = { ChatRouteTest() })
+            composable(route = "chat", content = { ChatList(navController = navController) })
             composable(route = "guideExperience/{experienceId}", content = { backStackEntry ->
-                GuideDescriptionExperience(backStackEntry.arguments?.getString("experienceId")!!)
+                GuideDescriptionExperience(backStackEntry.arguments?.getString("experienceId")!!, navController)
             })
             composable(route = "locationDetails/{locationId}", content = { backStackEntry ->
                 LocationContent(backStackEntry.arguments?.getString("locationId")!!)
@@ -410,6 +416,9 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
 
             composable(route = "profile_photo/photo={photo_url}", content = { backStackEntry ->
                 FullsizeImage(backStackEntry.arguments?.getString("photo_url")!!)
+            })
+            composable(route = "chat_with/{sentTo_Id}", content = { backStackEntry ->
+                ChatView(backStackEntry.arguments?.getString("sentTo_Id")!!)
             })
             composable(
                 route = "searchMap/{latitude}/{longitude}/{title}",

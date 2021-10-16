@@ -7,6 +7,7 @@ import java.util.*
  */
 data class User (
     var id: String = "",
+    var firebaseUserId: String = "",
     var username: String = "",
     var firstName: String = "",
     var lastName: String = "",

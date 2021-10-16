@@ -14,7 +14,7 @@ private val DarkColorPalette = darkColors(
     secondaryVariant = DarkMilitaryGreen,
     onPrimary = Gray100,
     onSecondary = Color.White,
-    background = Color.Black,
+    background = Color.Unspecified,
     onBackground = Color.White,
     onSurface = Color.White
 )

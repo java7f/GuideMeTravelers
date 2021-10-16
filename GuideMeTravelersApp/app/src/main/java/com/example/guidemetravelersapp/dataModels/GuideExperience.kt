@@ -4,6 +4,7 @@ import java.util.*
 
 data class GuideExperience (
     var id: String = "",
+    var guideFirebaseId: String = "",
     var guideFirstName: String = "",
     var guideLastName: String = "",
     var experienceDescription: String = "",

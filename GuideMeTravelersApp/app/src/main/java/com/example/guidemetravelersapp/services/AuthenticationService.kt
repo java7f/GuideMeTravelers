@@ -86,6 +86,7 @@ class AuthenticationService(context: Context) {
                 return false
             val registerResult = auth.createUserWithEmailAndPassword(user.email, password).await()
             if (registerResult.user != null) {
+                user.firebaseUserId = registerResult.user?.uid!!
                 result = createUserInfo(user)
             }
         } catch (e: Exception) {
@@ -129,6 +130,17 @@ class AuthenticationService(context: Context) {
             null
     }
 
+    /**
+     * Gets the current logged in firebase user id
+     * @return the current id
+     */
+    fun getCurrentFirebaseUserId(): String? {
+        return if (isUserLoggedIn())
+            auth.currentUser!!.uid
+        else
+            null
+    }
+
     //region API Methods
 
     /**
@@ -148,9 +160,20 @@ class AuthenticationService(context: Context) {
      * @param email the user email
      * @return the requested User, null if not found
      */
+    @Deprecated(
+        message = "Use the Firebase uid to get the user info instead",
+        replaceWith = ReplaceWith("getUserById")
+    )
     suspend fun getUserByEmail(email: String): User? {
         return coroutineScope {
             val user = async { apiService.getByEmail("api/User/getByEmail/$email").body() }
+            user.await()
+        }
+    }
+
+    suspend fun getUserById(id: String): User? {
+        return coroutineScope {
+            val user = async { apiService.getByEmail("api/User/$id").body() }
             user.await()
         }
     }

@@ -14,6 +14,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.outlined.Chat
+import androidx.compose.material.icons.outlined.ChatBubble
+import androidx.compose.material.icons.outlined.ChatBubbleOutline
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -30,6 +33,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.dataModels.GuideExperience
 import com.example.guidemetravelersapp.dataModels.Review
 import com.example.guidemetravelersapp.ui.theme.Gray200
@@ -61,7 +65,11 @@ class ExperienceDetailsActivity : ComponentActivity() {
 
 @ExperimentalFoundationApi
 @Composable
-fun GuideDescriptionExperience(experienceId: String = "", model: GuideExperienceViewModel = viewModel()) {
+fun GuideDescriptionExperience(
+    experienceId: String = "",
+    navHostController: NavHostController? = null,
+    model: GuideExperienceViewModel = viewModel()
+) {
     model.experienceId = experienceId
     model.updateExperience()
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
@@ -80,7 +88,7 @@ fun GuideDescriptionExperience(experienceId: String = "", model: GuideExperience
             Divider(color = Gray200, thickness = 1.dp)
             Spacer(modifier = Modifier.height(15.dp))
 
-            Reservation(model.guideExperience.experiencePrice)
+            Reservation(model.guideExperience.experiencePrice, model.guideExperience.guideFirebaseId,navHostController!!)
 
             Spacer(modifier = Modifier.height(15.dp))
             Divider(color = Gray200, thickness = 1.dp)
@@ -157,7 +165,7 @@ fun Description(experienceDescription: String) {
 }
 
 @Composable
-fun Reservation(experiencePrice: Float) {
+fun Reservation(experiencePrice: Float, guideId: String, navHostController: NavHostController) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -171,13 +179,28 @@ fun Reservation(experiencePrice: Float) {
             modifier = Modifier.padding(start = 25.dp)
         )
 
-        Button(
-            onClick = { /*TODO*/ },
-            colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
-            modifier = Modifier.padding(end = 25.dp)
+        Row(
+            Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(imageVector = Icons.Filled.DateRange , contentDescription = null, tint = Color.White)
-            Text(text = stringResource(id = R.string.reserve_text), color = Color.White)
+            Icon(imageVector = Icons.Outlined.Chat,
+                contentDescription = null, tint = MaterialTheme.colors.primary,
+                modifier = Modifier
+                    .padding(end = 15.dp)
+                    .clickable {
+                        navHostController.navigate("chat_with/$guideId")
+                    }
+            )
+
+            Button(
+                onClick = { /*TODO*/ },
+                colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
+                modifier = Modifier.padding(end = 25.dp)
+            ) {
+                Icon(imageVector = Icons.Filled.DateRange , contentDescription = null, tint = Color.White)
+                Text(text = stringResource(id = R.string.reserve_text), color = Color.White)
+            }
         }
     }
 }

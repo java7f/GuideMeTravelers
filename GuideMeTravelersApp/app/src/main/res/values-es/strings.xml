@@ -9,7 +9,7 @@
     <string name="or">o</string>
     <string name="password_label">Contraseña</string>
     <string name="login_button">Iniciar Sesión</string>
-    <string name="reserve_text">Petición de reserva</string>
+    <string name="reserve_text">Petición</string>
     <string name="experience_description_text">Descripción de Experiencia</string>
     <string name="reviews_text">Reseñas</string>
     <string name="about_user">Acerca de mí</string>
@@ -26,4 +26,5 @@
     <string name="from_to">Fecha</string>
     <string name="guide_name">Experiencia con</string>
     <string name="price">Precio</string>
+    <string name="chat">Chat</string>
 </resources>

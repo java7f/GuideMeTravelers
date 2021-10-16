@@ -16,6 +16,11 @@
         android:theme="@style/Theme.GuideMeTravelersApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".views.chatView.ChatActivity"
+            android:exported="true"
+            android:label="@string/title_activity_chat"
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
+        <activity
             android:name=".views.audioGuideLocation.AudioGuideLocationActivity"
             android:exported="true"
             android:label="@string/title_activity_audio_guide_location"
@@ -62,7 +67,7 @@
             android:exported="true"
             android:label="@string/title_activity_experience_history"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".views.loginView.LoginActivity"
             android:exported="true"
