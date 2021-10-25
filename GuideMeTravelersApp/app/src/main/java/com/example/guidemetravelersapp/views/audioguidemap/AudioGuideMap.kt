@@ -132,7 +132,8 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
             content = {
                 MapSearchView(textState, modifier = Modifier
                     .fillMaxWidth()
-                    .padding(15.dp), navController)
+                    .padding(15.dp)
+                    .height(50.dp), navController)
                 MapScreen(
                     modifier = Modifier.height(400.dp),
                     latitude = "50.94135408574933",
@@ -150,12 +151,12 @@ fun MapSearchView(textState: MutableState<TextFieldValue>, modifier: Modifier, n
     var addressList: List<Address>?
     val context = LocalContext.current
 
-    OutlinedTextField(
+    TextField(
         value = textState.value,
         onValueChange = { value -> textState.value = value },
         modifier = modifier,
-        textStyle = TextStyle(fontSize = 14.sp),
-        label = { Text(text = "Search") },
+        textStyle = MaterialTheme.typography.caption,
+        label = { Text(text = "Search", style = MaterialTheme.typography.caption) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Search
@@ -176,7 +177,7 @@ fun MapSearchView(textState: MutableState<TextFieldValue>, modifier: Modifier, n
             )
         },
         singleLine = true,
-
+        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Unspecified)
     )
 }
 
@@ -200,23 +201,24 @@ fun LocationCard(location: Location, tags: List<String>, navController: NavHostC
                         contentDescription = "Temporal dummy avatar",
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
-                            .height(100.dp)
+                            .height(80.dp)
                     )
                 } else {
                     Box(modifier = Modifier
-                        .size(160.dp)) {
+                        .size(130.dp)) {
                         CoilImage(
                             imageModel = location.locationPhotoUrl,
                             contentDescription = "Location photo",
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier.clip(RoundedCornerShape(10.dp)).height(150.dp)
+                            modifier = Modifier.clip(RoundedCornerShape(10.dp)).height(120.dp)
                         )
                     }
                 }
                 Column(modifier = Modifier.padding(start = 20.dp)) {
                     Text(
                         text = location.name,
-                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.subtitle1,
+                        fontWeight = FontWeight.Bold
                     )
                     Row(modifier = Modifier
                         .fillMaxWidth()

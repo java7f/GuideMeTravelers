@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -136,7 +137,7 @@ class LoginActivity : ComponentActivity() {
                     .padding(10.dp)
             ) {
                 Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()){
-                    Text(stringResource(id = R.string.login_button), color = Color.White)
+                    Text(stringResource(id = R.string.login_button), color = Color.White, fontWeight = FontWeight.Bold)
                     if (uiState.value == ScreenStateEnum.IN_PROGRESS) {
                         CircularProgressIndicator(
                             color = Color.White,

@@ -48,6 +48,7 @@ import com.example.guidemetravelersapp.viewModels.ProfileViewModel
 import com.skydoves.landscapist.coil.CoilImage
 import com.skydoves.landscapist.glide.GlideImage
 import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import java.net.URLEncoder
 import java.time.Instant
@@ -274,7 +275,12 @@ fun DateField(birthday: MutableState<TextFieldValue>, user: User) {
             negativeButton(text = stringResource(id = R.string.cancel))
         },
         content = {
-            datepicker { date ->
+            datepicker(
+                colors = DatePickerDefaults.colors(
+                    headerTextColor = MaterialTheme.colors.onSecondary,
+                    activeTextColor = Color.White
+                )
+            ) { date ->
                 val formattedDate = date.format(
                     DateTimeFormatter.ofPattern("dd/MM/yyyy")
                 )
@@ -356,7 +362,8 @@ fun ReadonlyTextField(value: TextFieldValue, onValueChange: (TextFieldValue) -> 
                 onValueChange = onValueChange,
                 modifier = modifier,
                 label = label,
-                leadingIcon = { Icon(imageVector = Icons.Default.DateRange, contentDescription = "Calendar") }
+                leadingIcon = { Icon(imageVector = Icons.Default.DateRange, contentDescription = "Calendar") },
+                textStyle = TextStyle(color = MaterialTheme.colors.onSecondary)
             )
             Box(
                 modifier = Modifier

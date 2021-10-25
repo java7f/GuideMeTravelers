@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -59,7 +60,8 @@ fun ChatView(sentTo_Id: String = "", chatViewModel: ChatViewModel = viewModel())
             Text(
                 text = "${chatViewModel.sentTo_User.data!!.firstName} ${chatViewModel.sentTo_User.data!!.lastName}",
                 color = MaterialTheme.colors.onSecondary,
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.h6,
+                fontWeight = FontWeight.Bold
             )
         }
         Divider(Modifier.fillMaxWidth())
@@ -78,7 +80,7 @@ fun ChatView(sentTo_Id: String = "", chatViewModel: ChatViewModel = viewModel())
             }
         }
         Row(
-            Modifier.fillMaxWidth(),
+            Modifier.fillMaxWidth().padding(bottom = 10.dp),
             verticalAlignment = Alignment.Bottom
         ) {
             OutlinedTextField(
@@ -133,7 +135,8 @@ fun SingleMessage(message: String, isCurrentUser: Boolean) {
             modifier = Modifier
                 .widthIn(max = 250.dp)
                 .padding(16.dp),
-            color = Color.White
+            color = Color.White,
+            style = MaterialTheme.typography.body2
         )
     }
 }

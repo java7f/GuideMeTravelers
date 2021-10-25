@@ -19,7 +19,8 @@
             android:name=".views.chatView.ChatActivity"
             android:exported="true"
             android:label="@string/title_activity_chat"
-            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".views.audioGuideLocation.AudioGuideLocationActivity"
             android:exported="true"

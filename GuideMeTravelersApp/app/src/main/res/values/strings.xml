@@ -34,4 +34,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="title_activity_experience_history" translatable="false">ExperienceHistoryActivity</string>
     <string name="title_activity_chat" translatable="false">ChatActivity</string>
     <string name="chat">Chats</string>
+    <string name="reservation_with">Request experience with</string>
+    <string name="from_date">From</string>
+    <string name="to_date">To</string>
+    <string name="confirm_request">Confirm Request</string>
 </resources>

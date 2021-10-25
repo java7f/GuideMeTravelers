@@ -42,6 +42,7 @@ import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
 import com.example.guidemetravelersapp.viewModels.GuideExperienceViewModel
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
 import com.gowtham.ratingbar.RatingBar
+import com.skydoves.landscapist.coil.CoilImage
 
 class ExperienceDetailsActivity : ComponentActivity() {
     @ExperimentalFoundationApi
@@ -88,7 +89,7 @@ fun GuideDescriptionExperience(
             Divider(color = Gray200, thickness = 1.dp)
             Spacer(modifier = Modifier.height(15.dp))
 
-            Reservation(model.guideExperience.experiencePrice, model.guideExperience.guideFirebaseId,navHostController!!)
+            Reservation(model.guideExperience.experiencePrice, model.guideExperience.guideFirebaseId ?: "", experienceId, navHostController!!)
 
             Spacer(modifier = Modifier.height(15.dp))
             Divider(color = Gray200, thickness = 1.dp)
@@ -128,20 +129,32 @@ fun GuideRating(userRating: Float) {
 
 @Composable
 fun GuideInfo(guideExperience: GuideExperience) {
-    Box(modifier = Modifier.size(120.dp)) {
-        Image(
-            painter = painterResource(R.drawable.dummy_avatar),
-            contentDescription = "Temporal dummy avatar",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.clip(CircleShape)
-        )
-    }
+        if(guideExperience.guidePhotoUrl.isNullOrEmpty()) {
+            Box(modifier = Modifier.size(120.dp)) {
+                Image(
+                    painter = painterResource(R.drawable.dummy_avatar),
+                    contentDescription = "Temporal dummy avatar",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.clip(CircleShape)
+                )
+            }
+        }
+        else {
+            Box(modifier = Modifier.size(120.dp)) {
+                CoilImage(
+                    imageModel = guideExperience.guidePhotoUrl,
+                    contentDescription = "Guide photo",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.clip(CircleShape)
+                )
+            }
+        }
 
     Spacer(modifier = Modifier.height(20.dp))
     Text(
         text = "${guideExperience.guideFirstName} ${guideExperience.guideLastName}",
         fontWeight = FontWeight.Bold,
-        color = MaterialTheme.colors.onPrimary,
+        color = MaterialTheme.colors.onSecondary,
         fontSize = 25.sp
     )
 }
@@ -153,7 +166,7 @@ fun Description(experienceDescription: String) {
             text = stringResource(id = R.string.experience_description_text),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colors.onPrimary,
+            color = MaterialTheme.colors.onSecondary,
             modifier = Modifier.padding(start = 15.dp)
         )
     }
@@ -165,7 +178,7 @@ fun Description(experienceDescription: String) {
 }
 
 @Composable
-fun Reservation(experiencePrice: Float, guideId: String, navHostController: NavHostController) {
+fun Reservation(experiencePrice: Float, guideId: String, guideExperienceId: String, navHostController: NavHostController) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically,
@@ -175,7 +188,7 @@ fun Reservation(experiencePrice: Float, guideId: String, navHostController: NavH
             text = experiencePrice.toString(),
             fontSize = 25.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colors.onPrimary,
+            color = MaterialTheme.colors.onSecondary,
             modifier = Modifier.padding(start = 25.dp)
         )
 
@@ -194,12 +207,13 @@ fun Reservation(experiencePrice: Float, guideId: String, navHostController: NavH
             )
 
             Button(
-                onClick = { /*TODO*/ },
+                onClick = { navHostController.navigate("request_reservation/$guideExperienceId") },
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
                 modifier = Modifier.padding(end = 25.dp)
             ) {
-                Icon(imageVector = Icons.Filled.DateRange , contentDescription = null, tint = Color.White)
-                Text(text = stringResource(id = R.string.reserve_text), color = Color.White)
+                Icon(imageVector = Icons.Filled.DateRange , contentDescription = null,
+                    tint = Color.White, modifier = Modifier.padding(end = 10.dp))
+                Text(text = stringResource(id = R.string.reserve_text), color = Color.White, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -217,7 +231,8 @@ fun DescriptionTags(tagName: String) {
                 )
                 .padding(8.dp),
             overflow = TextOverflow.Ellipsis,
-            color = Color.White
+            color = Color.White,
+            style = MaterialTheme.typography.caption
         )
     }
 }
@@ -231,7 +246,7 @@ fun TouristExperienceRating(reviewsCount: Int) {
             text = stringResource(id = R.string.reviews_text),
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
-            color = MaterialTheme.colors.onPrimary,
+            color = MaterialTheme.colors.onSecondary,
             modifier = Modifier.padding(start = 15.dp)
         )
         Text(

@@ -2,6 +2,7 @@ package com.example.guidemetravelersapp.services
 
 import android.content.Context
 import com.example.guidemetravelersapp.dataModels.ExperienceReservation
+import com.example.guidemetravelersapp.dataModels.ExperienceReservationRequest
 import com.example.guidemetravelersapp.helpers.RetrofitInstance
 import com.example.guidemetravelersapp.interfaces.IReservationService
 import kotlinx.coroutines.async
@@ -15,6 +16,12 @@ class ReservationService(context: Context) {
         return coroutineScope {
             val getPastReservationsTask = async { apiService.getPastExperiencesForTourist("api/Reservations/getPastReservationsTourist/$touristId").body() }
             getPastReservationsTask.await()!!
+        }
+    }
+
+    suspend fun insertReservationRequest(experienceReservationRequest: ExperienceReservationRequest) {
+        coroutineScope {
+            val insertReservationRequestTask = async { apiService.insertReservationRequest("api/Reservations/insertReservationRequest", experienceReservationRequest) }
         }
     }
 }

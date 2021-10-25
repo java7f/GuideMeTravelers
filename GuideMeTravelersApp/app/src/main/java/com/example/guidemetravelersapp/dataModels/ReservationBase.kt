@@ -6,7 +6,7 @@ sealed class ReservationBase {
     var id: String = ""
     var touristUserId: String = ""
     var guideUserId: String = ""
-    var guideExperinceId: String = ""
+    var guideExperienceId: String = ""
     var guideFirstName: String = ""
     var guideLastName: String = ""
     var touristFirstName: String = ""

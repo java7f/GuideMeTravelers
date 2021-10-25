@@ -42,6 +42,7 @@ class ExperienceHistoryActivity : ComponentActivity() {
 @ExperimentalFoundationApi
 @Composable
 fun ShowPastExperiences(reservationViewModel: ReservationViewModel = viewModel()) {
+    reservationViewModel.getPastExperiences()
     LazyColumn(Modifier.fillMaxSize())  {
         stickyHeader {
             Text(

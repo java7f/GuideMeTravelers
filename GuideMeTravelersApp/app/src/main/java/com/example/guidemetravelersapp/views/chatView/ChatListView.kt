@@ -19,6 +19,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -31,6 +32,7 @@ import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.User
 import com.example.guidemetravelersapp.viewModels.ChatViewModel
+import com.skydoves.landscapist.coil.CoilImage
 
 @Composable
 fun ChatList(
@@ -79,17 +81,30 @@ fun ChatCard(user: User, navController: NavHostController) {
             ),
         content = {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-                Image(
-                    painter = painterResource(R.drawable.dummy_avatar),
-                    contentDescription = "Temporal dummy avatar",
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .height(50.dp)
-                )
+                if(user.profilePhotoUrl.isNullOrEmpty()) {
+                    Image(
+                        painter = painterResource(R.drawable.dummy_avatar),
+                        contentDescription = "Temporal dummy avatar",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .height(50.dp)
+                    )
+                }
+                else {
+                    Box(modifier = Modifier
+                        .size(50.dp)) {
+                        CoilImage(
+                            imageModel = user.profilePhotoUrl,
+                            contentDescription = "Profile photo",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.clip(CircleShape)
+                        )
+                    }
+                }
                 Column(modifier = Modifier.padding(start = 20.dp)) {
                     Text(
                         text = "${user.firstName} ${user.lastName}",
-                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        style = MaterialTheme.typography.h6
                     )
                 }
             }

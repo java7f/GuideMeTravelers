@@ -29,6 +29,7 @@ import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.Review
 import com.example.guidemetravelersapp.dataModels.User
+import com.example.guidemetravelersapp.helpers.commonComposables.LoadingBar
 import com.example.guidemetravelersapp.ui.theme.*
 import com.example.guidemetravelersapp.viewModels.ProfileViewModel
 import com.gowtham.ratingbar.RatingBar
@@ -58,7 +59,7 @@ fun UserProfileInformation(profileViewModel: ProfileViewModel = viewModel(), nav
     if(profileViewModel.profileData.inProgress) {
         Column(verticalArrangement = Arrangement.Top,
         modifier = Modifier.fillMaxWidth()) {
-            LoadingProfile()
+            LoadingBar()
         }
     }
     else {
@@ -164,7 +165,7 @@ fun AboutUser(experienceDescription: String = "") {
     Text(text = experienceDescription,
         color = MaterialTheme.colors.onPrimary,
         modifier = Modifier.padding(horizontal = 15.dp),
-        fontSize = 17.sp
+        style = MaterialTheme.typography.body1
     )
 }
 
@@ -217,11 +218,6 @@ fun UserReview(touristReview: Review = Review()) {
             )
         }
     }
-}
-
-@Composable
-fun LoadingProfile() {
-    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 }
 
 @ExperimentalAnimationApi

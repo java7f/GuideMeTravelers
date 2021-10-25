@@ -2,6 +2,7 @@ package com.example.guidemetravelersapp.helpers.commonComposables
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -22,4 +23,9 @@ fun FullsizeImage(imageUrl: String) {
                 modifier = Modifier.clip(RectangleShape))
         }
     }
+}
+
+@Composable
+fun LoadingBar() {
+    LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
 }

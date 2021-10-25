@@ -27,4 +27,8 @@
     <string name="guide_name">Expérience avec</string>
     <string name="price">Prix</string>
     <string name="chat">Chats</string>
+    <string name="reservation_with">Demande d\'expérience avec</string>
+    <string name="from_date">À partir de</string>
+    <string name="to_date">A</string>
+    <string name="confirm_request">Confirmer la demande</string>
 </resources>

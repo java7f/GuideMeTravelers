@@ -31,9 +31,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -60,6 +58,7 @@ import com.example.guidemetravelersapp.views.experienceHistoryView.ShowPastExper
 import com.example.guidemetravelersapp.views.audioguidemap.MapScreen
 import com.example.guidemetravelersapp.views.chatView.ChatList
 import com.example.guidemetravelersapp.views.chatView.ChatView
+import com.example.guidemetravelersapp.views.experienceDetailsView.reservationRequest.ReservationRequestContent
 import com.example.guidemetravelersapp.views.profileView.EditProfileContent
 import com.example.guidemetravelersapp.views.profileView.UserProfileInformation
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -131,7 +130,7 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
 @ExperimentalPermissionsApi
 @ExperimentalFoundationApi
 @Composable
-fun ScaffoldContent(navController: NavHostController, guideExperiences: List<GuideExperienceViewData>) {
+fun ScaffoldContent(navController: NavHostController, model: HomescreenViewModel) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val listState = rememberLazyListState()
         LazyColumn(modifier = Modifier
@@ -142,17 +141,16 @@ fun ScaffoldContent(navController: NavHostController, guideExperiences: List<Gui
                 SearchView(textState,
                     Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 15.dp)
-                        .height(60.dp))
+                        .padding(bottom = 30.dp)
+                        .height(50.dp))
                 Text(text = "Available guides",
                     modifier = Modifier.padding(bottom = 15.dp),
-                    fontSize = 18.sp,
+                    style = MaterialTheme.typography.h6,
                     color = MaterialTheme.colors.onSecondary,
                     fontWeight = FontWeight.Bold)
             }
-            itemsIndexed(guideExperiences) { index, item ->
-                UserCard(name = item.guideFirstName, lastname = item.guideLastName, imgSize = 70.dp, rating = item.guideRating,
-                    tags = item.experienceTags, experienceId = item.id ,navController = navController)
+            itemsIndexed(model.guideExperienceViewData) { index, item ->
+                UserCard(item, imgSize = 70.dp, navController = navController)
                 Spacer(modifier = Modifier.height(15.dp))
             }
         }
@@ -161,30 +159,32 @@ fun ScaffoldContent(navController: NavHostController, guideExperiences: List<Gui
 @Composable
 fun SearchView(textState: MutableState<TextFieldValue>, modifier: Modifier) {
     val focusManager = LocalFocusManager.current
-    OutlinedTextField(
-        value = textState.value,
-        onValueChange = { value -> textState.value = value },
-        modifier = modifier,
-        textStyle = TextStyle(fontSize = 14.sp),
-        label = { Text(text = "Search") },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Search
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                // TODO: execute search function
-                focusManager.clearFocus()
-            }
-        ),
-        leadingIcon = {
-            Icon(
-                Icons.Default.Search,
-                contentDescription = "Search",
-            )
-        },
-        singleLine = true,
-    )
+        TextField(
+            value = textState.value,
+            onValueChange = { value -> textState.value = value },
+            modifier = modifier,
+            textStyle = MaterialTheme.typography.caption,
+            label = { Text(text = "Search", style = MaterialTheme.typography.caption) },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Sentences,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Search
+            ),
+            keyboardActions = KeyboardActions(
+                onSearch = {
+                    // TODO: execute search function
+                    focusManager.clearFocus()
+                }
+            ),
+            leadingIcon = {
+                Icon(
+                    Icons.Default.Search,
+                    contentDescription = "Search",
+                )
+            },
+            singleLine = true,
+            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Unspecified)
+        )
 }
 
 @Composable
@@ -231,7 +231,9 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                 Divider(thickness = 2.dp)
                 Text(
                     text = "Logout",
-                    style = TextStyle(color = CancelRed, fontSize = 18.sp, fontWeight = FontWeight.Bold),
+                    style = MaterialTheme.typography.subtitle1,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.onError,
                     modifier = Modifier
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
@@ -289,7 +291,8 @@ fun UserCard(
         Column(modifier = Modifier.padding(start = 20.dp)) {
             Text(
                 text = "$name $lastname",
-                style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                style = MaterialTheme.typography.h6,
+                fontWeight = FontWeight.Bold
             )
             Text(text = username)
         }
@@ -298,35 +301,49 @@ fun UserCard(
 
 /* User card with standard user information, excluding username and adding rating and tags */
 @Composable
-fun UserCard(name: String, lastname: String, imgSize: Dp, rating: Float, tags: List<String>, experienceId: String?,navController: NavHostController) {
+fun UserCard(experienceViewData: GuideExperienceViewData, imgSize: Dp, navController: NavHostController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(color = MaterialTheme.colors.secondary),
-                onClick = { navController.navigate("guideExperience/$experienceId") }
+                onClick = { navController.navigate("guideExperience/${experienceViewData.id}") }
             ),
-        elevation = 10.dp,
+        elevation = 5.dp,
         content = {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-                Image(
-                    painter = painterResource(R.drawable.dummy_avatar),
-                    contentDescription = "Temporal dummy avatar",
-                    modifier = Modifier
-                        .clip(CircleShape)
-                        .height(imgSize)
-                )
+                if(experienceViewData.guidePhotoUrl.isNullOrEmpty()) {
+                    Image(
+                        painter = painterResource(R.drawable.dummy_avatar),
+                        contentDescription = "Temporal dummy avatar",
+                        modifier = Modifier
+                            .clip(CircleShape)
+                            .height(imgSize)
+                    )
+                }
+                else {
+                    Box(modifier = Modifier
+                        .size(70.dp)) {
+                        CoilImage(
+                            imageModel = experienceViewData.guidePhotoUrl,
+                            contentDescription = "Guide photo",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.clip(CircleShape)
+                        )
+                    }
+                }
                 Column(modifier = Modifier.padding(start = 20.dp)) {
                     Text(
-                        text = "$name $lastname",
-                        style = TextStyle(fontSize = 20.sp, fontWeight = FontWeight.Bold)
+                        text = "${experienceViewData.guideFirstName} ${experienceViewData.guideLastName}",
+                        style = MaterialTheme.typography.subtitle1,
+                        fontWeight = FontWeight.Bold
                     )
-                    GuideRating(rating)
+                    GuideRating(experienceViewData.guideRating)
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 10.dp)) {
-                        for (tag in tags) {
+                        for (tag in experienceViewData.experienceTags) {
                             DescriptionTags(tagName = tag)
                         }
                     }
@@ -340,7 +357,8 @@ fun UserCard(name: String, lastname: String, imgSize: Dp, rating: Float, tags: L
 fun NavOption(title: String, scaffoldState: ScaffoldState, scope: CoroutineScope, navController: NavHostController, navRoute: String = "") {
     Text(
         text = title,
-        style = TextStyle(fontSize = 18.sp, fontWeight = FontWeight.Bold),
+        style = MaterialTheme.typography.subtitle1,
+        fontWeight = FontWeight.Bold,
         modifier = Modifier
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
@@ -399,7 +417,7 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
         navController = navController,
         startDestination = "guides",
         builder = {
-            composable(route = "guides", content = { ScaffoldContent(navController, model.guideExperienceViewData) })
+            composable(route = "guides", content = { ScaffoldContent(navController, model) })
             composable(route = "map", content = { AudioGuideMapContent(navController = navController) })
             composable(route = "chat", content = { ChatList(navController = navController) })
             composable(route = "guideExperience/{experienceId}", content = { backStackEntry ->
@@ -419,6 +437,9 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
             })
             composable(route = "chat_with/{sentTo_Id}", content = { backStackEntry ->
                 ChatView(backStackEntry.arguments?.getString("sentTo_Id")!!)
+            })
+            composable(route = "request_reservation/{experienceId}", content = { backStackEntry ->
+                ReservationRequestContent(backStackEntry.arguments?.getString("experienceId")!!, navController)
             })
             composable(
                 route = "searchMap/{latitude}/{longitude}/{title}",
