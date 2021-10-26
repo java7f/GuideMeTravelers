@@ -123,7 +123,7 @@ fun ChatView(sentTo_Id: String = "", chatViewModel: ChatViewModel = viewModel())
 fun SingleMessage(message: String, isCurrentUser: Boolean) {
     Card(
         shape = RoundedCornerShape(16.dp),
-        backgroundColor = if (isCurrentUser) MaterialTheme.colors.secondaryVariant else MaterialTheme.colors.secondary
+        backgroundColor = if (isCurrentUser) MaterialTheme.colors.primaryVariant else MaterialTheme.colors.primary
     ) {
         Text(
             text = message,

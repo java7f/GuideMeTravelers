@@ -95,7 +95,14 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
                     .height(70.dp)
                     .background(color = colors.primary),
                 contentAlignment = Alignment.Center,
-                content = { Text(text = "Available places with audio guides", fontSize = 18.sp, fontWeight = FontWeight.Bold) }
+                content = {
+                    Text(
+                        text = "Available places with audio guides",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
             )
             LazyColumn(modifier = Modifier
                 .fillMaxWidth()

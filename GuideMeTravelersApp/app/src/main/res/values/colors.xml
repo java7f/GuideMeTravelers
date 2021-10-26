@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="pink_200">#FFF27999</color>
-    <color name="pink_700">#FFF54D79</color>
+    <color name="pink_200">#FF287271</color>
+    <color name="pink_700">#FF264653</color>
     <color name="aquamarine_200">#FF55D9CC</color>
     <color name="teal_200">#FF03DAC5</color>
     <color name="teal_700">#FF018786</color>

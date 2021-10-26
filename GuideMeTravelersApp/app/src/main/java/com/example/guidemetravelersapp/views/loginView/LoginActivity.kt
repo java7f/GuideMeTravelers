@@ -121,7 +121,7 @@ class LoginActivity : ComponentActivity() {
     @Composable
     fun LoginButton(email: String, password: String) {
         val coroutineScope = rememberCoroutineScope()
-        Spacer(modifier = Modifier.height(50.dp))
+        Spacer(modifier = Modifier.height(70.dp))
         Row(horizontalArrangement = Arrangement.SpaceEvenly) {
             Button(
                 onClick = {
@@ -135,6 +135,7 @@ class LoginActivity : ComponentActivity() {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(10.dp)
+                    .height(40.dp)
             ) {
                 Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()){
                     Text(stringResource(id = R.string.login_button), color = Color.White, fontWeight = FontWeight.Bold)

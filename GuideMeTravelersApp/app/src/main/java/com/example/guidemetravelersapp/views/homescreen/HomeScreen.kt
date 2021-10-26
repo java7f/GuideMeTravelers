@@ -123,7 +123,7 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
             }
         },
         contentColor = MaterialTheme.colors.primary,
-        backgroundColor = MaterialTheme.colors.background
+        backgroundColor = MaterialTheme.colors.surface
     )
 }
 
@@ -388,7 +388,7 @@ fun BottomBar(navController: NavHostController) {
                     modifier = Modifier.height(25.dp)
                 ) },
                 selected = currentRoute == screen.route,
-                selectedContentColor = MaterialTheme.colors.primaryVariant,
+                selectedContentColor = Color.White,
                 onClick = {
                     navController.navigate(screen.route) {
                         // Pop up to the start destination of the graph to

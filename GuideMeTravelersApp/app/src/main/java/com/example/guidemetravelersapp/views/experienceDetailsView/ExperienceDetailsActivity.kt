@@ -226,7 +226,7 @@ fun DescriptionTags(tagName: String) {
             text = tagName,
             modifier = Modifier
                 .background(
-                    color = MilitaryGreen200,
+                    color = MaterialTheme.colors.secondaryVariant,
                     shape = RoundedCornerShape(8.dp)
                 )
                 .padding(8.dp),
