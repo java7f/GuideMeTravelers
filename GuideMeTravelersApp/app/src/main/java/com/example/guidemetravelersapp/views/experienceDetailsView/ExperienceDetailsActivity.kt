@@ -36,6 +36,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.dataModels.GuideExperience
 import com.example.guidemetravelersapp.dataModels.Review
+import com.example.guidemetravelersapp.helpers.BaseActivity
 import com.example.guidemetravelersapp.ui.theme.Gray200
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
@@ -44,7 +45,7 @@ import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.skydoves.landscapist.coil.CoilImage
 
-class ExperienceDetailsActivity : ComponentActivity() {
+class ExperienceDetailsActivity : BaseActivity() {
     @ExperimentalFoundationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

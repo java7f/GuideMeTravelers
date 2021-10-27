@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
@@ -43,6 +44,8 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
+import com.example.guidemetravelersapp.helpers.LanguageManager
+import com.example.guidemetravelersapp.helpers.commonComposables.Dropdown
 import com.example.guidemetravelersapp.helpers.commonComposables.FullsizeImage
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
@@ -66,6 +69,7 @@ import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.net.URLEncoder
+import kotlin.math.exp
 
 class HomeScreen : ComponentActivity() {
     @ExperimentalFoundationApi
@@ -107,6 +111,9 @@ fun HomeScreenContent(model: HomescreenViewModel? = null) {
 
 @Composable
 fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
+    val context = LocalContext.current
+    val languages = listOf("es", "en", "fr-FR")
+    var expanded by remember { mutableStateOf(false) }
     TopAppBar(
         title = { Icon(painter = painterResource(id = R.drawable.logo_transparent), contentDescription = "Guide Me logo", modifier = Modifier.fillMaxWidth() ) },
         navigationIcon = {
@@ -115,8 +122,24 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
             }
         },
         actions = {
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = {
+                expanded = !expanded
+            }) {
                 Icon(imageVector = Icons.Default.Language, contentDescription = "Translate")
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false },
+                    modifier = Modifier.width(70.dp)
+                ) {
+                    languages.forEachIndexed { index, item ->
+                        DropdownMenuItem(onClick = {
+                            LanguageManager(context).updateLanguage(item)
+                            expanded = false
+                        }) {
+                            Text(text = item)
+                        }
+                    }
+                }
             }
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(imageVector = Icons.Default.Notifications, contentDescription = "Notifications")
