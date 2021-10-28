@@ -31,4 +31,7 @@
     <string name="from_date">Desde</string>
     <string name="to_date">Hasta</string>
     <string name="confirm_request">Confirmar Solicitud</string>
+    <string name="possible_guides">Posibles guías</string>
+    <string name="wishlist_added">"Guía ha sido agregado a la lista de deseos"</string>
+    <string name="wishlist_removed">"Guía eliminada de la lista de deseos"</string>
 </resources>

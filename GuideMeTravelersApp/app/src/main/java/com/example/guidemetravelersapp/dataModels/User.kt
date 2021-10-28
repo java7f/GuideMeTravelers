@@ -19,5 +19,6 @@ data class User (
     var aboutUser: String = "",
     var profilePhotoUrl: String = "",
     var roles: List<String> = emptyList(),
-    var reviews: List<Review> = emptyList()
+    var reviews: List<Review> = emptyList(),
+    var wishlist: MutableList<String> = mutableListOf()
 )
