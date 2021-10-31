@@ -25,4 +25,11 @@ class GuideExperienceService(context: Context) {
             getExperienceTask.await()!!
         }
     }
+
+    suspend fun getExperiencesByUserId(userId: String): List<GuideExperience> {
+        return coroutineScope {
+            val getExperiences = async { apiService.getAll("api/GuideExperience/getUserById/$userId").body() }
+            getExperiences.await()!!
+        }
+    }
 }

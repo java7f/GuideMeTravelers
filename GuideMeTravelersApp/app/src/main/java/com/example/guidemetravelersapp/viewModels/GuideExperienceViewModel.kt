@@ -18,6 +18,8 @@ class GuideExperienceViewModel(application: Application) : AndroidViewModel(appl
 
     var guideExperience: GuideExperience by mutableStateOf(GuideExperience())
     var experienceId: String by mutableStateOf("")
+    var userId: String by mutableStateOf("")
+    var userGuideExps: List<GuideExperience> = emptyList()
 
     init {
         getExperience()
@@ -36,6 +38,19 @@ class GuideExperienceViewModel(application: Application) : AndroidViewModel(appl
                 }
             }
             catch (e: Exception) {
+                Log.d(GuideExperienceViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    fun getExperiencesByUserId() {
+        viewModelScope.launch {
+            try {
+                if(!userId.isEmpty()) {
+                    val result = guideExperienceService.getExperiencesByUserId(userId = userId)
+                    userGuideExps = result
+                }
+            } catch (e: Exception) {
                 Log.d(GuideExperienceViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
             }
         }
