@@ -2,7 +2,6 @@
     <string name="app_name">GuideMeTravelersApp</string>
     <string name="title_activity_login" translatable="false">LoginActivity</string>
     <string name="authorization_header" translatable="false">Authorization</string>
-
     <string name="username_label" translatable="false">Username</string>
     <string name="password_label">Password</string>
     <string name="login_button">Login</string>
@@ -38,4 +37,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="from_date">From</string>
     <string name="to_date">To</string>
     <string name="confirm_request">Confirm Request</string>
+    <string name="title_activity_wishlist" translatable="false">WishlistActivity</string>
+    <string name="possible_guides">Possible Guides</string>
+    <string name="wishlist_added">"Guide added to wishlist"</string>
+    <string name="wishlist_removed">"Guide removed from wishlist"</string>
 </resources>

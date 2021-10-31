@@ -2,6 +2,7 @@ package com.example.guidemetravelersapp.views.experienceDetailsView
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -14,16 +15,16 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.outlined.Chat
-import androidx.compose.material.icons.outlined.ChatBubble
-import androidx.compose.material.icons.outlined.ChatBubbleOutline
+import androidx.compose.material.icons.outlined.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +42,7 @@ import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
 import com.example.guidemetravelersapp.viewModels.GuideExperienceViewModel
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
+import com.example.guidemetravelersapp.viewModels.ProfileViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.skydoves.landscapist.coil.CoilImage
 
@@ -69,8 +71,16 @@ class ExperienceDetailsActivity : ComponentActivity() {
 fun GuideDescriptionExperience(
     experienceId: String = "",
     navHostController: NavHostController? = null,
-    model: GuideExperienceViewModel = viewModel()
+    model: GuideExperienceViewModel = viewModel(),
+    profileViewModel: ProfileViewModel = viewModel()
 ) {
+    val context = LocalContext.current
+    var wishlistAdd by remember { mutableStateOf(false) }
+
+    if (profileViewModel.editableUser.wishlist.contains(experienceId)) {
+        wishlistAdd = true
+    }
+
     model.experienceId = experienceId
     model.updateExperience()
     LazyColumn(horizontalAlignment = Alignment.CenterHorizontally,
@@ -83,7 +93,32 @@ fun GuideDescriptionExperience(
 
             //Rating stars for the guide
             Spacer(modifier = Modifier.height(15.dp))
-            GuideRating(model.guideExperience.guideRating)
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                content = {
+                    GuideRating(model.guideExperience.guideRating)
+                    IconButton(
+                        onClick = {
+                            if (!profileViewModel.editableUser.wishlist.contains(experienceId)) {
+                                profileViewModel.editableUser.wishlist.add(experienceId)
+                                profileViewModel.saveProfileChange(null)
+                                Toast.makeText(context, context.getString(R.string.wishlist_added), Toast.LENGTH_LONG).show()
+                                wishlistAdd = true
+                            } else {
+                                profileViewModel.editableUser.wishlist.remove(experienceId)
+                                profileViewModel.saveProfileChange(null)
+                                Toast.makeText(context, context.getString(R.string.wishlist_removed), Toast.LENGTH_LONG).show()
+                                wishlistAdd = false
+                            }
+                        }) {
+                        if (wishlistAdd) {
+                            Icon(imageVector = Icons.Outlined.BookmarkAdded, tint = MaterialTheme.colors.primary, contentDescription = null)
+                        } else {
+                            Icon(imageVector = Icons.Outlined.BookmarkAdd, tint = MaterialTheme.colors.primary, contentDescription = null)
+                        }
+                    }
+                }
+            )
 
             Spacer(modifier = Modifier.height(20.dp))
             Divider(color = Gray200, thickness = 1.dp)
@@ -205,7 +240,6 @@ fun Reservation(experiencePrice: Float, guideId: String, guideExperienceId: Stri
                         navHostController.navigate("chat_with/$guideId")
                     }
             )
-
             Button(
                 onClick = { navHostController.navigate("request_reservation/$guideExperienceId") },
                 colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),

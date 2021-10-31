@@ -16,6 +16,11 @@
         android:theme="@style/Theme.GuideMeTravelersApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".views.wishlist.WishlistActivity"
+            android:exported="false"
+            android:label="@string/title_activity_wishlist"
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
+        <activity
             android:name=".views.chatView.ChatActivity"
             android:exported="true"
             android:label="@string/title_activity_chat"

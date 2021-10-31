@@ -29,22 +29,18 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.*
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
 import com.example.guidemetravelersapp.helpers.commonComposables.FullsizeImage
-import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
@@ -61,11 +57,11 @@ import com.example.guidemetravelersapp.views.chatView.ChatView
 import com.example.guidemetravelersapp.views.experienceDetailsView.reservationRequest.ReservationRequestContent
 import com.example.guidemetravelersapp.views.profileView.EditProfileContent
 import com.example.guidemetravelersapp.views.profileView.UserProfileInformation
+import com.example.guidemetravelersapp.views.wishlist.WishlistContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
 
 class HomeScreen : ComponentActivity() {
     @ExperimentalFoundationApi
@@ -222,6 +218,7 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                 Divider(thickness = 2.dp)
                 NavOption(title = "Guides", scaffoldState = scaffoldState, scope, navController, "guides")
                 NavOption(title = "History", scaffoldState = scaffoldState, scope, navController, "past_experiences")
+                NavOption(title = "Wishlist", scaffoldState = scaffoldState, scope, navController, "wishlist")
                 NavOption(title = "Become a Guide", scaffoldState = scaffoldState, scope, navController)
                 NavOption(title = "Alerts", scaffoldState = scaffoldState, scope, navController)
             }
@@ -420,6 +417,7 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
             composable(route = "guides", content = { ScaffoldContent(navController, model) })
             composable(route = "map", content = { AudioGuideMapContent(navController = navController) })
             composable(route = "chat", content = { ChatList(navController = navController) })
+            composable(route = "wishlist", content = { WishlistContent() })
             composable(route = "guideExperience/{experienceId}", content = { backStackEntry ->
                 GuideDescriptionExperience(backStackEntry.arguments?.getString("experienceId")!!, navController)
             })

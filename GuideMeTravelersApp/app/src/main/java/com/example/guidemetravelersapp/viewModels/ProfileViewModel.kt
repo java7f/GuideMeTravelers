@@ -50,6 +50,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
                     photo_result = profileService.updateUserProfilePhoto(editableUser, fileUri)
                 }
                 val updateSuccessful = result && photo_result
+                profileData = ApiResponse(data = editableUser, inProgress = false)
                 updateProfileResult = ApiResponse(data = updateSuccessful, inProgress = false)
             } catch (e: Exception) {
                 Log.d(HomescreenViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
