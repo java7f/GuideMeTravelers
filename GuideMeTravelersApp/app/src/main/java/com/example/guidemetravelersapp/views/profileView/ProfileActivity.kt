@@ -115,14 +115,14 @@ fun EditProfileButton(navController: NavHostController, profileViewModel: Profil
         navController.navigate("editProfile")
      },
         modifier = Modifier.wrapContentWidth(),
-        border = BorderStroke(1.dp, Pink200)
+        border = BorderStroke(1.dp, Teal200)
     ) {
         Row(horizontalArrangement = Arrangement.Center){
             Icon(imageVector = Icons.Filled.Edit,
                 contentDescription = null,
-                tint = Pink200,
+                tint = Teal200,
                 modifier = Modifier.size(20.dp).padding(end = 5.dp))
-            Text(stringResource(id = R.string.edit_profile_button), color = Pink200)
+            Text(stringResource(id = R.string.edit_profile_button), color = Teal200)
         }
     }
 }

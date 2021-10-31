@@ -29,13 +29,11 @@ import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.guidemetravelersapp.views.experienceDetailsView.ExperienceDetailsActivity
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.services.AuthenticationService
 import com.example.guidemetravelersapp.helpers.models.ScreenStateEnum
-import com.example.guidemetravelersapp.ui.theme.Pink200
+import com.example.guidemetravelersapp.ui.theme.Teal200
 import com.example.guidemetravelersapp.views.homescreen.HomeScreen
-import com.example.guidemetravelersapp.views.profileView.ProfileActivity
 import kotlinx.coroutines.launch
 
 class LoginActivity : ComponentActivity() {
@@ -91,7 +89,7 @@ class LoginActivity : ComponentActivity() {
                         Image(
                             painter = painterResource(R.drawable.transparent_logo_drwable),
                             contentDescription = "Guide Me Logo",
-                            colorFilter = ColorFilter.tint(Pink200)
+                            colorFilter = ColorFilter.tint(Teal200)
                         )
                     }
                 }
