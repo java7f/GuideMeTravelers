@@ -8,7 +8,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.guidemetravelersapp.dataModels.GuideExperience
+import com.example.guidemetravelersapp.dataModels.Location
 import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
+import com.example.guidemetravelersapp.helpers.models.ApiResponse
 import com.example.guidemetravelersapp.services.GuideExperienceService
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -19,7 +21,7 @@ class GuideExperienceViewModel(application: Application) : AndroidViewModel(appl
     var guideExperience: GuideExperience by mutableStateOf(GuideExperience())
     var experienceId: String by mutableStateOf("")
     var userId: String by mutableStateOf("")
-    var userGuideExps: List<GuideExperience> = emptyList()
+    var userGuideExps: ApiResponse<List<GuideExperience>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
 
     init {
         getExperience()
@@ -48,10 +50,11 @@ class GuideExperienceViewModel(application: Application) : AndroidViewModel(appl
             try {
                 if(!userId.isEmpty()) {
                     val result = guideExperienceService.getExperiencesByUserId(userId = userId)
-                    userGuideExps = result
+                    userGuideExps = ApiResponse(data = result, inProgress = false)
                 }
             } catch (e: Exception) {
                 Log.d(GuideExperienceViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
+                userGuideExps = ApiResponse(inProgress = false, hasError = true, errorMessage = e.localizedMessage )
             }
         }
     }

@@ -10,9 +10,10 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BookmarkAdded
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,6 +28,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.navArgument
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.GuideExperience
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
@@ -50,7 +53,8 @@ class WishlistActivity : ComponentActivity() {
 @Composable
 fun WishlistContent(
     experienceModel: GuideExperienceViewModel = viewModel(),
-    profileViewModel: ProfileViewModel = viewModel()
+    profileViewModel: ProfileViewModel = viewModel(),
+    navHostController: NavHostController? = null
 ) {
     experienceModel.userId = profileViewModel.editableUser.firebaseUserId
     experienceModel.getExperiencesByUserId()
@@ -65,15 +69,23 @@ fun WishlistContent(
                 color = MaterialTheme.colors.onSecondary,
                 fontSize = 30.sp,
                 modifier = Modifier.padding(bottom = 20.dp)
-            ) }
-            itemsIndexed(experienceModel.userGuideExps) {index, item ->
+            )
+            if(experienceModel.userGuideExps.data.isNullOrEmpty()) {
+                Text(text = stringResource(id = R.string.no_guides_wishlist))
+            }
+        }
+            itemsIndexed(experienceModel.userGuideExps.data!!) {index, item ->
                 UserCard(
                     name = item.guideFirstName,
                     lastname = item.guideLastName,
                     imageUrl = item.guidePhotoUrl,
                     imgSize = 70.dp,
                     rating = item.guideRating,
-                    tags = item.experienceTags)
+                    tags = item.experienceTags,
+                    experienceId = item.id,
+                    navController = navHostController!!,
+                    profileViewModel = profileViewModel
+                )
                 Spacer(modifier = Modifier.height(15.dp))
             }
         }
@@ -81,14 +93,24 @@ fun WishlistContent(
 }
 
 @Composable
-fun UserCard(name: String, lastname: String, imageUrl: String, imgSize: Dp, rating: Float,tags: List<String>) {
+fun UserCard(
+    name: String,
+    lastname: String,
+    imageUrl: String,
+    imgSize: Dp,
+    rating: Float,
+    tags: List<String>,
+    experienceId: String,
+    navController: NavHostController,
+    profileViewModel: ProfileViewModel,
+    ) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .clickable(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = rememberRipple(color = MaterialTheme.colors.secondary),
-                onClick = { }
+                onClick = { navController.navigate("guideExperience/${experienceId}") }
             ),
         elevation = 5.dp,
         content = {
@@ -114,11 +136,23 @@ fun UserCard(name: String, lastname: String, imageUrl: String, imgSize: Dp, rati
                     }
                 }
                 Column(modifier = Modifier.padding(start = 20.dp)) {
-                    Text(
-                        text = "$name $lastname",
-                        style = MaterialTheme.typography.subtitle1,
-                        fontWeight = FontWeight.Bold
-                    )
+                    Row(modifier = Modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween,
+                        content = {
+                            Text(
+                                text = "$name $lastname",
+                                style = MaterialTheme.typography.subtitle1,
+                                fontWeight = FontWeight.Bold)
+                            Icon(
+                                imageVector = Icons.Outlined.Delete,
+                                tint = MaterialTheme.colors.error,
+                                contentDescription = "remove guide",
+                                modifier = Modifier.clickable {
+                                    profileViewModel.editableUser.wishlist.remove(experienceId)
+                                    profileViewModel.saveProfileChange(null)
+                                    // refreshing wishlist
+                                    navController.navigate("wishlist")
+                                })
+                    })
                     GuideRating(rating)
                     Row(modifier = Modifier
                         .fillMaxWidth()

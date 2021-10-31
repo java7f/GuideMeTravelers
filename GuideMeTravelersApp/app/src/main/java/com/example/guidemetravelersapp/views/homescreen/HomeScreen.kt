@@ -417,7 +417,7 @@ fun ScreenController(navController: NavHostController, model: HomescreenViewMode
             composable(route = "guides", content = { ScaffoldContent(navController, model) })
             composable(route = "map", content = { AudioGuideMapContent(navController = navController) })
             composable(route = "chat", content = { ChatList(navController = navController) })
-            composable(route = "wishlist", content = { WishlistContent() })
+            composable(route = "wishlist", content = { WishlistContent(navHostController = navController) })
             composable(route = "guideExperience/{experienceId}", content = { backStackEntry ->
                 GuideDescriptionExperience(backStackEntry.arguments?.getString("experienceId")!!, navController)
             })

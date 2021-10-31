@@ -34,4 +34,5 @@
     <string name="possible_guides">Guides possibles</string>
     <string name="wishlist_added">"Guide ajouté à la liste de souhaits"</string>
     <string name="wishlist_removed">"Guide retiré de la liste de souhaits"</string>
+    <string name="no_guides_wishlist">"Aucun guide dans la liste de souhaits"</string>
 </resources>
