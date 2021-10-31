@@ -30,7 +30,7 @@ import com.example.guidemetravelersapp.dataModels.User
 import com.example.guidemetravelersapp.helpers.models.ScreenStateEnum
 import com.example.guidemetravelersapp.services.AuthenticationService
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
-import com.example.guidemetravelersapp.ui.theme.Pink200
+import com.example.guidemetravelersapp.ui.theme.Teal200
 import com.example.guidemetravelersapp.views.loginView.LoginActivity
 import kotlinx.coroutines.launch
 
@@ -82,7 +82,7 @@ class RegisterView : ComponentActivity() {
                         Image(
                             painter = painterResource(R.drawable.transparent_logo_drwable),
                             contentDescription = "Guide Me Logo",
-                            colorFilter = ColorFilter.tint(Pink200)
+                            colorFilter = ColorFilter.tint(Teal200)
                         )
                     }
                 }
