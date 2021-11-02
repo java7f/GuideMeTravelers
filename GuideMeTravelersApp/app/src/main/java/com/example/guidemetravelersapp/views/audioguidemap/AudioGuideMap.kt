@@ -48,6 +48,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.Location
+import com.example.guidemetravelersapp.helpers.commonComposables.AutoCompleteTextView
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.viewModels.LocationViewModel
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
@@ -104,10 +105,13 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
                 .padding(15.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
-                itemsIndexed(locationViewModel.locations.data!!) { index, item ->
-                    LocationCard(location = item, tags = listOf("cultural"), navController!!
-                    )
-                    Spacer(modifier = Modifier.height(15.dp))
+                if(locationViewModel.locations.data != null) {
+                    itemsIndexed(locationViewModel.locations.data!!) { index, item ->
+                        LocationCard(
+                            location = item, tags = listOf("cultural"), navController!!
+                        )
+                        Spacer(modifier = Modifier.height(15.dp))
+                    }
                 }
             }
         },
@@ -126,7 +130,7 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
             )
         },
         floatingActionButtonPosition = FabPosition.End,
-        sheetPeekHeight = 120.dp,
+        sheetPeekHeight = 100.dp,
         backgroundColor = Color.Unspecified
     ) {
         Column(
@@ -134,10 +138,12 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
             content = {
                 MapSearchView(textState, modifier = Modifier
                     .fillMaxWidth()
-                    .padding(15.dp)
-                    .height(50.dp), navController)
+                    .padding(horizontal = 10.dp)
+                    .padding(bottom = 10.dp),
+                    navController,
+                locationViewModel)
                 MapScreen(
-                    modifier = Modifier.height(400.dp),
+                    modifier = Modifier.fillMaxHeight(),
                     latitude = "50.94135408574933",
                     longitude = "6.958866858783249",
                     title = "Cologne Cathedral"
@@ -148,39 +154,66 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
 }
 
 @Composable
-fun MapSearchView(textState: MutableState<TextFieldValue>, modifier: Modifier, navController: NavHostController? = null) {
+fun MapSearchView(
+    textState: MutableState<TextFieldValue>,
+    modifier: Modifier, navController:
+    NavHostController? = null,
+    model: LocationViewModel
+) {
     val focusManager = LocalFocusManager.current
     var addressList: List<Address>?
     val context = LocalContext.current
 
-    TextField(
-        value = textState.value,
-        onValueChange = { value -> textState.value = value },
+    AutoCompleteTextView(
         modifier = modifier,
-        textStyle = MaterialTheme.typography.caption,
-        label = { Text(text = stringResource(id = R.string.search_by_location), style = MaterialTheme.typography.caption) },
-        keyboardOptions = KeyboardOptions(
-            keyboardType = KeyboardType.Text,
-            imeAction = ImeAction.Search
-        ),
-        keyboardActions = KeyboardActions(
-            onSearch = {
-                val geoCoder = Geocoder(context)
-                addressList = geoCoder.getFromLocationName(textState.value.text, 1)
-                val address = addressList!![0]
-                navController?.navigate("searchMap/${address.latitude}/${address.longitude}/${textState.value.text}")
-                focusManager.clearFocus()
-            }
-        ),
-        leadingIcon = {
-            Icon(
-                Icons.Default.Search,
-                contentDescription = "Search",
-            )
+        query = textState.value.text,
+        queryLabel = stringResource(id = R.string.search_by_location),
+        predictions = model.predictions,
+        onQueryChanged = { updateAddress ->
+            textState.value = TextFieldValue(updateAddress)
+            model.onQueryChanged(updateAddress)
         },
-        singleLine = true,
-        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Unspecified)
-    )
+        onClearClick = {
+            textState.value = TextFieldValue("")
+            model.locationSearchValue = ""
+            model.predictions = mutableListOf()
+        },
+        onItemClick = { place ->
+            textState.value = TextFieldValue(place.getPrimaryText(null).toString())
+            model.onPlaceItemSelected(place)
+        }
+    ) {
+        Text("${it.getFullText(null)}", style = MaterialTheme.typography.caption)
+    }
+
+//    TextField(
+//        value = textState.value,
+//        onValueChange = { value -> textState.value = value },
+//        modifier = modifier,
+//        textStyle = MaterialTheme.typography.caption,
+//        label = { Text(text = stringResource(id = R.string.search_by_location), style = MaterialTheme.typography.caption) },
+//        keyboardOptions = KeyboardOptions(
+//            keyboardType = KeyboardType.Text,
+//            imeAction = ImeAction.Search
+//        ),
+//        keyboardActions = KeyboardActions(
+//            onSearch = {
+//                val geoCoder = Geocoder(context)
+//                addressList = geoCoder.getFromLocationName(textState.value.text, 1)
+//                val address = addressList!![0]
+//                navController?.navigate("searchMap/${address.latitude}/${address.longitude}/${textState.value.text}")
+//                focusManager.clearFocus()
+//            }
+//        ),
+//        leadingIcon = {
+//            Icon(
+//                Icons.Default.Search,
+//                contentDescription = "Search",
+//            )
+//        },
+//        singleLine = true,
+//        colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Unspecified)
+//    )
 }
 
 @Composable

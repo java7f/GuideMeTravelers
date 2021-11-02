@@ -33,4 +33,11 @@ class LocationService(context: Context) {
             audioguidesResultTask.await()!!
         }
     }
+
+    suspend fun getSearchLocations(query: String): List<Location> {
+        return coroutineScope {
+            val locationsResultTask = async { apiService.getAllLocations("api/Locations/location/search/$query").body() }
+            locationsResultTask.await()!!
+        }
+    }
 }
