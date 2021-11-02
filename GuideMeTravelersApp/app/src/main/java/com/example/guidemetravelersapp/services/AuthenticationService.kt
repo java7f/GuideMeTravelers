@@ -3,6 +3,7 @@ package com.example.guidemetravelersapp.services
 import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.core.net.toUri
 import androidx.documentfile.provider.DocumentFile
 import com.example.guidemetravelersapp.dataModels.User
@@ -46,11 +47,6 @@ class AuthenticationService(context: Context) {
         Log.d(TAG, accessToken!!)
         if (accessToken != null) {
             sessionManager.saveAuthToken(accessToken)
-            auth.addIdTokenListener(FirebaseAuth.IdTokenListener {
-                auth.currentUser?.getIdToken(true)?.addOnSuccessListener { result ->
-                    result.token?.let { sessionManager.saveAuthToken(it) }
-                }
-            })
         }
 
         return result

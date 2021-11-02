@@ -127,6 +127,9 @@ dependencies {
 
     // exoplayer
     implementation 'com.google.android.exoplayer:exoplayer:2.15.1'
+
+    // Places api
+    implementation 'com.google.android.libraries.places:places:2.5.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

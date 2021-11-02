@@ -11,13 +11,11 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -36,7 +34,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -51,9 +49,6 @@ import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.Location
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
-import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
-import com.example.guidemetravelersapp.ui.theme.Shapes
-import com.example.guidemetravelersapp.ui.theme.Skyblue200
 import com.example.guidemetravelersapp.viewModels.LocationViewModel
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -163,7 +158,7 @@ fun MapSearchView(textState: MutableState<TextFieldValue>, modifier: Modifier, n
         onValueChange = { value -> textState.value = value },
         modifier = modifier,
         textStyle = MaterialTheme.typography.caption,
-        label = { Text(text = "Search", style = MaterialTheme.typography.caption) },
+        label = { Text(text = stringResource(id = R.string.search_by_location), style = MaterialTheme.typography.caption) },
         keyboardOptions = KeyboardOptions(
             keyboardType = KeyboardType.Text,
             imeAction = ImeAction.Search
@@ -217,7 +212,9 @@ fun LocationCard(location: Location, tags: List<String>, navController: NavHostC
                             imageModel = location.locationPhotoUrl,
                             contentDescription = "Location photo",
                             contentScale = ContentScale.Crop,
-                            modifier = Modifier.clip(RoundedCornerShape(10.dp)).height(120.dp)
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(10.dp))
+                                .height(120.dp)
                         )
                     }
                 }

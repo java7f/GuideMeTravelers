@@ -20,6 +20,7 @@ class SessionManager (context: Context) {
         val editor = prefs.edit()
         editor.putString(USER_TOKEN, token)
         editor.apply()
+
     }
 
     /**

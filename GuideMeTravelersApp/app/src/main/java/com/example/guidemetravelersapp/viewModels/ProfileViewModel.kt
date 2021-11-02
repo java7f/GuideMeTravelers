@@ -29,7 +29,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch {
             try {
                 var currentUser = profileService.getCurrentFirebaseUser()
-                val result = profileService.getUserByEmail(currentUser?.email!!)
+                val result = currentUser?.uid?.let { profileService.getUserById(it) }
                 profileData = ApiResponse(data = result, inProgress = false)
                 editableUser = result!!
             }
