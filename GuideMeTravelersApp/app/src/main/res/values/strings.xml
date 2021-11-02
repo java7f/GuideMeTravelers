@@ -42,4 +42,5 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="wishlist_added">"Guide added to wishlist"</string>
     <string name="wishlist_removed">"Guide removed from wishlist"</string>
     <string name="no_guides_wishlist">"No guides in wishlist"</string>
+    <string name="search_by_location">Search cities or countries</string>
 </resources>

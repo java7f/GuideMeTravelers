@@ -32,11 +32,11 @@ class RetrofitInstance() {
          * Builds the Http client
          */
         private fun okHttpClient(context: Context): OkHttpClient {
-            var interceptor: HttpLoggingInterceptor = HttpLoggingInterceptor()
+            var interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BODY
             return OkHttpClient.Builder()
-                .addInterceptor(BasicAuthInterceptor(context))
                 .addInterceptor(interceptor)
+                .authenticator(TokenAuthenticator(context))
                 .build()
         }
     }

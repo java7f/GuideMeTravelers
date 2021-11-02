@@ -29,18 +29,23 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
+import com.example.guidemetravelersapp.helpers.commonComposables.AutoCompleteTextView
 import com.example.guidemetravelersapp.helpers.commonComposables.FullsizeImage
+import com.example.guidemetravelersapp.helpers.commonComposables.LoadingBar
+import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
@@ -137,50 +142,56 @@ fun ScaffoldContent(navController: NavHostController, model: HomescreenViewModel
                 SearchView(textState,
                     Modifier
                         .fillMaxWidth()
-                        .padding(bottom = 30.dp)
-                        .height(50.dp))
+                        .padding(bottom = 20.dp),
+                    model
+                )
                 Text(text = "Available guides",
                     modifier = Modifier.padding(bottom = 15.dp),
                     style = MaterialTheme.typography.h6,
                     color = MaterialTheme.colors.onSecondary,
                     fontWeight = FontWeight.Bold)
             }
-            itemsIndexed(model.guideExperienceViewData) { index, item ->
-                UserCard(item, imgSize = 70.dp, navController = navController)
-                Spacer(modifier = Modifier.height(15.dp))
+            if (model.guideExperienceViewData.inProgress) {
+                item {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        LoadingSpinner()
+                    }
+                }
+            } else {
+                if (model.guideExperienceViewData.data != null) {
+                    itemsIndexed(model.guideExperienceViewData.data!!) { index, item ->
+                        UserCard(item, imgSize = 70.dp, navController = navController)
+                        Spacer(modifier = Modifier.height(15.dp))
+                    }
+                }
             }
         }
 }
 
 @Composable
-fun SearchView(textState: MutableState<TextFieldValue>, modifier: Modifier) {
-    val focusManager = LocalFocusManager.current
-        TextField(
-            value = textState.value,
-            onValueChange = { value -> textState.value = value },
-            modifier = modifier,
-            textStyle = MaterialTheme.typography.caption,
-            label = { Text(text = "Search", style = MaterialTheme.typography.caption) },
-            keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Sentences,
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Search
-            ),
-            keyboardActions = KeyboardActions(
-                onSearch = {
-                    // TODO: execute search function
-                    focusManager.clearFocus()
-                }
-            ),
-            leadingIcon = {
-                Icon(
-                    Icons.Default.Search,
-                    contentDescription = "Search",
-                )
-            },
-            singleLine = true,
-            colors = TextFieldDefaults.textFieldColors(backgroundColor = Color.Unspecified)
-        )
+fun SearchView(textState: MutableState<TextFieldValue>, modifier: Modifier, model: HomescreenViewModel) {
+
+    AutoCompleteTextView(
+        modifier = modifier,
+        query = textState.value.text,
+        queryLabel = stringResource(id = R.string.search_by_location),
+        onQueryChanged = { updateAddress ->
+            textState.value = TextFieldValue(updateAddress)
+            model.onQueryChanged(updateAddress)
+         },
+        predictions = model.predictions,
+        onClearClick = {
+            textState.value = TextFieldValue("")
+            model.locationSearchValue = ""
+            model.predictions = mutableListOf()
+        },
+        onItemClick = { place ->
+            textState.value = TextFieldValue(place.getPrimaryText(null).toString())
+            model.onPlaceItemSelected(place)
+        }
+    ) {
+        Text("${it.getFullText(null)}", style = MaterialTheme.typography.caption)
+    }
 }
 
 @Composable
@@ -197,17 +208,19 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     content = {
-                        UserCard(
-                            name = profileViewModel.profileData.data!!.firstName,
-                            lastname = profileViewModel.profileData.data!!.lastName,
-                            username = profileViewModel.profileData.data!!.username,
-                            imgSize = 60.dp,
-                            navController = navController,
-                            navRoute = "profile",
-                            imageUrl = profileViewModel.profileData.data!!.profilePhotoUrl,
-                            scaffoldState = scaffoldState,
-                            scope = scope
-                        )
+                        if(!profileViewModel.profileData.inProgress) {
+                            UserCard(
+                                name = profileViewModel.profileData.data!!.firstName,
+                                lastname = profileViewModel.profileData.data!!.lastName,
+                                username = profileViewModel.profileData.data!!.username,
+                                imgSize = 60.dp,
+                                navController = navController,
+                                navRoute = "profile",
+                                imageUrl = profileViewModel.profileData.data!!.profilePhotoUrl,
+                                scaffoldState = scaffoldState,
+                                scope = scope
+                            )
+                        }
                         Icon(
                             Icons.Default.MenuOpen,
                             contentDescription = "Menu Open",

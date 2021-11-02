@@ -50,9 +50,9 @@ class LoginActivity : ComponentActivity() {
     override fun onStart() {
         super.onStart()
         if(authenticationService.isUserLoggedIn()){
-//            uiState.value = ScreenStateEnum.SUCCESS
-//            goToHomescreen()
-            authenticationService.signOut()
+            uiState.value = ScreenStateEnum.SUCCESS
+            goToHomescreen()
+            //authenticationService.signOut()
         }
     }
 
@@ -87,7 +87,7 @@ class LoginActivity : ComponentActivity() {
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
                     Box(modifier = Modifier.size(220.dp), contentAlignment = Alignment.Center) {
                         Image(
-                            painter = painterResource(R.drawable.transparent_logo_drwable),
+                            painter = painterResource(R.drawable.logo_transparent),
                             contentDescription = "Guide Me Logo",
                             colorFilter = ColorFilter.tint(Teal200)
                         )

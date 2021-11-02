@@ -80,7 +80,7 @@ class RegisterView : ComponentActivity() {
                     verticalAlignment = Alignment.CenterVertically) {
                     Box(modifier = Modifier.size(150.dp), contentAlignment = Alignment.Center) {
                         Image(
-                            painter = painterResource(R.drawable.transparent_logo_drwable),
+                            painter = painterResource(R.drawable.logo_transparent),
                             contentDescription = "Guide Me Logo",
                             colorFilter = ColorFilter.tint(Teal200)
                         )
