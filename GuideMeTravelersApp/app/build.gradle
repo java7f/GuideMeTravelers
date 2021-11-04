@@ -130,6 +130,9 @@ dependencies {
 
     // Places api
     implementation 'com.google.android.libraries.places:places:2.5.0'
+
+    //Accent Systems Beacon SDK
+    implementation 'com.accent_systems.ibks-sdk:ibks-sdk:1.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'
