@@ -1,11 +1,16 @@
 package com.example.guidemetravelersapp.dataModels
 
-import com.example.guidemetravelersapp.helpers.models.Coordinate
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.PrimaryKey
+import com.example.guidemetravelersapp.helpers.utils.Utils
 
+@Entity(tableName = Utils.LOCATIONS_TABLE)
 data class Location(
-    var id: String = "",
-    var name: String = "",
-    var userId: String = "",
-    var locationPhotoUrl: String = "",
-    var coordinates: Coordinate = Coordinate()
+    @PrimaryKey var id: String = "",
+    @ColumnInfo var name: String = "",
+    @ColumnInfo var userId: String = "",
+    @Ignore var locationPhotoUrl: String = "",
+    @ColumnInfo var address: Address = Address()
 )

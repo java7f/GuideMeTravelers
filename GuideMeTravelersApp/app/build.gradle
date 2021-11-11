@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -24,6 +25,8 @@ android {
         }
     }
     def BASE_URL = "BASE_URL"
+    def SECRET_KEY = "SECRET_KEY"
+
     flavorDimensions "env"
 
     productFlavors {
@@ -31,10 +34,12 @@ android {
             dimension "env"
             applicationIdSuffix ".dev"
             buildConfigField "String", BASE_URL, '"http://10.0.2.2:5000/"'
+            buildConfigField "String", SECRET_KEY, '"Zr4u7x!A%D*G-KaPdSgVkYp2s5v8y/B?"'
         }
         production {
             dimension "env"
             buildConfigField "String", BASE_URL, '"https://guideme.azurewebsites.net/"'
+            buildConfigField "String", SECRET_KEY, '"Zr4u7x!A%D*G-KaPdSgVkYp2s5v8y/B?"'
         }
     }
 
@@ -130,6 +135,14 @@ dependencies {
 
     // Places api
     implementation 'com.google.android.libraries.places:places:2.5.0'
+
+    //PR Downloader
+    implementation 'com.mindorks.android:prdownloader:0.6.0'
+
+    //Room database
+    implementation("androidx.room:room-runtime:2.3.0")
+    kapt("androidx.room:room-compiler:2.3.0")
+    implementation("androidx.room:room-ktx:2.3.0")
 }
 
 apply plugin: 'com.google.gms.google-services'

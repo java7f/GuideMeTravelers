@@ -16,6 +16,17 @@
         android:theme="@style/Theme.GuideMeTravelersApp"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".views.audioGuideLocation.DownloadTestActivity"
+            android:exported="true"
+            android:label="@string/title_activity_download_test"
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.ALL_APPS" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".views.wishlist.WishlistActivity"
             android:exported="false"
             android:label="@string/title_activity_wishlist"

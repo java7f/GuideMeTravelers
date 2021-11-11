@@ -1,7 +1,6 @@
 package com.example.guidemetravelersapp.dataModels.viewData
 
 import com.example.guidemetravelersapp.dataModels.Address
-import com.example.guidemetravelersapp.dataModels.Review
 
 data class GuideExperienceViewData (
     var id: String = "",

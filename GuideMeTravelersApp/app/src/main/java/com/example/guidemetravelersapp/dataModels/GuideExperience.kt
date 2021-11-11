@@ -1,7 +1,5 @@
 package com.example.guidemetravelersapp.dataModels
 
-import java.util.*
-
 data class GuideExperience (
     var id: String = "",
     var guideFirebaseId: String = "",

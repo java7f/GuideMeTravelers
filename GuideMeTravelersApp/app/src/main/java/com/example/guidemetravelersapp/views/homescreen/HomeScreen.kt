@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -42,6 +43,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
+import com.example.guidemetravelersapp.helpers.SessionManager
 import com.example.guidemetravelersapp.helpers.commonComposables.AutoCompleteTextView
 import com.example.guidemetravelersapp.helpers.commonComposables.FullsizeImage
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingBar
@@ -199,6 +201,7 @@ fun NavDrawer(scaffoldState: ScaffoldState,
               scope: CoroutineScope,
               navController: NavHostController,
               profileViewModel: ProfileViewModel = viewModel()) {
+    val isOffLineMode = remember { mutableStateOf(profileViewModel.getOfflineMode())}
     Column(modifier = Modifier
         .padding(20.dp)
         .fillMaxSize()) {
@@ -208,7 +211,7 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     content = {
-                        if(!profileViewModel.profileData.inProgress) {
+                        if(!profileViewModel.profileData.inProgress && !profileViewModel.profileData.hasError) {
                             UserCard(
                                 name = profileViewModel.profileData.data!!.firstName,
                                 lastname = profileViewModel.profileData.data!!.lastName,
@@ -238,6 +241,25 @@ fun NavDrawer(scaffoldState: ScaffoldState,
         }
         Row(modifier = Modifier.weight(1f)) {
             Column {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 20.dp)) {
+                    Text(
+                        text = stringResource(id = R.string.offline_mode),
+                        style = MaterialTheme.typography.subtitle1,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                    )
+                    Switch(
+                        checked = isOffLineMode.value,
+                        onCheckedChange = {
+                            isOffLineMode.value = it
+                            profileViewModel.saveOfflineMode(it)
+                        }
+                    )
+                }
                 Divider(thickness = 2.dp)
                 Text(
                     text = "Logout",

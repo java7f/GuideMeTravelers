@@ -9,6 +9,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.guidemetravelersapp.dataModels.User
+import com.example.guidemetravelersapp.helpers.SessionManager
 import com.example.guidemetravelersapp.helpers.models.ApiResponse
 import com.example.guidemetravelersapp.services.AuthenticationService
 import kotlinx.coroutines.launch
@@ -16,6 +17,7 @@ import java.lang.Exception
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
     private val profileService: AuthenticationService = AuthenticationService(application)
+    private val sessionManager: SessionManager = SessionManager(application)
 
     var profileData: ApiResponse<User> by mutableStateOf(ApiResponse(data = User(), inProgress = true))
     var updateProfileResult: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = false))
@@ -75,5 +77,21 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
             }
         }
         return totalRating / profileData.data!!.reviews.size
+    }
+
+    /**
+     * Saves the changes on offline mode activation/deactivation
+     * @param isOfflineMode flag representing if the user activated/deactivated offline mode
+     */
+    fun saveOfflineMode(isOfflineMode: Boolean) {
+        sessionManager.saveOfflineModeStatus(isOfflineMode)
+    }
+
+    /**
+     * Gets the current offline mode status
+     * @return true if offline mode is on
+     */
+    fun getOfflineMode(): Boolean {
+        return sessionManager.fetchOfflineMode()!!
     }
 }

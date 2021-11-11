@@ -166,12 +166,16 @@ fun LocationContent(locationId: String = "", model: LocationViewModel = viewMode
                                     fontWeight = FontWeight.Bold,
                                     modifier = Modifier.padding(top = 8.dp)
                                 )
-                                Icon(
-                                    imageVector = Icons.Default.Download,
-                                    contentDescription = "Download audioguides",
-                                    tint = MaterialTheme.colors.onBackground,
-                                    modifier = Modifier.size(40.dp)
-                                )
+                                IconButton(onClick = {
+                                    model.downloadFile()
+                                }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Download,
+                                        contentDescription = "Download audioguides",
+                                        tint = MaterialTheme.colors.onBackground,
+                                        modifier = Modifier.size(40.dp)
+                                    )
+                                }
                             }
                         )
                         Divider(

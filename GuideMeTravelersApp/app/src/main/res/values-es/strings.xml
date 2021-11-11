@@ -36,4 +36,5 @@
     <string name="wishlist_removed">"Guía eliminada de la lista de deseos"</string>
     <string name="no_guides_wishlist">"No hay guías en la lista de deseos"</string>
     <string name="search_by_location">Busca ciudades o países</string>
+    <string name="offline_mode">Modo sin conexión</string>
 </resources>
