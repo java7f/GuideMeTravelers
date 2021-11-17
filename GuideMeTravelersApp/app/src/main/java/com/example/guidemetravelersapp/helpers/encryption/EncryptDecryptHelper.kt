@@ -32,7 +32,7 @@ class EncryptDecryptHelper {
             return cipher.doFinal(fileData)
         }
 
-        fun decode(fileData: ByteArray): ByteArray {
+        suspend fun decode(fileData: ByteArray): ByteArray {
             val cipher = Cipher.getInstance(Utils.CIPHER_ALGORITHM)
             val key = getPrivateKey()
             val ivParameterSpec = IvParameterSpec(ByteArray(cipher.blockSize))

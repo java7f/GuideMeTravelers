@@ -22,6 +22,7 @@ object Utils {
     const val TEMP_FILE_NAME = "temp"
     const val TEMP_FILE_EXT = ".mp3"
     const val DIR_NAME = "Audio"
+    const val LOCATIONPHOTO_DIR_NAME = "Locations"
 
     //---------------------- SHAREPREFS KEYS ----------------------//
     const val OFFLINE_MODE = "offline_mode"

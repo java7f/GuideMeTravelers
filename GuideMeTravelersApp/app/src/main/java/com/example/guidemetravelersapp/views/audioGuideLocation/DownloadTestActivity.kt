@@ -26,7 +26,7 @@ class DownloadTestActivity : ComponentActivity(), OnDownloadListener, Handler.Ca
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            decryptAudio()
+            //decryptAudio()
             GuideMeTravelersAppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
@@ -52,21 +52,21 @@ class DownloadTestActivity : ComponentActivity(), OnDownloadListener, Handler.Ca
         return false
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
-    fun decryptAudio(): ByteArray? {
-        try {
-            val fileData = FileUtils.readFile(FileUtils.buildFilePath(this, "bensound-erf.mp3"))
-            val fileDecoded = EncryptDecryptHelper.decode(fileData)
-            Log.i(DownloadTestActivity::class.simpleName, "File decoded!!")
-            FileUtils.saveFile(fileDecoded, FileUtils.buildFilePath(this, "testDecoded.mp3"))
-            return fileDecoded
-        }
-        catch (e: Exception) {
-            e.printStackTrace()
-            Log.e(DownloadTestActivity::class.simpleName, e.message!!)
-        }
-        return null
-    }
+//    @RequiresApi(Build.VERSION_CODES.M)
+//    fun decryptAudio(): ByteArray? {
+//        try {
+//            val fileData = FileUtils.readFile(FileUtils.buildFilePath(this, "bensound-erf.mp3"))
+//            val fileDecoded = EncryptDecryptHelper.decode(fileData)
+//            Log.i(DownloadTestActivity::class.simpleName, "File decoded!!")
+//            FileUtils.saveFile(fileDecoded, FileUtils.buildFilePath(this, "testDecoded.mp3"))
+//            return fileDecoded
+//        }
+//        catch (e: Exception) {
+//            e.printStackTrace()
+//            Log.e(DownloadTestActivity::class.simpleName, e.message!!)
+//        }
+//        return null
+//    }
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onDownloadComplete() {

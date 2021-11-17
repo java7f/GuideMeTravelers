@@ -93,7 +93,7 @@ val Typography = Typography(
         fontFamily = RobotoCondensed,
     fontWeight = FontWeight.Normal,
     fontSize = 10.sp,
-    letterSpacing = 1.5.sp
+    letterSpacing = 0.5.sp
     )
 
     /* Other default text styles to override

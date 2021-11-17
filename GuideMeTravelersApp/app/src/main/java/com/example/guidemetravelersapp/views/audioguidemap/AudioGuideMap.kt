@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Address
 import android.location.Geocoder
+import android.net.Uri
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -49,6 +50,7 @@ import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.Location
 import com.example.guidemetravelersapp.helpers.commonComposables.AutoCompleteTextView
+import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.viewModels.LocationViewModel
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
@@ -61,6 +63,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.launch
+import java.io.File
 
 class AudioGuideMap : ComponentActivity() {
     @ExperimentalMaterialApi
@@ -108,7 +111,7 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
                 if(locationViewModel.locations.data != null) {
                     itemsIndexed(locationViewModel.locations.data!!) { index, item ->
                         LocationCard(
-                            location = item, tags = listOf("cultural"), navController!!
+                            location = item, tags = listOf("cultural"), navController!!, locationViewModel
                         )
                         Spacer(modifier = Modifier.height(15.dp))
                     }
@@ -218,7 +221,7 @@ fun MapSearchView(
 
 @Composable
 //TODO: remove tag list as parameter
-fun LocationCard(location: Location, tags: List<String>, navController: NavHostController) {
+fun LocationCard(location: Location, tags: List<String>, navController: NavHostController, model: LocationViewModel) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -230,7 +233,7 @@ fun LocationCard(location: Location, tags: List<String>, navController: NavHostC
         elevation = 10.dp,
         content = {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
-                if(location.locationPhotoUrl.isEmpty()) {
+                if(location.locationPhotoUrl.isEmpty() && !model.getOfflineModeStatus()) {
                     Image(
                         painter = painterResource(R.drawable.dummy_avatar),
                         contentDescription = "Temporal dummy avatar",
@@ -242,7 +245,7 @@ fun LocationCard(location: Location, tags: List<String>, navController: NavHostC
                     Box(modifier = Modifier
                         .size(130.dp)) {
                         CoilImage(
-                            imageModel = location.locationPhotoUrl,
+                            imageModel = if(model.getOfflineModeStatus()) Uri.fromFile(File(location.locationOfflinePath)) else location.locationPhotoUrl,
                             contentDescription = "Location photo",
                             contentScale = ContentScale.Crop,
                             modifier = Modifier
@@ -257,6 +260,12 @@ fun LocationCard(location: Location, tags: List<String>, navController: NavHostC
                         style = MaterialTheme.typography.subtitle1,
                         fontWeight = FontWeight.Bold
                     )
+                    Row(Modifier.fillMaxWidth().padding(end = 15.dp).padding(vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "${location.address.city}, ${location.address.country}",
+                            style = MaterialTheme.typography.overline,
+                        )
+                    }
                     Row(modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 10.dp)) {

@@ -59,6 +59,11 @@ class FileUtils {
             return path
         }
 
+        fun getLocationImagesPath(context: Context): String {
+            val path = context.getDir(Utils.DIR_NAME, Context.MODE_PRIVATE).absolutePath
+            return path
+        }
+
         fun buildFilePath(context: Context, fileName: String): String {
             val path = "${this.getDirPath(context)}${File.separator}$fileName"
             return path

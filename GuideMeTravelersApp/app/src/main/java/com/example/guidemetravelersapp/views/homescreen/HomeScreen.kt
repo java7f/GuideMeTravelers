@@ -1,9 +1,11 @@
 package com.example.guidemetravelersapp.views.homescreen
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -48,6 +50,7 @@ import com.example.guidemetravelersapp.helpers.commonComposables.AutoCompleteTex
 import com.example.guidemetravelersapp.helpers.commonComposables.FullsizeImage
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingBar
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
+import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
@@ -71,6 +74,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class HomeScreen : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.M)
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
     @ExperimentalPermissionsApi
@@ -85,6 +89,7 @@ class HomeScreen : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
@@ -371,6 +376,12 @@ fun UserCard(experienceViewData: GuideExperienceViewData, imgSize: Dp, navContro
                         style = MaterialTheme.typography.subtitle1,
                         fontWeight = FontWeight.Bold
                     )
+                    Row(Modifier.fillMaxWidth().padding(vertical = 5.dp).padding(end = 15.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "${experienceViewData.guideAddress.city}, ${experienceViewData.guideAddress.country}",
+                            style = MaterialTheme.typography.overline,
+                        )
+                    }
                     GuideRating(experienceViewData.guideRating)
                     Row(modifier = Modifier
                         .fillMaxWidth()
@@ -440,6 +451,7 @@ fun BottomBar(navController: NavHostController) {
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
@@ -491,6 +503,7 @@ fun ChatRouteTest() {
     Text("Chat Guide Route Text")
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi

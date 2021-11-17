@@ -17,7 +17,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".views.audioGuideLocation.DownloadTestActivity"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/title_activity_download_test"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" >
             <intent-filter>
@@ -41,7 +41,8 @@
             android:name=".views.audioGuideLocation.AudioGuideLocationActivity"
             android:exported="true"
             android:label="@string/title_activity_audio_guide_location"
-            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar" />
+            android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".views.profileView.EditProfile"
             android:exported="true"

@@ -11,8 +11,9 @@ data class Audioguide(
     @PrimaryKey var id: String = "",
     @ColumnInfo var name: String = "",
     @ColumnInfo var locationId: String = "",
-    @Ignore var audioguideUrl: String = "",
-    @ColumnInfo(name = Utils.LOCAL_URI) var audioLocale: String = "",
+    @ColumnInfo(name = Utils.LOCAL_URI) var audioguideUrl: String = "",
+    @ColumnInfo(defaultValue = "en") var audioLocale: String = "",
     @ColumnInfo var audiofileName: String = "",
     @ColumnInfo var macAddress: String = "",
+    @ColumnInfo var isDownloaded: Boolean = false,
 )

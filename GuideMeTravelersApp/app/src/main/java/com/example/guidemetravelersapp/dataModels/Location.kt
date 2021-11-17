@@ -12,5 +12,6 @@ data class Location(
     @ColumnInfo var name: String = "",
     @ColumnInfo var userId: String = "",
     @Ignore var locationPhotoUrl: String = "",
-    @ColumnInfo var address: Address = Address()
+    @ColumnInfo var address: Address = Address(),
+    @ColumnInfo var locationOfflinePath: String = ""
 )
