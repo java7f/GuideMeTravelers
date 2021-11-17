@@ -1,9 +1,11 @@
 package com.example.guidemetravelersapp.views.homescreen
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.*
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
@@ -27,6 +29,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -42,10 +45,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
+import com.example.guidemetravelersapp.helpers.SessionManager
 import com.example.guidemetravelersapp.helpers.commonComposables.AutoCompleteTextView
 import com.example.guidemetravelersapp.helpers.commonComposables.FullsizeImage
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingBar
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
+import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
@@ -69,6 +74,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class HomeScreen : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.M)
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
     @ExperimentalPermissionsApi
@@ -83,6 +89,7 @@ class HomeScreen : ComponentActivity() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
@@ -199,6 +206,7 @@ fun NavDrawer(scaffoldState: ScaffoldState,
               scope: CoroutineScope,
               navController: NavHostController,
               profileViewModel: ProfileViewModel = viewModel()) {
+    val isOffLineMode = remember { mutableStateOf(profileViewModel.getOfflineMode())}
     Column(modifier = Modifier
         .padding(20.dp)
         .fillMaxSize()) {
@@ -208,7 +216,7 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     content = {
-                        if(!profileViewModel.profileData.inProgress) {
+                        if(!profileViewModel.profileData.inProgress && !profileViewModel.profileData.hasError) {
                             UserCard(
                                 name = profileViewModel.profileData.data!!.firstName,
                                 lastname = profileViewModel.profileData.data!!.lastName,
@@ -238,6 +246,25 @@ fun NavDrawer(scaffoldState: ScaffoldState,
         }
         Row(modifier = Modifier.weight(1f)) {
             Column {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 20.dp)) {
+                    Text(
+                        text = stringResource(id = R.string.offline_mode),
+                        style = MaterialTheme.typography.subtitle1,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                    )
+                    Switch(
+                        checked = isOffLineMode.value,
+                        onCheckedChange = {
+                            isOffLineMode.value = it
+                            profileViewModel.saveOfflineMode(it)
+                        }
+                    )
+                }
                 Divider(thickness = 2.dp)
                 Text(
                     text = "Logout",
@@ -349,6 +376,12 @@ fun UserCard(experienceViewData: GuideExperienceViewData, imgSize: Dp, navContro
                         style = MaterialTheme.typography.subtitle1,
                         fontWeight = FontWeight.Bold
                     )
+                    Row(Modifier.fillMaxWidth().padding(vertical = 5.dp).padding(end = 15.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "${experienceViewData.guideAddress.city}, ${experienceViewData.guideAddress.country}",
+                            style = MaterialTheme.typography.overline,
+                        )
+                    }
                     GuideRating(experienceViewData.guideRating)
                     Row(modifier = Modifier
                         .fillMaxWidth()
@@ -418,6 +451,7 @@ fun BottomBar(navController: NavHostController) {
     )
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
@@ -469,6 +503,7 @@ fun ChatRouteTest() {
     Text("Chat Guide Route Text")
 }
 
+@RequiresApi(Build.VERSION_CODES.M)
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
