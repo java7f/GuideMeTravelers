@@ -36,6 +36,7 @@ import com.example.guidemetravelersapp.dataModels.GuideExperience
 import com.example.guidemetravelersapp.dataModels.Review
 import com.example.guidemetravelersapp.ui.theme.Gray200
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.ui.theme.Teal200
 import com.example.guidemetravelersapp.viewModels.GuideExperienceViewModel
 import com.example.guidemetravelersapp.viewModels.ProfileViewModel
 import com.gowtham.ratingbar.RatingBar
@@ -170,7 +171,7 @@ fun GuideInfo(guideExperience: GuideExperience) {
             }
         }
         else {
-            Box(modifier = Modifier.size(120.dp)) {
+            Box(modifier = Modifier.size(150.dp).border(2.dp, Teal200, CircleShape)) {
                 CoilImage(
                     imageModel = guideExperience.guidePhotoUrl,
                     contentDescription = "Guide photo",
@@ -202,7 +203,7 @@ fun Description(experienceDescription: String) {
     }
     Spacer(modifier = Modifier.height(10.dp))
     Text(text = experienceDescription,
-        color = MaterialTheme.colors.onPrimary,
+        color = MaterialTheme.colors.onSecondary,
         modifier = Modifier.padding(horizontal = 15.dp)
     )
 }
@@ -303,7 +304,7 @@ fun TouristReview(touristReview: Review) {
             Text(
                 text = touristReview.userName,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.onPrimary,
+                color = MaterialTheme.colors.onSecondary,
                 fontSize = 15.sp
             )
             RatingBar(value = touristReview.ratingValue, size = 15.dp, isIndicator = true) {
@@ -311,7 +312,7 @@ fun TouristReview(touristReview: Review) {
             Text(text = touristReview.ratingComment,
                 color = MaterialTheme.colors.onPrimary,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 2
+                maxLines = 3
             )
         }
     }

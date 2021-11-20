@@ -4,6 +4,8 @@ import android.app.Application
 import android.content.res.Resources
 import android.location.Address
 import android.location.Geocoder
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -12,6 +14,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.*
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
+import com.example.guidemetravelersapp.helpers.ASBLeScannerWrapper
 import com.example.guidemetravelersapp.helpers.models.ApiResponse
 import com.example.guidemetravelersapp.services.GuideExperieceViewDataService
 import com.example.guidemetravelersapp.services.GuideExperienceService
@@ -21,6 +24,7 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.lang.Exception
 

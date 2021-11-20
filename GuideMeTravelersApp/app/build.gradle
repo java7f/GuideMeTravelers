@@ -26,6 +26,7 @@ android {
     }
     def BASE_URL = "BASE_URL"
     def SECRET_KEY = "SECRET_KEY"
+    def BEACON_UUID = "BEACON_UUID"
 
     flavorDimensions "env"
 
@@ -35,11 +36,13 @@ android {
             applicationIdSuffix ".dev"
             buildConfigField "String", BASE_URL, '"http://10.0.2.2:5000/"'
             buildConfigField "String", SECRET_KEY, '"Zr4u7x!A%D*G-KaPdSgVkYp2s5v8y/B?"'
+            buildConfigField "String", BEACON_UUID, '"453f640b9abf4a438419bbe953030000"'
         }
         production {
             dimension "env"
             buildConfigField "String", BASE_URL, '"https://guideme.azurewebsites.net/"'
             buildConfigField "String", SECRET_KEY, '"Zr4u7x!A%D*G-KaPdSgVkYp2s5v8y/B?"'
+            buildConfigField "String", BEACON_UUID, '"453f640b9abf4a438419bbe953030000"'
         }
     }
 

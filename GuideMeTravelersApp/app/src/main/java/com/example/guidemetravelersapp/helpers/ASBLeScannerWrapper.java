@@ -17,21 +17,40 @@ import java.util.List;
 
 public class ASBLeScannerWrapper {
 
-    static Activity _act;
-    static ASScannerCallback _cb;
+    static ASBleScanner scanner;
     public static List<String> scannedDeivcesList = new ArrayList<>();
+    private static ASBLeScannerWrapper single_instance = null;
 
-    public ASBLeScannerWrapper(Activity activity, ASScannerCallback scannerCallback) {
-        _act = activity;
-        _cb = scannerCallback;
+    private ASBLeScannerWrapper(Activity activity, ASScannerCallback scannerCallback) {
+        scanner = new ASBleScanner(activity, scannerCallback);
+    }
+
+    public static void initializeInstance(Activity activity, ASScannerCallback scannerCallback)
+    {
+        if (single_instance == null)
+            single_instance = new ASBLeScannerWrapper(activity, scannerCallback);
+    }
+
+    public static ASBLeScannerWrapper getInstance() {
+        return single_instance;
     }
 
     public void startScan() {
         int err;
-        new ASBleScanner(_act, _cb).setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
+        scanner.setScanMode(ScanSettings.SCAN_MODE_LOW_LATENCY);
         err = ASBleScanner.startScan();
         if(err != ASUtils.TASK_OK) {
-            Log.i("ScannerWrapper", "startScan - Error (" + Integer.toString(err) + ")");
+            return;
         }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        stopScan();
+    }
+
+    public void stopScan() {
+        ASBleScanner.stopScan();
     }
 }

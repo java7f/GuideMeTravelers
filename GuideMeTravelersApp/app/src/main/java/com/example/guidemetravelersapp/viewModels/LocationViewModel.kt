@@ -2,6 +2,8 @@ package com.example.guidemetravelersapp.viewModels
 
 import android.app.Application
 import android.os.Build
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
@@ -9,10 +11,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.downloader.*
 import com.example.guidemetravelersapp.dataModels.Audioguide
 import com.example.guidemetravelersapp.dataModels.Location
+import com.example.guidemetravelersapp.helpers.ASBLeScannerWrapper
 import com.example.guidemetravelersapp.helpers.SessionManager
 import com.example.guidemetravelersapp.helpers.encryption.EncryptDecryptHelper
 import com.example.guidemetravelersapp.helpers.encryption.FileUtils
@@ -39,9 +41,11 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
     private val sessionManager: SessionManager = SessionManager(application)
     private var audioguidesToDownload: MutableList<Audioguide> = mutableListOf()
     private var currentDecryptedAudio: ByteArray by mutableStateOf(byteArrayOf())
+    private val mainHandler: Handler = Handler(Looper.getMainLooper())
 
     var locations: ApiResponse<List<Location>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
     var audioguides: ApiResponse<List<Audioguide>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
+    var proximityRecommendedAudioguides: ApiResponse<List<Audioguide>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
     var currentLocation: ApiResponse<Location> by mutableStateOf(ApiResponse(data = Location(), inProgress = true))
     var currentAudioguideUrl: String by mutableStateOf("")
 
@@ -338,4 +342,41 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
         Log.e(DownloadTestActivity::class.simpleName, error.toString())
     }
 
+    fun registerScanRoutine() {
+        val scannerWrapper = ASBLeScannerWrapper.getInstance()
+
+        mainHandler.post(object : Runnable {
+            override fun run() {
+                val scanBeaconsTask = CoroutineScope(Dispatchers.IO).launch {
+                    ASBLeScannerWrapper.scannedDeivcesList = mutableListOf()
+                    scannerWrapper.startScan()
+                }
+                viewModelScope.launch {
+                    scanBeaconsTask.join()
+                    if(!ASBLeScannerWrapper.scannedDeivcesList.isNullOrEmpty()) {
+                        try {
+                            val result =
+                                locationService.getProximityAudioguides(ASBLeScannerWrapper.scannedDeivcesList)
+                            proximityRecommendedAudioguides =
+                                ApiResponse(data = result, inProgress = false)
+                        } catch (e: Exception) {
+                            Log.d(
+                                LocationViewModel::class.simpleName,
+                                "ERROR: ${e.localizedMessage}"
+                            )
+                            proximityRecommendedAudioguides = ApiResponse(
+                                inProgress = false,
+                                hasError = true,
+                                errorMessage = e.localizedMessage
+                            )
+                        }
+                    }
+                    else {
+                        proximityRecommendedAudioguides = ApiResponse(data = mutableListOf(), inProgress = false)
+                    }
+                }
+                mainHandler.postDelayed(this, 30000)
+            }
+        })
+    }
 }

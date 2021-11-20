@@ -45,14 +45,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
+import com.example.guidemetravelersapp.helpers.ASBLeScannerWrapper
+import com.example.guidemetravelersapp.helpers.ScannerCallback
 import com.example.guidemetravelersapp.helpers.SessionManager
 import com.example.guidemetravelersapp.helpers.commonComposables.AutoCompleteTextView
 import com.example.guidemetravelersapp.helpers.commonComposables.FullsizeImage
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingBar
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
-import com.example.guidemetravelersapp.ui.theme.CancelRed
-import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
-import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
+import com.example.guidemetravelersapp.services.LocationService
+import com.example.guidemetravelersapp.ui.theme.*
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
 import com.example.guidemetravelersapp.viewModels.ProfileViewModel
 import com.example.guidemetravelersapp.views.audioGuideLocation.LocationContent
@@ -81,6 +82,7 @@ class HomeScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val model: HomescreenViewModel by viewModels()
+        ASBLeScannerWrapper.initializeInstance(this, ScannerCallback)
         setContent {
             GuideMeTravelersAppTheme {
                 HomeScreenContent(model)
@@ -318,7 +320,7 @@ fun UserCard(
         } else {
             Box(modifier = Modifier
                 .size(imgSize)
-                .border(2.dp, MilitaryGreen200, CircleShape)) {
+                .border(2.dp, Teal200, CircleShape)) {
                     CoilImage(imageModel = imageUrl,
                         contentDescription = "User profile photo",
                         contentScale = ContentScale.Crop,
@@ -355,13 +357,14 @@ fun UserCard(experienceViewData: GuideExperienceViewData, imgSize: Dp, navContro
                         painter = painterResource(R.drawable.dummy_avatar),
                         contentDescription = "Temporal dummy avatar",
                         modifier = Modifier
-                            .clip(CircleShape)
+                            .clip(RoundedCornerShape(5.dp))
                             .height(imgSize)
                     )
                 }
                 else {
                     Box(modifier = Modifier
-                        .size(70.dp)) {
+                        .size(100.dp)
+                        .border(2.dp, Teal200, CircleShape)) {
                         CoilImage(
                             imageModel = experienceViewData.guidePhotoUrl,
                             contentDescription = "Guide photo",
@@ -374,6 +377,7 @@ fun UserCard(experienceViewData: GuideExperienceViewData, imgSize: Dp, navContro
                     Text(
                         text = "${experienceViewData.guideFirstName} ${experienceViewData.guideLastName}",
                         style = MaterialTheme.typography.subtitle1,
+                        color = MaterialTheme.colors.onSecondary,
                         fontWeight = FontWeight.Bold
                     )
                     Row(Modifier.fillMaxWidth().padding(vertical = 5.dp).padding(end = 15.dp), verticalAlignment = Alignment.CenterVertically) {

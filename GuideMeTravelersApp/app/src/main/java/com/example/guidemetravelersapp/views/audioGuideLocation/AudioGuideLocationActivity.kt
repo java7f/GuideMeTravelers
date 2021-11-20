@@ -7,11 +7,14 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Download
@@ -42,6 +45,8 @@ import com.example.guidemetravelersapp.dataModels.Audioguide
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingBar
 import com.example.guidemetravelersapp.ui.theme.AcceptGreen
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.ui.theme.RecommendationOrange
+import com.example.guidemetravelersapp.ui.theme.Teal200
 import com.example.guidemetravelersapp.viewModels.LocationViewModel
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -78,6 +83,7 @@ fun LocationContent(locationId: String = "", model: LocationViewModel = viewMode
     val scope = rememberCoroutineScope()
     model.getLocation(locationId = locationId)
     model.getAudioguidesForLocation(locationId = locationId)
+    model.registerScanRoutine()
 
     BottomSheetScaffold(
         sheetContent = {
@@ -179,7 +185,7 @@ fun LocationContent(locationId: String = "", model: LocationViewModel = viewMode
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 content = {
                                     Text(
-                                        text = "Audio guides",
+                                        text = "Audioguides",
                                         fontSize = 18.sp,
                                         color = MaterialTheme.colors.onBackground,
                                         fontWeight = FontWeight.Bold,
@@ -206,6 +212,27 @@ fun LocationContent(locationId: String = "", model: LocationViewModel = viewMode
                             if (model.isLoadingDecrypting)
                                 LoadingBar()
                         }
+                        if(!model.proximityRecommendedAudioguides.data.isNullOrEmpty()) {
+                            item {
+                                Text(
+                                    text = "Recommended Audioguides",
+                                    fontSize = 18.sp,
+                                    color = MaterialTheme.colors.onBackground,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp)
+                                )
+                            }
+                            itemsIndexed(model.proximityRecommendedAudioguides.data!!) { index, item ->
+                                model.isAudioguideDownloaded(item.id)
+                                Box(modifier = Modifier.border(2.dp, RecommendationOrange, RoundedCornerShape(8.dp))) {
+                                    LocationCard(item, scaffoldState, scope, model)
+                                }
+                            }
+                            item {
+                                Spacer(modifier = Modifier.height(20.dp))
+                            }
+                        }
+
                         itemsIndexed(model.audioguides.data!!) { index, item ->
                             model.isAudioguideDownloaded(item.id)
                             LocationCard(item, scaffoldState, scope, model)
