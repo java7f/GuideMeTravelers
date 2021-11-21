@@ -16,11 +16,11 @@ class ScannerCallback  {
                 ASUtils.TYPE_IBEACON ->
                 {
                     val parsingResult = ASResultParser.getDataFromAdvertising(result)
-                    if(parsingResult["UUID"] == BuildConfig.BEACON_UUID && !ASBLeScannerWrapper.scannedDeivcesList.contains(result!!.device.address)) {
-                        ASBLeScannerWrapper.scannedDeivcesList.add(result.device.address)
+                    if(parsingResult["UUID"] == BuildConfig.BEACON_UUID && !ASBLeScannerWrapper.scannedDevicesList.contains(result!!.device.address)) {
+                        ASBLeScannerWrapper.scannedDevicesList.put(result.device.address, result.rssi)
                     }
                     Log.i(BeaconTestActivity::class.simpleName, result!!.device.name + " - iBEACON - " + parsingResult.toString())
-                    Log.i(BeaconTestActivity::class.simpleName, " - iBEACON - ${ASBLeScannerWrapper.scannedDeivcesList} - ${parsingResult["UUID"]}")
+                    Log.i(BeaconTestActivity::class.simpleName, " - iBEACON - ${ASBLeScannerWrapper.scannedDevicesList} - ${parsingResult["UUID"]}")
 
                 }
                 ASUtils.TYPE_DEVICE_CONNECTABLE -> Log.i(

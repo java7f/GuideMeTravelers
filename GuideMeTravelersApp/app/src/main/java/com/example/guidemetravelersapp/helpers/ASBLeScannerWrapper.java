@@ -13,12 +13,14 @@ import com.accent_systems.ibks_sdk.utils.ASUtils;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class ASBLeScannerWrapper {
 
     static ASBleScanner scanner;
-    public static List<String> scannedDeivcesList = new ArrayList<>();
+    public static Map<String, Integer> scannedDevicesList = new HashMap<>();
     private static ASBLeScannerWrapper single_instance = null;
 
     private ASBLeScannerWrapper(Activity activity, ASScannerCallback scannerCallback) {

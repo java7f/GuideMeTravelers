@@ -2,8 +2,6 @@ package com.example.guidemetravelersapp.viewModels
 
 import android.app.Application
 import android.os.Build
-import android.os.Handler
-import android.os.Looper
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
@@ -138,10 +136,12 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
 
     fun getProximityAudioguidesOnline() {
         viewModelScope.launch {
-            if(!ASBLeScannerWrapper.scannedDeivcesList.isNullOrEmpty()) {
+            if(!ASBLeScannerWrapper.scannedDevicesList.isNullOrEmpty()) {
                 try {
+                    var top3ScannedDevices = ASBLeScannerWrapper.scannedDevicesList.toSortedMap(
+                        compareByDescending { ASBLeScannerWrapper.scannedDevicesList[it] })
                     val result =
-                        locationService.getProximityAudioguides(ASBLeScannerWrapper.scannedDeivcesList)
+                        locationService.getProximityAudioguides(top3ScannedDevices.keys.toList().take(3))
                     proximityRecommendedAudioguides =
                         ApiResponse(data = result, inProgress = false)
                 } catch (e: Exception) {
@@ -164,9 +164,11 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
 
     fun getProximityAudioguidesOffline() {
         viewModelScope.launch {
-            if(!ASBLeScannerWrapper.scannedDeivcesList.isNullOrEmpty()) {
+            if(!ASBLeScannerWrapper.scannedDevicesList.isNullOrEmpty()) {
                 try {
-                    val result = offlineDatabase.audioguideDao().getProximityAudioguide(ASBLeScannerWrapper.scannedDeivcesList)
+                    var top3ScannedDevices = ASBLeScannerWrapper.scannedDevicesList.toSortedMap(
+                        compareByDescending { com.example.guidemetravelersapp.helpers.ASBLeScannerWrapper.scannedDevicesList[it] })
+                    val result = offlineDatabase.audioguideDao().getProximityAudioguide(top3ScannedDevices.keys.toList().take(3))
                     proximityRecommendedAudioguides = ApiResponse(data = result, inProgress = false)
                 } catch (e: Exception) {
                     Log.d(LocationViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
@@ -402,7 +404,7 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
         RoutineManager.post(object : Runnable {
             override fun run() {
                 val scanBeaconsTask = CoroutineScope(Dispatchers.IO).launch {
-                    ASBLeScannerWrapper.scannedDeivcesList = mutableListOf()
+                    ASBLeScannerWrapper.scannedDevicesList = mutableMapOf()
                     scannerWrapper.startScan()
                 }
                 viewModelScope.launch {
