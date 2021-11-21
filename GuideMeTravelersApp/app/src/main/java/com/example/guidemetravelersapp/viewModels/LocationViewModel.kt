@@ -15,6 +15,7 @@ import com.downloader.*
 import com.example.guidemetravelersapp.dataModels.Audioguide
 import com.example.guidemetravelersapp.dataModels.Location
 import com.example.guidemetravelersapp.helpers.ASBLeScannerWrapper
+import com.example.guidemetravelersapp.helpers.RoutineManager
 import com.example.guidemetravelersapp.helpers.SessionManager
 import com.example.guidemetravelersapp.helpers.encryption.EncryptDecryptHelper
 import com.example.guidemetravelersapp.helpers.encryption.FileUtils
@@ -41,7 +42,6 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
     private val sessionManager: SessionManager = SessionManager(application)
     private var audioguidesToDownload: MutableList<Audioguide> = mutableListOf()
     private var currentDecryptedAudio: ByteArray by mutableStateOf(byteArrayOf())
-    private val mainHandler: Handler = Handler(Looper.getMainLooper())
 
     var locations: ApiResponse<List<Location>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
     var audioguides: ApiResponse<List<Audioguide>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
@@ -125,6 +125,60 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
             catch (e: Exception) {
                 Log.d(LocationViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
                 audioguides = ApiResponse(inProgress = false, hasError = true, errorMessage = e.localizedMessage )
+            }
+        }
+    }
+
+    fun getProximityAudioguides() {
+        if(!sessionManager.fetchOfflineMode()!!)
+            getProximityAudioguidesOnline()
+        else
+            getProximityAudioguidesOffline()
+    }
+
+    fun getProximityAudioguidesOnline() {
+        viewModelScope.launch {
+            if(!ASBLeScannerWrapper.scannedDeivcesList.isNullOrEmpty()) {
+                try {
+                    val result =
+                        locationService.getProximityAudioguides(ASBLeScannerWrapper.scannedDeivcesList)
+                    proximityRecommendedAudioguides =
+                        ApiResponse(data = result, inProgress = false)
+                } catch (e: Exception) {
+                    Log.d(
+                        LocationViewModel::class.simpleName,
+                        "ERROR: ${e.localizedMessage}"
+                    )
+                    proximityRecommendedAudioguides = ApiResponse(
+                        inProgress = false,
+                        hasError = true,
+                        errorMessage = e.localizedMessage
+                    )
+                }
+            }
+            else {
+                proximityRecommendedAudioguides = ApiResponse(data = mutableListOf(), inProgress = false)
+            }
+        }
+    }
+
+    fun getProximityAudioguidesOffline() {
+        viewModelScope.launch {
+            if(!ASBLeScannerWrapper.scannedDeivcesList.isNullOrEmpty()) {
+                try {
+                    val result = offlineDatabase.audioguideDao().getProximityAudioguide(ASBLeScannerWrapper.scannedDeivcesList)
+                    proximityRecommendedAudioguides = ApiResponse(data = result, inProgress = false)
+                } catch (e: Exception) {
+                    Log.d(LocationViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
+                    proximityRecommendedAudioguides = ApiResponse(
+                        inProgress = false,
+                        hasError = true,
+                        errorMessage = e.message!!
+                    )
+                }
+            }
+            else {
+                proximityRecommendedAudioguides = ApiResponse(data = mutableListOf(), inProgress = false)
             }
         }
     }
@@ -345,7 +399,7 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
     fun registerScanRoutine() {
         val scannerWrapper = ASBLeScannerWrapper.getInstance()
 
-        mainHandler.post(object : Runnable {
+        RoutineManager.post(object : Runnable {
             override fun run() {
                 val scanBeaconsTask = CoroutineScope(Dispatchers.IO).launch {
                     ASBLeScannerWrapper.scannedDeivcesList = mutableListOf()
@@ -353,29 +407,9 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
                 }
                 viewModelScope.launch {
                     scanBeaconsTask.join()
-                    if(!ASBLeScannerWrapper.scannedDeivcesList.isNullOrEmpty()) {
-                        try {
-                            val result =
-                                locationService.getProximityAudioguides(ASBLeScannerWrapper.scannedDeivcesList)
-                            proximityRecommendedAudioguides =
-                                ApiResponse(data = result, inProgress = false)
-                        } catch (e: Exception) {
-                            Log.d(
-                                LocationViewModel::class.simpleName,
-                                "ERROR: ${e.localizedMessage}"
-                            )
-                            proximityRecommendedAudioguides = ApiResponse(
-                                inProgress = false,
-                                hasError = true,
-                                errorMessage = e.localizedMessage
-                            )
-                        }
-                    }
-                    else {
-                        proximityRecommendedAudioguides = ApiResponse(data = mutableListOf(), inProgress = false)
-                    }
+                    getProximityAudioguides()
                 }
-                mainHandler.postDelayed(this, 30000)
+                RoutineManager.mainHandler.postDelayed(this, 15000)
             }
         })
     }

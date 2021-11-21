@@ -22,15 +22,13 @@ import androidx.compose.material.icons.filled.DownloadDone
 import androidx.compose.material.icons.filled.DownloadForOffline
 import androidx.compose.material.icons.filled.PlayCircle
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -39,9 +37,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.Audioguide
+import com.example.guidemetravelersapp.helpers.RoutineManager
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingBar
 import com.example.guidemetravelersapp.ui.theme.AcceptGreen
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
@@ -84,6 +84,12 @@ fun LocationContent(locationId: String = "", model: LocationViewModel = viewMode
     model.getLocation(locationId = locationId)
     model.getAudioguidesForLocation(locationId = locationId)
     model.registerScanRoutine()
+
+    DisposableEffect(LocalLifecycleOwner.current) {
+        onDispose {
+            RoutineManager.cancelRoutines()
+        }
+    }
 
     BottomSheetScaffold(
         sheetContent = {
