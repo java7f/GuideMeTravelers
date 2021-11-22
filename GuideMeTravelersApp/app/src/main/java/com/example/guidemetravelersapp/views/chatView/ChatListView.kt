@@ -80,7 +80,8 @@ fun ChatCard(user: User, navController: NavHostController) {
                 onClick = { navController.navigate("chat_with/${user.firebaseUserId}") }
             ),
         content = {
-            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(10.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(10.dp)) {
                 if(user.profilePhotoUrl.isNullOrEmpty()) {
                     Image(
                         painter = painterResource(R.drawable.dummy_avatar),
