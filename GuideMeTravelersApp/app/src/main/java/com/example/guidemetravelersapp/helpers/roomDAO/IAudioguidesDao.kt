@@ -18,7 +18,7 @@ interface IAudioguidesDao {
     @Query("SELECT * FROM audioguides WHERE id = :audioguideId")
     suspend fun getAudioguide(audioguideId: String): Audioguide
 
-    @Query("SELECT * FROM audioguides WHERE macAddress IN (:beaconIds)")
-    suspend fun getProximityAudioguide(beaconIds: List<String>): List<Audioguide>
+    @Query("SELECT * FROM audioguides WHERE locationId = :locationId AND macAddress IN (:beaconIds)")
+    suspend fun getProximityAudioguide(locationId: String, beaconIds: List<String>): List<Audioguide>
 
 }

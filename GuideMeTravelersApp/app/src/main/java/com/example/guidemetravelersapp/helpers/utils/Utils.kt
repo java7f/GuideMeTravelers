@@ -31,4 +31,11 @@ object Utils {
     const val LOCATIONS_TABLE = "locations"
     const val AUDIOGUIDES_TABLE = "audioguides"
     const val LOCAL_URI = "local_uri"
+
+    //---------------------- NOTIFICATION CHANNEL/MANAGER ----------------------//
+    const val CHANNEL_ID = "com.example.guidemetravelersapp.channel1"
+    const val CHANNEL_NAME = "ProximityAudioguide"
+    const val CHANNEL_DESCRIPTION = "For recommended proximity audioguides"
+    const val NOTIFICATION_ID = 77
+    const val NOTIFICATION_TITLE = "Audioguides were detected near you!"
 }

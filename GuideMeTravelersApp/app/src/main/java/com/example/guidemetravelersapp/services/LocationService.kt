@@ -48,9 +48,9 @@ class LocationService(context: Context) {
         }
     }
 
-    suspend fun getProximityAudioguides(beaconIds: List<String>): List<Audioguide> {
+    suspend fun getProximityAudioguides(locationId: String, beaconIds: List<String>): List<Audioguide> {
         return coroutineScope {
-            val audioguidesResultTask = async { apiService.getProximityAudioguides("api/Locations/audioguide/getProximityAudioguides", beaconIds).body() }
+            val audioguidesResultTask = async { apiService.getProximityAudioguides("api/Locations/audioguide/getProximityAudioguides/$locationId", beaconIds).body() }
             audioguidesResultTask.await()!!
         }
     }

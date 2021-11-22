@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">GuideMeTravelersApp</string>
+    <string name="app_name">Guide Me Travelers</string>
     <string name="title_activity_login" translatable="false">LoginActivity</string>
     <string name="authorization_header" translatable="false">Authorization</string>
     <string name="username_label" translatable="false">Username</string>
@@ -43,7 +43,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="wishlist_removed">"Guide removed from wishlist"</string>
     <string name="no_guides_wishlist">"No guides in wishlist"</string>
     <string name="search_by_location">Search cities or countries</string>
-    <string name="title_activity_beacon_test">BeaconTestActivity</string>
+    <string name="title_activity_beacon_test" translatable="false">BeaconTestActivity</string>
     <string name="title_activity_download_test" translatable="false">DownloadTestActivity</string>
     <string name="offline_mode">Offline Mode</string>
 </resources>

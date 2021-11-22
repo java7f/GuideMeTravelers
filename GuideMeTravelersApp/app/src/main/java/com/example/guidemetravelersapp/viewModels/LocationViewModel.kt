@@ -59,6 +59,7 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
         Places.initialize(application, "AIzaSyAn7Hyeg5O-JKSoKUXRmG_I-KMThIDBcDI")
         placesClient = Places.createClient(application)
         getLocations()
+        RoutineManager.cancelRoutines()
     }
 
     fun getLocations() {
@@ -141,7 +142,7 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
                     var top3ScannedDevices = ASBLeScannerWrapper.scannedDevicesList.toSortedMap(
                         compareByDescending { ASBLeScannerWrapper.scannedDevicesList[it] })
                     val result =
-                        locationService.getProximityAudioguides(top3ScannedDevices.keys.toList().take(3))
+                        locationService.getProximityAudioguides(currentLocation.data!!.id, top3ScannedDevices.keys.toList().take(3))
                     proximityRecommendedAudioguides =
                         ApiResponse(data = result, inProgress = false)
                 } catch (e: Exception) {
@@ -167,8 +168,8 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
             if(!ASBLeScannerWrapper.scannedDevicesList.isNullOrEmpty()) {
                 try {
                     var top3ScannedDevices = ASBLeScannerWrapper.scannedDevicesList.toSortedMap(
-                        compareByDescending { com.example.guidemetravelersapp.helpers.ASBLeScannerWrapper.scannedDevicesList[it] })
-                    val result = offlineDatabase.audioguideDao().getProximityAudioguide(top3ScannedDevices.keys.toList().take(3))
+                        compareByDescending { ASBLeScannerWrapper.scannedDevicesList[it] })
+                    val result = offlineDatabase.audioguideDao().getProximityAudioguide(currentLocation.data!!.id, top3ScannedDevices.keys.toList().take(3))
                     proximityRecommendedAudioguides = ApiResponse(data = result, inProgress = false)
                 } catch (e: Exception) {
                     Log.d(LocationViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")

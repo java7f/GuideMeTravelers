@@ -23,11 +23,6 @@
             android:exported="true"
             android:label="@string/title_activity_beacon_test"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.ALL_APPS" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".views.audioGuideLocation.DownloadTestActivity"
@@ -103,7 +98,7 @@
         <activity
             android:name=".views.loginView.LoginActivity"
             android:exported="true"
-            android:label="@string/title_activity_login"
+            android:label="@string/app_name"
             android:theme="@style/Theme.GuideMeTravelersApp.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>

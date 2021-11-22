@@ -1,5 +1,7 @@
 package com.example.guidemetravelersapp.views.homescreen
 
+import android.app.NotificationManager
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -31,6 +33,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +42,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -46,12 +50,14 @@ import androidx.navigation.compose.*
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.viewData.GuideExperienceViewData
 import com.example.guidemetravelersapp.helpers.ASBLeScannerWrapper
+import com.example.guidemetravelersapp.helpers.RoutineManager
 import com.example.guidemetravelersapp.helpers.ScannerCallback
 import com.example.guidemetravelersapp.helpers.SessionManager
 import com.example.guidemetravelersapp.helpers.commonComposables.AutoCompleteTextView
 import com.example.guidemetravelersapp.helpers.commonComposables.FullsizeImage
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingBar
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
+import com.example.guidemetravelersapp.helpers.utils.Utils
 import com.example.guidemetravelersapp.services.LocationService
 import com.example.guidemetravelersapp.ui.theme.*
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
@@ -75,17 +81,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 class HomeScreen : ComponentActivity() {
+
     @RequiresApi(Build.VERSION_CODES.M)
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
     @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val model: HomescreenViewModel by viewModels()
         ASBLeScannerWrapper.initializeInstance(this, ScannerCallback)
         setContent {
             GuideMeTravelersAppTheme {
-                HomeScreenContent(model)
+                HomeScreenContent()
             }
         }
     }
@@ -96,7 +102,7 @@ class HomeScreen : ComponentActivity() {
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
-fun HomeScreenContent(model: HomescreenViewModel? = null) {
+fun HomeScreenContent() {
     val scaffoldState = rememberScaffoldState()
     val scope = rememberCoroutineScope() // handles open() & close() suspend functions
     val navController = rememberNavController()
@@ -105,7 +111,7 @@ fun HomeScreenContent(model: HomescreenViewModel? = null) {
         scaffoldState = scaffoldState,
         topBar = { AppBar(scaffoldState, scope) },
         content = { innerPadding -> Box(modifier = Modifier.padding(innerPadding)) {
-            ScreenController(navController, model!!) }
+            ScreenController(navController) }
         },
         drawerContent = { NavDrawer(scaffoldState, scope, navController) },
         drawerShape = RoundedCornerShape(topEnd = 10.dp, bottomEnd = 10.dp),
@@ -140,41 +146,42 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
 @ExperimentalPermissionsApi
 @ExperimentalFoundationApi
 @Composable
-fun ScaffoldContent(navController: NavHostController, model: HomescreenViewModel) {
+fun ScaffoldContent(navController: NavHostController, model: HomescreenViewModel = viewModel()) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val listState = rememberLazyListState()
-        LazyColumn(modifier = Modifier
-            .fillMaxSize()
-            .padding(15.dp),
-            state = listState) {
+
+    LazyColumn(modifier = Modifier
+        .fillMaxSize()
+        .padding(15.dp),
+        state = listState) {
+        item {
+            SearchView(textState,
+                Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 20.dp),
+                model
+            )
+            Text(text = "Available guides",
+                modifier = Modifier.padding(bottom = 15.dp),
+                style = MaterialTheme.typography.h6,
+                color = MaterialTheme.colors.onSecondary,
+                fontWeight = FontWeight.Bold)
+        }
+        if (model.guideExperienceViewData.inProgress) {
             item {
-                SearchView(textState,
-                    Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 20.dp),
-                    model
-                )
-                Text(text = "Available guides",
-                    modifier = Modifier.padding(bottom = 15.dp),
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.onSecondary,
-                    fontWeight = FontWeight.Bold)
-            }
-            if (model.guideExperienceViewData.inProgress) {
-                item {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        LoadingSpinner()
-                    }
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LoadingSpinner()
                 }
-            } else {
-                if (model.guideExperienceViewData.data != null) {
-                    itemsIndexed(model.guideExperienceViewData.data!!) { index, item ->
-                        UserCard(item, imgSize = 70.dp, navController = navController)
-                        Spacer(modifier = Modifier.height(15.dp))
-                    }
+            }
+        } else {
+            if (model.guideExperienceViewData.data != null) {
+                itemsIndexed(model.guideExperienceViewData.data!!) { index, item ->
+                    UserCard(item, imgSize = 70.dp, navController = navController)
+                    Spacer(modifier = Modifier.height(15.dp))
                 }
             }
         }
+    }
 }
 
 @Composable
@@ -380,7 +387,11 @@ fun UserCard(experienceViewData: GuideExperienceViewData, imgSize: Dp, navContro
                         color = MaterialTheme.colors.onSecondary,
                         fontWeight = FontWeight.Bold
                     )
-                    Row(Modifier.fillMaxWidth().padding(vertical = 5.dp).padding(end = 15.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 5.dp)
+                            .padding(end = 15.dp), verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = "${experienceViewData.guideAddress.city}, ${experienceViewData.guideAddress.country}",
                             style = MaterialTheme.typography.overline,
@@ -460,12 +471,12 @@ fun BottomBar(navController: NavHostController) {
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
 @Composable
-fun ScreenController(navController: NavHostController, model: HomescreenViewModel) {
+fun ScreenController(navController: NavHostController) {
     NavHost(
         navController = navController,
         startDestination = "guides",
         builder = {
-            composable(route = "guides", content = { ScaffoldContent(navController, model) })
+            composable(route = "guides", content = { ScaffoldContent(navController) })
             composable(route = "map", content = { AudioGuideMapContent(navController = navController) })
             composable(route = "chat", content = { ChatList(navController = navController) })
             composable(route = "wishlist", content = { WishlistContent(navHostController = navController) })
