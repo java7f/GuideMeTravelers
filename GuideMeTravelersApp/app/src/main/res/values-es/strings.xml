@@ -60,4 +60,6 @@
     <string name="confirm_permission">Confirmar</string>
     <string name="dismiss_permission">Rechazar</string>
     <string name="ondismiss_message">Habilita el permiso de ubicación en los ajustes del teléfono</string>
+    <string name="create_new_alert">Crear nueva alerta</string>
+    <string name="select_trip_dates">Escoge las fechas deseadas</string>
 </resources>

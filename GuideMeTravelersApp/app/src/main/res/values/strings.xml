@@ -69,4 +69,6 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="confirm_permission">Confirm</string>
     <string name="dismiss_permission">Dismiss</string>
     <string name="ondismiss_message">Go to app\'s settings and enable location access</string>
+    <string name="create_new_alert">Create new alert</string>
+    <string name="select_trip_dates">Select your desired dates</string>
 </resources>

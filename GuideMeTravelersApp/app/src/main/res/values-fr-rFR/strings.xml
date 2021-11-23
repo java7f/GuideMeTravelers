@@ -60,4 +60,6 @@
     <string name="confirm_permission">Confirmer</string>
     <string name="dismiss_permission">Rejeter</string>
     <string name="ondismiss_message">Allez dans les paramètres de l\'application et activez l\'accès à la localisation.</string>
+    <string name="create_new_alert">Créer une nouvelle alerte</string>
+    <string name="select_trip_dates">Sélectionnez vos dates souhaitées</string>
 </resources>

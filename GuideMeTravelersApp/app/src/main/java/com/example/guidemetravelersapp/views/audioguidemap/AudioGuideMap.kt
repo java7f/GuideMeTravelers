@@ -374,7 +374,7 @@ fun DisplayMap(
 
             for (location in locationViewModel.locations.data!!) {
                 val coordinates = LatLng(location.address.coordinates.latitude, location.address.coordinates.longitude)
-                var marker = it.addMarker(MarkerOptions().position(coordinates).title(location.name))
+                val marker = it.addMarker(MarkerOptions().position(coordinates).title(location.name))
                 marker!!.showInfoWindow()
                 it.moveCamera(CameraUpdateFactory.newLatLng(coordinates))
             }

@@ -70,7 +70,7 @@ fun ReservationRequestContent(experienceId: String = "", navHostController: NavH
                         style = MaterialTheme.typography.h6,
                     )
                     Text(
-                        text = "Santo Domingo",
+                        text = reservationViewModel.currentReservationRequest.address.city,
                         color = MaterialTheme.colors.primaryVariant,
                         style = MaterialTheme.typography.h6,
                     )
