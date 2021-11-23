@@ -145,12 +145,12 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
                     .padding(bottom = 10.dp),
                     navController,
                 locationViewModel)
-                MapScreen(
-                    modifier = Modifier.fillMaxHeight(),
-                    latitude = "50.94135408574933",
-                    longitude = "6.958866858783249",
-                    title = "Cologne Cathedral"
-                )
+                if(locationViewModel.currentCityLocation != null) {
+                    MapScreen(
+                        modifier = Modifier.fillMaxHeight(),
+                        locationViewModel
+                    )
+                }
             }
         )
     }
@@ -281,7 +281,7 @@ fun LocationCard(location: Location, tags: List<String>, navController: NavHostC
 
 @ExperimentalPermissionsApi
 @Composable
-fun MapScreen(modifier: Modifier? = Modifier, latitude: String = "", longitude: String = "", title: String = "") {
+fun MapScreen(modifier: Modifier? = Modifier, locationViewModel: LocationViewModel) {
     val mapView = rememberMapViewWithLifecycle()
     val context = LocalContext.current
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
@@ -299,9 +299,7 @@ fun MapScreen(modifier: Modifier? = Modifier, latitude: String = "", longitude: 
                 DisplayMap(
                     context = context,
                     mapView = mapView,
-                    latitude = latitude.toDouble(),
-                    longitude = longitude.toDouble(),
-                    title = title,
+                    locationViewModel = locationViewModel,
                     locationEnabled = false,
                     permissionManager = PackageManager.PERMISSION_DENIED,
                     modifier = modifier!!
@@ -343,9 +341,7 @@ fun MapScreen(modifier: Modifier? = Modifier, latitude: String = "", longitude: 
                 DisplayMap(
                     context = context,
                     mapView = mapView,
-                    latitude = latitude.toDouble(),
-                    longitude = longitude.toDouble(),
-                    title = title,
+                    locationViewModel = locationViewModel,
                     locationEnabled = false,
                     permissionManager = PackageManager.PERMISSION_DENIED,
                     modifier = modifier!!
@@ -354,16 +350,16 @@ fun MapScreen(modifier: Modifier? = Modifier, latitude: String = "", longitude: 
         },
         content = {
             // user has location permission enabled
-            DisplayMap(
-                context = context,
-                mapView = mapView,
-                latitude = latitude.toDouble(),
-                longitude = longitude.toDouble(),
-                title = title,
-                locationEnabled = true,
-                permissionManager = PackageManager.PERMISSION_GRANTED,
-                modifier = modifier!!
-            )
+            if(!locationViewModel.locations.inProgress) {
+                DisplayMap(
+                    context = context,
+                    mapView = mapView,
+                    locationViewModel = locationViewModel,
+                    locationEnabled = true,
+                    permissionManager = PackageManager.PERMISSION_GRANTED,
+                    modifier = modifier!!
+                )
+            }
         }
     )
 }
@@ -371,14 +367,18 @@ fun MapScreen(modifier: Modifier? = Modifier, latitude: String = "", longitude: 
 // Google Maps
 @Composable
 fun DisplayMap(
-    context: Context, mapView: MapView, latitude: Double,
-    longitude: Double, title: String, locationEnabled: Boolean,
+    context: Context, mapView: MapView, locationViewModel: LocationViewModel, locationEnabled: Boolean,
     permissionManager: Int, modifier: Modifier) {
     AndroidView(modifier = modifier, factory = { mapView }) { map ->
         map.getMapAsync {
-            val coordinates = LatLng(latitude, longitude)
-            it.addMarker(MarkerOptions().position(coordinates).title(title))
-            it.animateCamera(CameraUpdateFactory.newLatLngZoom(coordinates, 18f), 4000, null)
+
+            for (location in locationViewModel.locations.data!!) {
+                val coordinates = LatLng(location.address.coordinates.latitude, location.address.coordinates.longitude)
+                var marker = it.addMarker(MarkerOptions().position(coordinates).title(location.name))
+                marker!!.showInfoWindow()
+                it.moveCamera(CameraUpdateFactory.newLatLng(coordinates))
+            }
+            it.animateCamera(CameraUpdateFactory.zoomTo(12f), 4000, null)
 
             // condition to know when the location permission has been granted
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)

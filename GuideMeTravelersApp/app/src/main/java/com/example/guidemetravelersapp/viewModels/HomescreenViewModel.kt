@@ -1,9 +1,11 @@
 package com.example.guidemetravelersapp.viewModels
 
+import android.Manifest
 import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.location.Address
 import android.location.Geocoder
@@ -15,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.res.stringResource
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat.getSystemService
 import androidx.lifecycle.*
@@ -27,6 +30,8 @@ import com.example.guidemetravelersapp.helpers.utils.Utils
 import com.example.guidemetravelersapp.services.GuideExperieceViewDataService
 import com.example.guidemetravelersapp.services.GuideExperienceService
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
@@ -36,32 +41,55 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.lang.Exception
+import java.util.*
 
 class HomescreenViewModel(application: Application) : AndroidViewModel(application) {
     private val guideExperienceViewDataService: GuideExperieceViewDataService = GuideExperieceViewDataService(application)
     private var notificationManager: NotificationManager? = null
+    private var fusedLocationClient: FusedLocationProviderClient
 
     var guideExperienceViewData: ApiResponse<List<GuideExperienceViewData>> by mutableStateOf(ApiResponse(data = listOf(), inProgress = true))
 
     var locationSearchValue: String by mutableStateOf("")
+    var currentCityLocation: String by mutableStateOf("")
     var placesClient: PlacesClient
     var predictions: MutableList<AutocompletePrediction> = mutableListOf()
 
     init {
         Places.initialize(application, "AIzaSyAn7Hyeg5O-JKSoKUXRmG_I-KMThIDBcDI")
         placesClient = Places.createClient(application)
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
         fetchExperiencesViewData()
         notificationManager = getSystemService(application, NotificationManager::class.java) as NotificationManager
         createNotificationChannel(Utils.CHANNEL_ID, Utils.CHANNEL_NAME, Utils.CHANNEL_DESCRIPTION)
         registerScanRoutine()
     }
 
-    private fun fetchExperiencesViewData() {
+    fun fetchExperiencesViewData() {
         viewModelScope.launch {
             try {
-                val result = guideExperienceViewDataService.getExperiences()
-                guideExperienceViewData = ApiResponse(data = result, inProgress = false)
+                if (ActivityCompat.checkSelfPermission(
+                        getApplication(),
+                        Manifest.permission.ACCESS_FINE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                        getApplication(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                    ) != PackageManager.PERMISSION_GRANTED
+                ) {
+                    return@launch
+                }
+                else {
+                    val currentLocation = fusedLocationClient.lastLocation.await()
+                    val geocoder = Geocoder(getApplication(), Locale.getDefault())
+                    val addresses = geocoder.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1);
+                    if (addresses.size > 0) {
+                        currentCityLocation = addresses[0].locality
+                        val result = guideExperienceViewDataService.searchExperiences(currentCityLocation)
+                        guideExperienceViewData = ApiResponse(data = result, inProgress = false)
+                    }
+                }
             }
             catch (e: Exception) {
                 guideExperienceViewData = ApiResponse(inProgress = false, hasError = true, errorMessage = e.toString())
@@ -103,6 +131,7 @@ class HomescreenViewModel(application: Application) : AndroidViewModel(applicati
     fun onPlaceItemSelected(placeItem: AutocompletePrediction) {
         locationSearchValue = placeItem.getPrimaryText(null).toString()
         predictions = mutableListOf()
+        currentCityLocation = locationSearchValue
         searchExperiencesViewData(locationSearchValue)
     }
 

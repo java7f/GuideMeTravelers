@@ -1,12 +1,16 @@
 package com.example.guidemetravelersapp.viewModels
 
+import android.Manifest
 import android.app.Application
+import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.downloader.*
@@ -21,6 +25,8 @@ import com.example.guidemetravelersapp.helpers.models.ApiResponse
 import com.example.guidemetravelersapp.helpers.roomDatabases.GuideMeOffline
 import com.example.guidemetravelersapp.services.LocationService
 import com.example.guidemetravelersapp.views.audioGuideLocation.DownloadTestActivity
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
@@ -29,8 +35,10 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.lang.Exception
+import java.util.*
 
 class LocationViewModel(application: Application): AndroidViewModel(application), OnDownloadListener {
 
@@ -40,6 +48,9 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
     private val sessionManager: SessionManager = SessionManager(application)
     private var audioguidesToDownload: MutableList<Audioguide> = mutableListOf()
     private var currentDecryptedAudio: ByteArray by mutableStateOf(byteArrayOf())
+    private var fusedLocationClient: FusedLocationProviderClient
+
+    var currentCityLocation: android.location.Address? by mutableStateOf(null)
 
     var locations: ApiResponse<List<Location>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
     var audioguides: ApiResponse<List<Audioguide>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
@@ -58,7 +69,8 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
     init {
         Places.initialize(application, "AIzaSyAn7Hyeg5O-JKSoKUXRmG_I-KMThIDBcDI")
         placesClient = Places.createClient(application)
-        getLocations()
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
+        getCurrentGeocoderLocation()
         RoutineManager.cancelRoutines()
     }
 
@@ -72,7 +84,11 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
     fun getLocationsOnline() {
         viewModelScope.launch {
             try {
-                val result = locationService.getAllLocations()
+                val result = currentCityLocation?.locality?.let {
+                    locationService.getSearchLocations(
+                        it
+                    )
+                }
                 locations = ApiResponse(data = result, inProgress = false)
             }
             catch (e: Exception) {
@@ -415,5 +431,30 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
                 RoutineManager.mainHandler.postDelayed(this, 15000)
             }
         })
+    }
+
+    fun getCurrentGeocoderLocation() {
+        viewModelScope.launch {
+            if (ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+
+            }
+            else {
+                val currentLocation = fusedLocationClient.lastLocation.await()
+                val geocoder = Geocoder(getApplication(), Locale.getDefault())
+                val addresses = geocoder.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1);
+
+                if (addresses.size > 0) {
+                    currentCityLocation = addresses[0]
+                    getLocations()
+                }
+            }
+        }
     }
 }

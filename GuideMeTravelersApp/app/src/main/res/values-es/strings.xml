@@ -42,7 +42,7 @@
     <string name="wishlist">Guías guardados</string>
     <string name="tourist_alerts">Mis Alertas</string>
     <string name="guide_purposal">Propuestas de guías</string>
-    <string name="available_guides">Guías Disponibles</string>
+    <string name="available_guides">Guías Disponibles en</string>
     <string name="logout">Cerrar Sesión</string>
     <string name="available_places">Lugares disponibles con audioguías</string>
     <string name="audioguides">Audioguías</string>
@@ -55,4 +55,9 @@
     <string name="submit_rating">Calificar experiencia</string>
     <string name="experience_rated">Calificado</string>
     <string name="write_comment">Escribe un comentario</string>
+    <string name="location_permission_title">Petición de permiso de ubicación</string>
+    <string name="location_permission_content">La ubicación actual es importante para esta aplicación. Por favor, conceda el permiso.</string>
+    <string name="confirm_permission">Confirmar</string>
+    <string name="dismiss_permission">Rechazar</string>
+    <string name="ondismiss_message">Habilita el permiso de ubicación en los ajustes del teléfono</string>
 </resources>

@@ -51,7 +51,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="wishlist">Wishlist</string>
     <string name="tourist_alerts">My Alerts</string>
     <string name="guide_purposal">Guide Purposals</string>
-    <string name="available_guides">Available Guides</string>
+    <string name="available_guides">Available Guides in</string>
     <string name="logout">Logout</string>
     <string name="available_places">Available places with audioguides</string>
     <string name="audioguides">Audioguides</string>
@@ -64,4 +64,9 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="submit_rating">Rate Experience</string>
     <string name="experience_rated">Rated</string>
     <string name="write_comment">Write a comment</string>
+    <string name="location_permission_title">Current location permission request</string>
+    <string name="location_permission_content">The current location is important for this app. Please grant the permission.</string>
+    <string name="confirm_permission">Confirm</string>
+    <string name="dismiss_permission">Dismiss</string>
+    <string name="ondismiss_message">Go to app\'s settings and enable location access</string>
 </resources>

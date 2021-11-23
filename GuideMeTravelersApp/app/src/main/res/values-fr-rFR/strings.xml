@@ -42,7 +42,7 @@
     <string name="wishlist">Liste de souhaits</string>
     <string name="tourist_alerts">Mes alertes</string>
     <string name="guide_purposal">Guide des propositions</string>
-    <string name="available_guides">Guides disponibles</string>
+    <string name="available_guides">Guides disponibles en</string>
     <string name="logout">Déconnexion</string>
     <string name="available_places">Lieux disponibles avec audioguides</string>
     <string name="audioguides">Audioguides</string>
@@ -55,4 +55,9 @@
     <string name="submit_rating">Taux d\'expérience</string>
     <string name="experience_rated">Classé</string>
     <string name="write_comment">Écrire un commentaire</string>
+    <string name="location_permission_title">Demande d\'autorisation pour la localisation actuelle</string>
+    <string name="location_permission_content">L\'emplacement actuel est important pour cette application. Veuillez accorder cette permission.</string>
+    <string name="confirm_permission">Confirmer</string>
+    <string name="dismiss_permission">Rejeter</string>
+    <string name="ondismiss_message">Allez dans les paramètres de l\'application et activez l\'accès à la localisation.</string>
 </resources>

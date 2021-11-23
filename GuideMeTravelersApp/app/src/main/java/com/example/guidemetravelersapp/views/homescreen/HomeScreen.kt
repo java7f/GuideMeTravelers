@@ -1,9 +1,12 @@
 package com.example.guidemetravelersapp.views.homescreen
 
+import android.Manifest
 import android.app.NotificationManager
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -26,6 +29,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -67,6 +71,7 @@ import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTa
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideDescriptionExperience
 import com.example.guidemetravelersapp.views.experienceDetailsView.GuideRating
 import com.example.guidemetravelersapp.views.audioguidemap.AudioGuideMapContent
+import com.example.guidemetravelersapp.views.audioguidemap.DisplayMap
 import com.example.guidemetravelersapp.views.experienceHistoryView.ShowPastExperiences
 import com.example.guidemetravelersapp.views.audioguidemap.MapScreen
 import com.example.guidemetravelersapp.views.chatView.ChatList
@@ -76,6 +81,8 @@ import com.example.guidemetravelersapp.views.profileView.EditProfileContent
 import com.example.guidemetravelersapp.views.profileView.UserProfileInformation
 import com.example.guidemetravelersapp.views.wishlist.WishlistContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.PermissionRequired
+import com.google.accompanist.permissions.rememberPermissionState
 import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -158,39 +165,88 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
 fun ScaffoldContent(navController: NavHostController, model: HomescreenViewModel = viewModel()) {
     val textState = remember { mutableStateOf(TextFieldValue("")) }
     val listState = rememberLazyListState()
+    val context = LocalContext.current
+    val openDialog = remember { mutableStateOf(true) }
+    val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)    // Track if the user doesn't want to see the rationale any more
+    var doNotShowRationale by rememberSaveable { mutableStateOf(false) }
 
-    LazyColumn(modifier = Modifier
-        .fillMaxSize()
-        .padding(15.dp),
-        state = listState) {
-        item {
-            SearchView(textState,
-                Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 20.dp),
-                model
-            )
-            Text(text = stringResource(id = R.string.available_guides),
-                modifier = Modifier.padding(bottom = 15.dp),
-                style = MaterialTheme.typography.h6,
-                color = MaterialTheme.colors.onSecondary,
-                fontWeight = FontWeight.Bold)
-        }
-        if (model.guideExperienceViewData.inProgress) {
-            item {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    LoadingSpinner()
+    PermissionRequired(
+        permissionState = locationPermissionState,
+        permissionNotGrantedContent = {
+            if (openDialog.value) {
+                AlertDialog(
+                    onDismissRequest = { openDialog.value = false },
+                    title = { Text(text = stringResource(id = R.string.location_permission_title), fontWeight = FontWeight.Bold) },
+                    text = { Text(stringResource(id = R.string.location_permission_content)) },
+                    confirmButton = {
+                        TextButton(
+                            onClick = {
+                                openDialog.value = false
+                                locationPermissionState.launchPermissionRequest()
+                            }) {
+                            Text(text = stringResource(id = R.string.confirm_request), color = MaterialTheme.colors.primaryVariant)
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = {
+                                openDialog.value = false
+                                doNotShowRationale = true
+                            }
+                        ) {
+                            Text(text = stringResource(id = R.string.dismiss_permission), color = MaterialTheme.colors.primaryVariant)
+                        }
+                    },
+                )
+            }
+        },
+        permissionNotAvailableContent = {
+            Column {
+                Toast.makeText(context, stringResource(id = R.string.ondismiss_message), Toast.LENGTH_LONG).show()
+                Text(text = stringResource(id = R.string.ondismiss_message),
+                    modifier = Modifier.padding(bottom = 15.dp),
+                    style = MaterialTheme.typography.h6,
+                    color = MaterialTheme.colors.onSecondary,
+                    fontWeight = FontWeight.Bold)
+            }
+        },
+        content = {
+            // user has location permission enabled
+            model.fetchExperiencesViewData()
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()
+                .padding(15.dp),
+                state = listState) {
+                item {
+                    SearchView(textState,
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 20.dp),
+                        model
+                    )
+                    Text(text = stringResource(id = R.string.available_guides) + " ${model.currentCityLocation}",
+                        modifier = Modifier.padding(bottom = 15.dp),
+                        style = MaterialTheme.typography.subtitle1,
+                        color = MaterialTheme.colors.onSecondary,
+                        fontWeight = FontWeight.Bold)
+                }
+                if (model.guideExperienceViewData.inProgress) {
+                    item {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            LoadingSpinner()
+                        }
+                    }
+                } else {
+                    if (model.guideExperienceViewData.data != null) {
+                        itemsIndexed(model.guideExperienceViewData.data!!) { index, item ->
+                            UserCard(item, imgSize = 70.dp, navController = navController)
+                            Spacer(modifier = Modifier.height(15.dp))
+                        }
+                    }
                 }
             }
-        } else {
-            if (model.guideExperienceViewData.data != null) {
-                itemsIndexed(model.guideExperienceViewData.data!!) { index, item ->
-                    UserCard(item, imgSize = 70.dp, navController = navController)
-                    Spacer(modifier = Modifier.height(15.dp))
-                }
-            }
         }
-    }
+    )
 }
 
 @Composable
@@ -511,14 +567,6 @@ fun ScreenController(navController: NavHostController) {
             composable(route = "request_reservation/{experienceId}", content = { backStackEntry ->
                 ReservationRequestContent(backStackEntry.arguments?.getString("experienceId")!!, navController)
             })
-            composable(
-                route = "searchMap/{latitude}/{longitude}/{title}",
-                content = { backStackEntry -> MapScreen(
-                    latitude = backStackEntry.arguments?.getString("latitude")!!,
-                    longitude = backStackEntry.arguments?.getString("longitude")!!,
-                    title = backStackEntry.arguments?.getString("title")!!
-                )}
-            )
         }
     )
 }
