@@ -30,6 +30,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -191,7 +192,7 @@ fun LocationContent(locationId: String = "", model: LocationViewModel = viewMode
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 content = {
                                     Text(
-                                        text = "Audioguides",
+                                        text = stringResource(id = R.string.audioguides),
                                         fontSize = 18.sp,
                                         color = MaterialTheme.colors.onBackground,
                                         fontWeight = FontWeight.Bold,
@@ -221,7 +222,7 @@ fun LocationContent(locationId: String = "", model: LocationViewModel = viewMode
                         if(!model.proximityRecommendedAudioguides.data.isNullOrEmpty()) {
                             item {
                                 Text(
-                                    text = "Recommended Audioguides",
+                                    text = stringResource(id = R.string.near_you),
                                     fontSize = 18.sp,
                                     color = MaterialTheme.colors.onBackground,
                                     fontWeight = FontWeight.Bold,
@@ -239,6 +240,15 @@ fun LocationContent(locationId: String = "", model: LocationViewModel = viewMode
                             }
                         }
 
+                        item {
+                            Text(
+                                text = stringResource(id = R.string.all_exhibitions),
+                                fontSize = 18.sp,
+                                color = MaterialTheme.colors.onBackground,
+                                fontWeight = FontWeight.Bold,
+                                modifier = Modifier.padding(vertical = 10.dp, horizontal = 20.dp)
+                            )
+                        }
                         itemsIndexed(model.audioguides.data!!) { index, item ->
                             model.isAudioguideDownloaded(item.id)
                             LocationCard(item, scaffoldState, scope, model)

@@ -14,4 +14,5 @@ sealed class ReservationBase {
     var fromDate: Date = Date()
     var toDate: Date = Date()
     var price: Float = 0.0f
+    var address: Address = Address()
 }

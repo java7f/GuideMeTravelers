@@ -1,17 +1,20 @@
 package com.example.guidemetravelersapp.viewModels
 
 import android.app.Application
+import android.content.Intent
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.guidemetravelersapp.dataModels.User
 import com.example.guidemetravelersapp.helpers.SessionManager
 import com.example.guidemetravelersapp.helpers.models.ApiResponse
 import com.example.guidemetravelersapp.services.AuthenticationService
+import com.example.guidemetravelersapp.views.homescreen.HomeScreen
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
@@ -93,5 +96,9 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
      */
     fun getOfflineMode(): Boolean {
         return sessionManager.fetchOfflineMode()!!
+    }
+
+    fun signOutUser() {
+       profileService.signOut()
     }
 }

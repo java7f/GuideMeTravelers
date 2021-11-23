@@ -170,7 +170,7 @@ fun DateField(dateField: MutableState<TextFieldValue>, updateDate: (newDate: Dat
                 )
             ) { date ->
                 val formattedDate = date.format(
-                    DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                    DateTimeFormatter.ofPattern("dd-MM-yyyy")
                 )
                 dateField.value = TextFieldValue(formattedDate)
                 updateDate(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()))

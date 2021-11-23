@@ -37,4 +37,22 @@
     <string name="no_guides_wishlist">"No hay guías en la lista de deseos"</string>
     <string name="search_by_location">Busca ciudades o países</string>
     <string name="offline_mode">Modo sin conexión</string>
+    <string name="guides">Guías</string>
+    <string name="experiences_history">Historial de experiencias</string>
+    <string name="wishlist">Guías guardados</string>
+    <string name="tourist_alerts">Mis Alertas</string>
+    <string name="guide_purposal">Propuestas de guías</string>
+    <string name="available_guides">Guías Disponibles</string>
+    <string name="logout">Cerrar Sesión</string>
+    <string name="available_places">Lugares disponibles con audioguías</string>
+    <string name="audioguides">Audioguías</string>
+    <string name="near_you">Exhibiciones cerca de ti</string>
+    <string name="all_exhibitions">Todas las exhibiciones</string>
+    <string name="proximity_recomendation_title">Se encontraron audioguías cerca de ti</string>
+    <string name="proximity_recomendation_content">exhibiciones se encontraron cerca de ti</string>
+    <string name="goto_login">¿Ya estás registado?</string>
+    <string name="goto_register">¿No tienes cuenta?</string>
+    <string name="submit_rating">Calificar experiencia</string>
+    <string name="experience_rated">Calificado</string>
+    <string name="write_comment">Escribe un comentario</string>
 </resources>

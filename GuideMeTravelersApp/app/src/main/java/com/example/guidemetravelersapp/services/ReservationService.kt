@@ -24,4 +24,10 @@ class ReservationService(context: Context) {
             val insertReservationRequestTask = async { apiService.insertReservationRequest("api/Reservations/insertReservationRequest", experienceReservationRequest) }
         }
     }
+
+    suspend fun rateExperience(experienceReservation: ExperienceReservation) {
+        coroutineScope {
+            val rateExperienceTask = async { apiService.rateExperience("api/Reservations/rateReservation", experienceReservation) }
+        }
+    }
 }

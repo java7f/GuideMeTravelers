@@ -31,6 +31,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.User
+import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
 import com.example.guidemetravelersapp.viewModels.ChatViewModel
 import com.skydoves.landscapist.coil.CoilImage
 
@@ -53,9 +54,18 @@ fun ChatList(
                 fontWeight = FontWeight.Bold
             )
         }
-        itemsIndexed(chatViewModel.currentUserChannelList.keys.toList()) { index, item ->
-            chatViewModel.currentUserChannelList.get(item)?.let {
-                ChatCard(user = it,navController = navController)
+        if (chatViewModel.chatChannelsLoading) {
+            item {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LoadingSpinner()
+                }
+            }
+        }
+        else {
+            itemsIndexed(chatViewModel.currentUserChannelList.keys.toList()) { index, item ->
+                chatViewModel.currentUserChannelList.get(item)?.let {
+                    ChatCard(user = it,navController = navController)
+                }
             }
         }
     }

@@ -124,7 +124,16 @@ fun HomeScreenContent() {
 @Composable
 fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
     TopAppBar(
-        title = { Icon(painter = painterResource(id = R.drawable.logo_transparent), contentDescription = "Guide Me logo", modifier = Modifier.fillMaxWidth() ) },
+        title = {
+            Row(
+                Modifier.fillMaxSize(),
+                verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.Center
+            ) {
+                Icon(painter = painterResource(id = R.drawable.logo_transparent),
+                    contentDescription = "Guide Me logo",
+                )
+            }
+        },
         navigationIcon = {
             IconButton(onClick = { scope.launch { scaffoldState.drawerState.open() } }) {
                 Icon(imageVector = Icons.Default.Menu, contentDescription = "Drawer menu")
@@ -132,7 +141,7 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
         },
         actions = {
             IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Default.Language, contentDescription = "Translate")
+                Icon(imageVector = Icons.Default.Language, contentDescription = "Translate", tint = Color.Transparent)
             }
             IconButton(onClick = { /*TODO*/ }) {
                 Icon(imageVector = Icons.Default.Notifications, contentDescription = "Notifications")
@@ -161,7 +170,7 @@ fun ScaffoldContent(navController: NavHostController, model: HomescreenViewModel
                     .padding(bottom = 20.dp),
                 model
             )
-            Text(text = "Available guides",
+            Text(text = stringResource(id = R.string.available_guides),
                 modifier = Modifier.padding(bottom = 15.dp),
                 style = MaterialTheme.typography.h6,
                 color = MaterialTheme.colors.onSecondary,
@@ -246,11 +255,10 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                     }
                 )
                 Divider(thickness = 2.dp)
-                NavOption(title = "Guides", scaffoldState = scaffoldState, scope, navController, "guides")
-                NavOption(title = "History", scaffoldState = scaffoldState, scope, navController, "past_experiences")
-                NavOption(title = "Wishlist", scaffoldState = scaffoldState, scope, navController, "wishlist")
-                NavOption(title = "Become a Guide", scaffoldState = scaffoldState, scope, navController)
-                NavOption(title = "Alerts", scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = stringResource(id = R.string.guides), scaffoldState = scaffoldState, scope, navController, "guides")
+                NavOption(title = stringResource(id = R.string.experiences_history), scaffoldState = scaffoldState, scope, navController, "past_experiences")
+                NavOption(title = stringResource(id = R.string.wishlist), scaffoldState = scaffoldState, scope, navController, "wishlist")
+                NavOption(title = stringResource(id = R.string.tourist_alerts), scaffoldState = scaffoldState, scope, navController)
             }
         }
         Row(modifier = Modifier.weight(1f)) {
@@ -276,7 +284,7 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                 }
                 Divider(thickness = 2.dp)
                 Text(
-                    text = "Logout",
+                    text = stringResource(id = R.string.logout),
                     style = MaterialTheme.typography.subtitle1,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colors.onError,
@@ -284,7 +292,9 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = rememberRipple(color = MaterialTheme.colors.secondary),
-                            onClick = { scope.launch { scaffoldState.drawerState.close() } }
+                            onClick = {
+                                profileViewModel.signOutUser()
+                            }
                         )
                         .padding(16.dp)
                         .fillMaxWidth()

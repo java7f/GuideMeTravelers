@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
@@ -20,16 +21,20 @@ import androidx.compose.ui.res.painterResource
 
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.User
 import com.example.guidemetravelersapp.helpers.models.ScreenStateEnum
 import com.example.guidemetravelersapp.services.AuthenticationService
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
+import com.example.guidemetravelersapp.ui.theme.RobotoCondensed
 import com.example.guidemetravelersapp.ui.theme.Teal200
 import com.example.guidemetravelersapp.views.loginView.LoginActivity
 import kotlinx.coroutines.launch
@@ -73,7 +78,8 @@ class RegisterView : ComponentActivity() {
             val lastname = remember { mutableStateOf(TextFieldValue()) }
             val email = remember { mutableStateOf(TextFieldValue()) }
             val coroutineScope = rememberCoroutineScope()
-            Column(modifier = Modifier.padding(horizontal = 20.dp)
+            Column(modifier = Modifier
+                .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())){
                 Row(modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
@@ -153,8 +159,9 @@ class RegisterView : ComponentActivity() {
                         colors = ButtonDefaults.buttonColors(backgroundColor = MaterialTheme.colors.primary),
                         modifier = Modifier.fillMaxWidth()
                     ) {
+                        Spacer(modifier = Modifier.height(30.dp))
                         Row(horizontalArrangement = Arrangement.Center, modifier = Modifier.fillMaxWidth()){
-                            Text(stringResource(id = R.string.sign_up), color = Color.White)
+                            Text(stringResource(id = R.string.sign_up), color = Color.White, fontWeight = FontWeight.Bold)
                             if (uiState.value == ScreenStateEnum.IN_PROGRESS) {
                                 CircularProgressIndicator(
                                     color = Color.White,
@@ -166,7 +173,7 @@ class RegisterView : ComponentActivity() {
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(20.dp))
+                Spacer(modifier = Modifier.height(30.dp))
                 Divider(color = MaterialTheme.colors.onPrimary, thickness = 1.dp)
                 Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
                     Text(
@@ -175,33 +182,39 @@ class RegisterView : ComponentActivity() {
                         color = MaterialTheme.colors.onPrimary,
                     )
                 }
-                Spacer(modifier = Modifier.height(20.dp))
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {
-                    IconButton(
-                        onClick = { /*TODO*/ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.google),
-                            contentDescription = "Google",
-                            tint = Color.Unspecified
-                        )
-                    }
-                    IconButton(
-                        onClick = { /*TODO*/ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.facebook),
-                            contentDescription = "Facebook",
-                            tint = Color.Unspecified
-                        )
-                    }
-                    IconButton(
-                        onClick = { /*TODO*/ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.twitter),
-                            contentDescription = "Twitter",
-                            tint = Color.Unspecified
-                        )
-                    }
-                }
+                Spacer(modifier = Modifier.height(30.dp))
+                GoToLogin()
+            }
+        }
+    }
+
+    @Composable
+    fun GoToLogin() {
+        Spacer(modifier = Modifier.height(70.dp))
+        Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+            Row {
+                Text(
+                    text = stringResource(id = R.string.goto_login),
+                    color = MaterialTheme.colors.onSecondary,
+                    style = MaterialTheme.typography.subtitle1,
+                )
+
+                Text(
+                    text = stringResource(id = R.string.login_button),
+                    color = MaterialTheme.colors.primary,
+                    style = TextStyle(textDecoration = TextDecoration.Underline, fontFamily = RobotoCondensed, fontSize = 16.sp),
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .padding(start = 5.dp)
+                        .clickable {
+                            this@RegisterView.startActivity(
+                                Intent(
+                                    this@RegisterView,
+                                    LoginActivity::class.java
+                                )
+                            )
+                        }
+                )
             }
         }
     }

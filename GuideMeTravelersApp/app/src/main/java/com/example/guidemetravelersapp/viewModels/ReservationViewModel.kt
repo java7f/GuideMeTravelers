@@ -27,6 +27,7 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
     val currentReservationRequest: ExperienceReservationRequest by mutableStateOf(ExperienceReservationRequest())
     var initReservationRequestStatus: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = true))
     var newReservationRequestStatus: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = false))
+    var rateReservationRequestStatus: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = false))
 
     fun getPastExperiences() {
         viewModelScope.launch {
@@ -77,6 +78,22 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
             catch (e: Exception) {
                 initReservationRequestStatus = ApiResponse(data = false, inProgress = false, hasError = true, errorMessage = e.localizedMessage)
                 Log.d(ReservationViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
+            }
+        }
+    }
+
+    fun rateExperience(experienceReservation: ExperienceReservation) {
+        viewModelScope.launch {
+            try {
+                rateReservationRequestStatus = ApiResponse(false, true)
+                reservationService.rateExperience(experienceReservation)
+                rateReservationRequestStatus = ApiResponse(true, false)
+                pastExperienceReservations = ApiResponse(data = emptyList(), inProgress = true)
+                getPastExperiences()
+            }
+            catch (e: Exception) {
+                rateReservationRequestStatus = ApiResponse(true, false)
+                Log.d(ReservationViewModel::class.simpleName, "ERROR: $e")
             }
         }
     }

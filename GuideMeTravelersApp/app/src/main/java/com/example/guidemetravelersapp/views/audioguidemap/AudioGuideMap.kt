@@ -96,7 +96,7 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
                 contentAlignment = Alignment.Center,
                 content = {
                     Text(
-                        text = "Available places with audio guides",
+                        text = stringResource(id = R.string.available_places),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White

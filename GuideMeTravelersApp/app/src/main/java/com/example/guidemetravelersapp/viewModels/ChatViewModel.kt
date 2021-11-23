@@ -29,6 +29,7 @@ class ChatViewModel(application: Application): AndroidViewModel(application) {
 
     var currentMessage: String by mutableStateOf("")
     var currentChannelId: String by mutableStateOf("")
+    var chatChannelsLoading: Boolean by mutableStateOf(false)
     var messageList: List<Message> by mutableStateOf(emptyList())
     var currentUserChannelList: HashMap<ChatChannel, User> by mutableStateOf(HashMap())
 
@@ -82,6 +83,7 @@ class ChatViewModel(application: Application): AndroidViewModel(application) {
     fun updateChannelList(channelList: List<ChatChannel>) {
         if (channelList.isNotEmpty()) {
             viewModelScope.launch {
+                chatChannelsLoading = true
                 val currentUserId = profileService.getCurrentFirebaseUserId()!!
                 val channelsMap : MutableMap<ChatChannel, User> = HashMap()
                 channelList.forEach { chatChannel ->
@@ -91,6 +93,7 @@ class ChatViewModel(application: Application): AndroidViewModel(application) {
                     channelsMap.putIfAbsent(chatChannel, toUser!!)
                 }
                 currentUserChannelList = channelsMap as HashMap<ChatChannel, User>
+                chatChannelsLoading = false
             }
         }
     }

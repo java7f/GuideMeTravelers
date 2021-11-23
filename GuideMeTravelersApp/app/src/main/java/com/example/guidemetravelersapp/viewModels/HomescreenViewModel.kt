@@ -135,9 +135,12 @@ class HomescreenViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun displayNotification() {
+
+        val title = getApplication<Application>().resources.getString(R.string.proximity_recomendation_title)
+        val content = getApplication<Application>().resources.getString(R.string.proximity_recomendation_content)
         val notification = NotificationCompat.Builder(getApplication(), Utils.CHANNEL_ID)
-            .setContentTitle(Utils.NOTIFICATION_TITLE)
-            .setContentText("${ASBLeScannerWrapper.scannedDevicesList.size} audioguides were found near you")
+            .setContentTitle(title)
+            .setContentText("${ASBLeScannerWrapper.scannedDevicesList.size} $content")
             .setSmallIcon(R.drawable.logo_transparent)
             .setAutoCancel(true)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

@@ -46,4 +46,22 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="title_activity_beacon_test" translatable="false">BeaconTestActivity</string>
     <string name="title_activity_download_test" translatable="false">DownloadTestActivity</string>
     <string name="offline_mode">Offline Mode</string>
+    <string name="guides">Guides</string>
+    <string name="experiences_history">Experiences History</string>
+    <string name="wishlist">Wishlist</string>
+    <string name="tourist_alerts">My Alerts</string>
+    <string name="guide_purposal">Guide Purposals</string>
+    <string name="available_guides">Available Guides</string>
+    <string name="logout">Logout</string>
+    <string name="available_places">Available places with audioguides</string>
+    <string name="audioguides">Audioguides</string>
+    <string name="near_you">Exhibitions near you</string>
+    <string name="all_exhibitions">All exhibitions</string>
+    <string name="proximity_recomendation_title">Audioguides were detected near you!</string>
+    <string name="proximity_recomendation_content">exhibitions are near you</string>
+    <string name="goto_login">Already a member?</string>
+    <string name="goto_register">Not a member?</string>
+    <string name="submit_rating">Rate Experience</string>
+    <string name="experience_rated">Rated</string>
+    <string name="write_comment">Write a comment</string>
 </resources>
