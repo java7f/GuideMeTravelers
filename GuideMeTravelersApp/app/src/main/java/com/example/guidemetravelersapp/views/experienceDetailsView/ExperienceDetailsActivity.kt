@@ -204,7 +204,8 @@ fun Description(experienceDescription: String) {
     Spacer(modifier = Modifier.height(10.dp))
     Text(text = experienceDescription,
         color = MaterialTheme.colors.onSecondary,
-        modifier = Modifier.padding(horizontal = 15.dp)
+        modifier = Modifier.padding(horizontal = 15.dp),
+        style = MaterialTheme.typography.body1
     )
 }
 

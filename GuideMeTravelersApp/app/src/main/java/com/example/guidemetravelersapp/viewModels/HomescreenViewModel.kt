@@ -58,7 +58,6 @@ class HomescreenViewModel(application: Application) : AndroidViewModel(applicati
     var predictions: MutableList<AutocompletePrediction> = mutableListOf()
 
     init {
-        Places.initialize(application, "AIzaSyAn7Hyeg5O-JKSoKUXRmG_I-KMThIDBcDI")
         placesClient = Places.createClient(application)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(application)
         fetchExperiencesViewData()

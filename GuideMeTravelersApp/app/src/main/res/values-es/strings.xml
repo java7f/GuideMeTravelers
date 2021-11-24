@@ -62,4 +62,5 @@
     <string name="ondismiss_message">Habilita el permiso de ubicación en los ajustes del teléfono</string>
     <string name="create_new_alert">Crear nueva alerta</string>
     <string name="select_trip_dates">Escoge las fechas deseadas</string>
+    <string name="tourist_alert_location">A dónde vas?</string>
 </resources>

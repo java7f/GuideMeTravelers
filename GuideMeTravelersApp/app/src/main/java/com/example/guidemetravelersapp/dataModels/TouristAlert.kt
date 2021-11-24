@@ -8,6 +8,7 @@ data class TouristAlert(
     var touristPhotoUrl: String = "",
     var touristCountry: String = "",
     var touristDestination: String = "",
+    var alertComment: String = "",
     var fromDate: Date = Date(),
     var toDate: Date = Date(),
     var touristLanguages: List<String> = emptyList(),

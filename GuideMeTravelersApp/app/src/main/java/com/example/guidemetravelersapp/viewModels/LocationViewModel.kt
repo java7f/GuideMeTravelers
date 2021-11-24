@@ -164,7 +164,7 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
                 } catch (e: Exception) {
                     Log.d(
                         LocationViewModel::class.simpleName,
-                        "ERROR: ${e.localizedMessage}"
+                        "ERROR: $e"
                     )
                     proximityRecommendedAudioguides = ApiResponse(
                         inProgress = false,

@@ -33,15 +33,17 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.User
-import com.example.guidemetravelersapp.helpers.models.ScreenStateEnum
+import com.example.guidemetravelersapp.helpers.commonComposables.AutoCompleteTextView
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.MilitaryGreen200
 import com.example.guidemetravelersapp.viewModels.ProfileViewModel
@@ -50,7 +52,6 @@ import com.skydoves.landscapist.glide.GlideImage
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.DatePickerDefaults
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import java.net.URLEncoder
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -75,6 +76,8 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
     val birthday = remember { mutableStateOf(TextFieldValue(Instant.ofEpochMilli(profileViewModel.editableUser.birthdate.time).atZone(ZoneId.systemDefault()).toLocalDate().toString())) }
     val description = remember { mutableStateOf(TextFieldValue(text = profileViewModel.editableUser.aboutUser)) }
     var profileUri by remember { mutableStateOf<Uri?>(null) }
+
+    val textState = remember { mutableStateOf(TextFieldValue("")) }
 
     name.value = TextFieldValue(profileViewModel.editableUser.firstName)
     lastname.value = TextFieldValue(profileViewModel.editableUser.lastName)
@@ -230,8 +233,31 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 maxLines = 5
             )
-            Spacer(modifier = Modifier.height(10.dp))
-            CustomDropDown()
+            Spacer(modifier = Modifier.height(20.dp))
+            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()){
+                Text(
+                    text = stringResource(id = R.string.country) + ": ",
+                    style = MaterialTheme.typography.body1,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.onSecondary,
+                    modifier = Modifier.padding(start = 15.dp)
+                )
+                Text(
+                    text = profileViewModel.editableUser.country,
+                    style = MaterialTheme.typography.body1,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colors.onSecondary,
+                    modifier = Modifier.padding(start = 15.dp)
+                )
+            }
+            Spacer(modifier = Modifier.height(20.dp))
+            SearchView(
+                textState,
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 10.dp),
+                profileViewModel = profileViewModel
+            )
             Spacer(modifier = Modifier.height(20.dp))
             Row(horizontalArrangement = Arrangement.SpaceEvenly) {
                 Button(
@@ -373,4 +399,30 @@ fun ReadonlyTextField(value: TextFieldValue, onValueChange: (TextFieldValue) -> 
             )
         }
     )
+}
+
+@Composable
+fun SearchView(textState: MutableState<TextFieldValue>, modifier: Modifier, profileViewModel: ProfileViewModel) {
+
+    AutoCompleteTextView(
+        modifier = modifier,
+        query = textState.value.text,
+        queryLabel = stringResource(id = R.string.search_by_location),
+        onQueryChanged = { updateAddress ->
+            textState.value = TextFieldValue(updateAddress)
+            profileViewModel.onQueryChanged(updateAddress)
+        },
+        predictions = profileViewModel.predictions,
+        onClearClick = {
+            textState.value = TextFieldValue("")
+            profileViewModel.locationSearchValue = ""
+            profileViewModel.predictions = mutableListOf()
+        },
+        onItemClick = { place ->
+            textState.value = TextFieldValue(place.getPrimaryText(null).toString())
+            profileViewModel.onPlaceItemSelected(place)
+        }
+    ) {
+        Text("${it.getFullText(null)}", style = MaterialTheme.typography.caption)
+    }
 }

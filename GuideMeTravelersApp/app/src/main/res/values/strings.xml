@@ -71,4 +71,5 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="ondismiss_message">Go to app\'s settings and enable location access</string>
     <string name="create_new_alert">Create new alert</string>
     <string name="select_trip_dates">Select your desired dates</string>
+    <string name="tourist_alert_location">Where are you going?</string>
 </resources>

@@ -62,4 +62,5 @@
     <string name="ondismiss_message">Allez dans les paramètres de l\'application et activez l\'accès à la localisation.</string>
     <string name="create_new_alert">Créer une nouvelle alerte</string>
     <string name="select_trip_dates">Sélectionnez vos dates souhaitées</string>
+    <string name="tourist_alert_location">Où allez-vous?</string>
 </resources>

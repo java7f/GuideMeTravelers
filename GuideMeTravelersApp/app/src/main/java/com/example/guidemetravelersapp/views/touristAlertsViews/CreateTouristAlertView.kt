@@ -1,19 +1,28 @@
 package com.example.guidemetravelersapp.views.touristAlertsViews
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.helpers.commonComposables.AutoCompleteTextView
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
@@ -24,18 +33,22 @@ import java.time.ZoneId
 import java.util.*
 
 @Composable
-fun CreateTouristAlert(reservationViewModel: ReservationViewModel = viewModel()) {
+fun CreateTouristAlert(navHostController: NavHostController, reservationViewModel: ReservationViewModel = viewModel()) {
     val from = remember { mutableStateOf(TextFieldValue(
         Instant.ofEpochMilli(Date().time).atZone(
             ZoneId.systemDefault()).toLocalDate().toString())) }
     val to = remember { mutableStateOf(TextFieldValue(
         Instant.ofEpochMilli(Date().time).atZone(
             ZoneId.systemDefault()).toLocalDate().toString())) }
+    val comment = remember { mutableStateOf(TextFieldValue(text = reservationViewModel.currentTouristAlert.alertComment)) }
+    val focusManager = LocalFocusManager.current
+    val textState = remember { mutableStateOf(TextFieldValue("")) }
 
     Column(
         Modifier
             .fillMaxSize()
             .padding(15.dp)
+            .verticalScroll(rememberScrollState())
     ) {
         Row(
             modifier = Modifier
@@ -49,6 +62,26 @@ fun CreateTouristAlert(reservationViewModel: ReservationViewModel = viewModel())
                 fontWeight = FontWeight.Bold
             )
         }
+
+        Row(
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth(),
+        ) {
+            Text(
+                text = stringResource(id = R.string.tourist_alert_location),
+                color = MaterialTheme.colors.onSecondary,
+                style = MaterialTheme.typography.subtitle1,
+                fontWeight = FontWeight.Bold
+            )
+        }
+        SearchView(
+            textState,
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 10.dp),
+            reservationViewModel = reservationViewModel
+        )
 
         Row(
             modifier = Modifier
@@ -71,10 +104,10 @@ fun CreateTouristAlert(reservationViewModel: ReservationViewModel = viewModel())
             Text(
                 text = stringResource(id = R.string.from_date) + ":",
                 color = MaterialTheme.colors.onSecondary,
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.subtitle2
             )
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-                DateField(from, reservationViewModel::updateFromDate)
+                DateField(from, reservationViewModel::updateFromDateTouristAlert)
             }
         }
 
@@ -85,11 +118,92 @@ fun CreateTouristAlert(reservationViewModel: ReservationViewModel = viewModel())
             Text(
                 text = stringResource(id = R.string.to_date) + ":",
                 color = MaterialTheme.colors.onSecondary,
-                style = MaterialTheme.typography.h6
+                style = MaterialTheme.typography.subtitle2
             )
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.CenterEnd) {
-                DateField(to, reservationViewModel::updateToDate)
+                DateField(to, reservationViewModel::updateToDateTouristAlert)
             }
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(vertical = 25.dp)
+                .fillMaxWidth(),
+        ) {
+            Text(
+                text = stringResource(id = R.string.write_comment),
+                color = MaterialTheme.colors.onSecondary,
+                style = MaterialTheme.typography.subtitle1,
+                fontWeight = FontWeight.Bold
+            )
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth(),
+        ) {
+            OutlinedTextField(
+                value = comment.value,
+                onValueChange = { value ->
+                    comment.value = value
+                    reservationViewModel.currentTouristAlert.alertComment = value.text
+                },
+                label = { Text(text = stringResource(id = R.string.write_comment)) },
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
+                colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done
+                ),
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                maxLines = 5
+            )
+        }
+
+        Row(
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 50.dp)
+        ) {
+
+            OutlinedButton(
+                onClick = { navHostController.popBackStack() },
+            ) {
+                Text(
+                    stringResource(id = R.string.cancel),
+                    color = MaterialTheme.colors.onError,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 5.dp)
+                )
+            }
+
+            Button(
+                onClick = { reservationViewModel.insertTouristAlert(navHostController) },
+                colors = ButtonDefaults.buttonColors(
+                    backgroundColor = MaterialTheme.colors.primary
+                ),
+                enabled = !reservationViewModel.newTouristAlertStatus.inProgress,
+            ) {
+                Text(
+                    stringResource(id = R.string.confirm_request),
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(vertical = 5.dp)
+                )
+                if(reservationViewModel.newTouristAlertStatus.inProgress) {
+                    CircularProgressIndicator(
+                        color = Color.White,
+                        modifier = Modifier
+                            .padding(horizontal = 10.dp)
+                            .size(22.dp)
+                    )
+                }
+            }
+
         }
     }
 }

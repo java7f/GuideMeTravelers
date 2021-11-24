@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -79,10 +80,12 @@ import com.example.guidemetravelersapp.views.chatView.ChatView
 import com.example.guidemetravelersapp.views.experienceDetailsView.reservationRequest.ReservationRequestContent
 import com.example.guidemetravelersapp.views.profileView.EditProfileContent
 import com.example.guidemetravelersapp.views.profileView.UserProfileInformation
+import com.example.guidemetravelersapp.views.touristAlertsViews.CreateTouristAlert
 import com.example.guidemetravelersapp.views.wishlist.WishlistContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.android.libraries.places.api.Places
 import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -95,6 +98,7 @@ class HomeScreen : ComponentActivity() {
     @ExperimentalPermissionsApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Places.initialize(application, "AIzaSyAn7Hyeg5O-JKSoKUXRmG_I-KMThIDBcDI")
         ASBLeScannerWrapper.initializeInstance(this, ScannerCallback)
         setContent {
             GuideMeTravelersAppTheme {
@@ -314,7 +318,7 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                 NavOption(title = stringResource(id = R.string.guides), scaffoldState = scaffoldState, scope, navController, "guides")
                 NavOption(title = stringResource(id = R.string.experiences_history), scaffoldState = scaffoldState, scope, navController, "past_experiences")
                 NavOption(title = stringResource(id = R.string.wishlist), scaffoldState = scaffoldState, scope, navController, "wishlist")
-                NavOption(title = stringResource(id = R.string.tourist_alerts), scaffoldState = scaffoldState, scope, navController)
+                NavOption(title = stringResource(id = R.string.tourist_alerts), scaffoldState = scaffoldState, scope, navController, "tourist_alerts")
             }
         }
         Row(modifier = Modifier.weight(1f)) {
@@ -543,6 +547,7 @@ fun ScreenController(navController: NavHostController) {
         startDestination = "guides",
         builder = {
             composable(route = "guides", content = { ScaffoldContent(navController) })
+            composable(route = "tourist_alerts", content = { CreateTouristAlert(navController) })
             composable(route = "map", content = { AudioGuideMapContent(navController = navController) })
             composable(route = "chat", content = { ChatList(navController = navController) })
             composable(route = "wishlist", content = { WishlistContent(navHostController = navController) })

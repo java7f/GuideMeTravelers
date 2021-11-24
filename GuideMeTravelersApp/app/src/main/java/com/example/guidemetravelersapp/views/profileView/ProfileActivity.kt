@@ -131,7 +131,7 @@ fun EditProfileButton(navController: NavHostController, profileViewModel: Profil
 fun UserInfo(user: User = User(), navController: NavHostController) {
     Box(modifier = Modifier
         .size(120.dp)
-        .border(2.dp, MilitaryGreen200, CircleShape)
+        .border(2.dp, Teal200, CircleShape)
         .clickable { navController.navigate("profile_photo/photo=${URLEncoder.encode(user.profilePhotoUrl, "utf-8")}") }) {
         if (user.profilePhotoUrl.isNotEmpty()) {
             CoilImage(imageModel = user.profilePhotoUrl,
@@ -163,7 +163,7 @@ fun AboutUser(experienceDescription: String = "") {
     }
     Spacer(modifier = Modifier.height(10.dp))
     Text(text = experienceDescription,
-        color = MaterialTheme.colors.onPrimary,
+        color = MaterialTheme.colors.onSecondary,
         modifier = Modifier.padding(horizontal = 15.dp),
         style = MaterialTheme.typography.body1
     )
@@ -206,7 +206,7 @@ fun UserReview(touristReview: Review = Review()) {
             Text(
                 text = touristReview.userName,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.onPrimary,
+                color = MaterialTheme.colors.onSecondary,
                 fontSize = 15.sp
             )
             RatingBar(value = touristReview.ratingValue, size = 15.dp, isIndicator = true) {
@@ -214,7 +214,7 @@ fun UserReview(touristReview: Review = Review()) {
             Text(text = stringResource(R.string.loremipsum_test),
                 color = MaterialTheme.colors.onPrimary,
                 overflow = TextOverflow.Ellipsis,
-                maxLines = 2
+                maxLines = 3
             )
         }
     }

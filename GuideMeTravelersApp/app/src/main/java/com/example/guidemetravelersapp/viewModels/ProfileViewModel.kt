@@ -15,12 +15,21 @@ import com.example.guidemetravelersapp.helpers.SessionManager
 import com.example.guidemetravelersapp.helpers.models.ApiResponse
 import com.example.guidemetravelersapp.services.AuthenticationService
 import com.example.guidemetravelersapp.views.homescreen.HomeScreen
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.AutocompletePrediction
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
+import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.launch
 import java.lang.Exception
 
 class ProfileViewModel(application: Application) : AndroidViewModel(application) {
     private val profileService: AuthenticationService = AuthenticationService(application)
     private val sessionManager: SessionManager = SessionManager(application)
+
+    var placesClient: PlacesClient = Places.createClient(application)
+    var locationSearchValue: String by mutableStateOf("")
+    var predictions: MutableList<AutocompletePrediction> = mutableListOf()
 
     var profileData: ApiResponse<User> by mutableStateOf(ApiResponse(data = User(), inProgress = true))
     var updateProfileResult: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = false))
@@ -100,5 +109,27 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
 
     fun signOutUser() {
        profileService.signOut()
+    }
+
+    fun onQueryChanged(inputText: String) {
+        locationSearchValue = inputText
+        val request =
+            FindAutocompletePredictionsRequest.builder()
+                .setQuery(inputText)
+                .build()
+
+        placesClient.findAutocompletePredictions(request)
+            .addOnSuccessListener { response: FindAutocompletePredictionsResponse ->
+                predictions = mutableListOf()
+                for (prediction in response.autocompletePredictions) {
+                    predictions.add(prediction)
+                }
+            }
+    }
+
+    fun onPlaceItemSelected(placeItem: AutocompletePrediction) {
+        locationSearchValue = placeItem.getPrimaryText(null).toString()
+        predictions = mutableListOf()
+        editableUser.country = locationSearchValue
     }
 }

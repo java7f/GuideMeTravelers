@@ -1,6 +1,7 @@
 package com.example.guidemetravelersapp.views.experienceHistoryView
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -39,6 +40,7 @@ import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
 import com.example.guidemetravelersapp.ui.theme.AcceptGreen
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.ui.theme.Teal200
+import com.example.guidemetravelersapp.viewModels.LocationViewModel
 import com.example.guidemetravelersapp.viewModels.ReservationViewModel
 import com.gowtham.ratingbar.RatingBar
 import com.gowtham.ratingbar.RatingBarStyle
@@ -165,6 +167,9 @@ fun PastExperienceCardContent(experiencieReservation: ExperienceReservation, res
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
+        Log.i(LocationViewModel::class.simpleName,
+            experiencieReservation.experienceRating.ratingValue.toString()
+        )
         if(experiencieReservation.experienceRating.ratingValue <= 0)
             RateExperience(experiencieReservation = experiencieReservation, reservationViewModel)
         else
@@ -215,11 +220,11 @@ fun RateExperience(experiencieReservation: ExperienceReservation, reservationVie
             Row(horizontalArrangement = Arrangement.Center){
                 Icon(imageVector = Icons.Filled.Send,
                     contentDescription = null,
-                    tint = MaterialTheme.colors.onSecondary,
+                    tint = Color.White,
                     modifier = Modifier
                         .size(20.dp)
                         .padding(end = 5.dp))
-                Text(stringResource(id = R.string.submit_rating), color = MaterialTheme.colors.onSecondary)
+                Text(stringResource(id = R.string.submit_rating), color = Color.White)
                 if(reservationViewModel.rateReservationRequestStatus.inProgress) {
                     CircularProgressIndicator(
                         color = Color.White,
