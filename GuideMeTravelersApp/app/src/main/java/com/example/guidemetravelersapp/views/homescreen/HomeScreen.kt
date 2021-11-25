@@ -78,6 +78,7 @@ import com.example.guidemetravelersapp.views.audioguidemap.MapScreen
 import com.example.guidemetravelersapp.views.chatView.ChatList
 import com.example.guidemetravelersapp.views.chatView.ChatView
 import com.example.guidemetravelersapp.views.experienceDetailsView.reservationRequest.ReservationRequestContent
+import com.example.guidemetravelersapp.views.experienceHistoryView.ReservationsManagement
 import com.example.guidemetravelersapp.views.profileView.EditProfileContent
 import com.example.guidemetravelersapp.views.profileView.UserProfileInformation
 import com.example.guidemetravelersapp.views.touristAlertsViews.AlertsManagement
@@ -317,7 +318,7 @@ fun NavDrawer(scaffoldState: ScaffoldState,
                 )
                 Divider(thickness = 2.dp)
                 NavOption(title = stringResource(id = R.string.guides), scaffoldState = scaffoldState, scope, navController, "guides")
-                NavOption(title = stringResource(id = R.string.experiences_history), scaffoldState = scaffoldState, scope, navController, "past_experiences")
+                NavOption(title = stringResource(id = R.string.reservations_overview), scaffoldState = scaffoldState, scope, navController, "past_experiences")
                 NavOption(title = stringResource(id = R.string.wishlist), scaffoldState = scaffoldState, scope, navController, "wishlist")
                 NavOption(title = stringResource(id = R.string.tourist_alerts), scaffoldState = scaffoldState, scope, navController, "tourist_alerts")
             }
@@ -563,7 +564,7 @@ fun ScreenController(navController: NavHostController) {
 
             composable(route = "profile", content = { UserProfileInformation(navController = navController) })
 
-            composable(route = "past_experiences", content = { ShowPastExperiences() })
+            composable(route = "past_experiences", content = { ReservationsManagement() })
 
             composable(route = "profile_photo/photo={photo_url}", content = { backStackEntry ->
                 FullsizeImage(backStackEntry.arguments?.getString("photo_url")!!)

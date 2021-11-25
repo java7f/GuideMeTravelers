@@ -32,6 +32,8 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
     var predictions: MutableList<AutocompletePrediction> = mutableListOf()
 
     var pastExperienceReservations: ApiResponse<List<ExperienceReservation>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
+    var upcomingExperienceReservations: ApiResponse<List<ExperienceReservation>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
+    var touristReservationRequests: ApiResponse<List<ExperienceReservationRequest>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
     val currentReservationRequest: ExperienceReservationRequest by mutableStateOf(ExperienceReservationRequest())
     var currentTouristAlert: TouristAlert by mutableStateOf(TouristAlert())
     var initReservationRequestStatus: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = true))
@@ -45,6 +47,7 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
 
     var acceptGuideOffer: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = false))
     var rejectGuideOffer: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = false))
+    var deleteTouristAlertStatus: ApiResponse<Boolean> by mutableStateOf(ApiResponse(data = false, inProgress = false))
 
     init {
         initCurrentTouristAlert()
@@ -60,6 +63,34 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
             catch (e: Exception) {
                 Log.d(ReservationViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
                 pastExperienceReservations = ApiResponse(inProgress = false, hasError = true, errorMessage = "")
+            }
+        }
+    }
+
+    fun getUpcomingExperiences() {
+        viewModelScope.launch {
+            val currentTouristId = authService.getCurrentFirebaseUserId()
+            try {
+                val result = currentTouristId?.let { reservationService.getUpcomingExperiences(it) }
+                upcomingExperienceReservations = ApiResponse(data = result, inProgress = false)
+            }
+            catch (e: Exception) {
+                Log.d(ReservationViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
+                upcomingExperienceReservations = ApiResponse(inProgress = false, hasError = true, errorMessage = "")
+            }
+        }
+    }
+
+    fun getRequestReservationsForTourist() {
+        viewModelScope.launch {
+            val currentTouristId = authService.getCurrentFirebaseUserId()
+            try {
+                val result = currentTouristId?.let { reservationService.getRequestReservationsForTourist(it) }
+                touristReservationRequests = ApiResponse(data = result, inProgress = false)
+            }
+            catch (e: Exception) {
+                Log.d(ReservationViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
+                touristReservationRequests = ApiResponse(inProgress = false, hasError = true, errorMessage = "")
             }
         }
     }
@@ -148,6 +179,21 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
             }
             catch (e: Exception) {
                 rejectGuideOffer = ApiResponse(true, false)
+                Log.d(ReservationViewModel::class.simpleName, "ERROR: $e")
+            }
+        }
+    }
+
+    fun deleteTouristAlert(touristAlertId: String) {
+        viewModelScope.launch {
+            try {
+                deleteTouristAlertStatus = ApiResponse(false, true)
+                reservationService.deleteTouristAlert(touristAlertId)
+                deleteTouristAlertStatus = ApiResponse(true, false)
+                getTouristAlerts()
+            }
+            catch (e: Exception) {
+                deleteTouristAlertStatus = ApiResponse(true, false)
                 Log.d(ReservationViewModel::class.simpleName, "ERROR: $e")
             }
         }

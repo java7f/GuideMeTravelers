@@ -8,6 +8,12 @@ interface IReservationService {
     @GET
     suspend fun getPastExperiencesForTourist(@Url url:String) : Response<List<ExperienceReservation>>
 
+    @GET
+    suspend fun getUpcomingExperiencesForTourist(@Url url:String) : Response<List<ExperienceReservation>>
+
+    @GET
+    suspend fun getRequestReservationsForTourist(@Url url:String) : Response<List<ExperienceReservationRequest>>
+
     @POST
     suspend fun insertReservationRequest(@Url url:String, @Body body: ExperienceReservationRequest) : Response<Unit>
 
@@ -28,4 +34,7 @@ interface IReservationService {
 
     @GET
     suspend fun rejectGuideOffer(@Url url: String) : Response<Unit>
+
+    @DELETE
+    suspend fun deleteTouristAlert(@Url url: String) : Response<Unit>
 }

@@ -25,7 +25,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="country">Country</string>
     <string name="Save">Save</string>
     <string name="title_activity_audio_guide_location" translatable="false">AudioGuideLocationActivity</string>
-    <string name="past_experiences">Past experiences</string>
+    <string name="reservations_overview">Reservations overview</string>
     <string name="destination">Destination</string>
     <string name="from_to">Date</string>
     <string name="guide_name">Experience with</string>
@@ -80,4 +80,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="add_alert">Create alert</string>
     <string name="accept_request">Accept</string>
     <string name="rejet_request">Reject</string>
+    <string name="delete_alert_title">Delete alert confiirmation</string>
+    <string name="delete_alert_content">Are you sure you want to delete this alert?</string>
+    <string name="upcoming_reservations">Upcoming reservations</string>
+    <string name="pending">Pending</string>
+    <string name="accepted">Accepted</string>
+    <string name="rejected">Rejected</string>
+    <string name="reservation_requests">Reservation Requests</string>
+    <string name="past_experiences">Past Experiences</string>
 </resources>

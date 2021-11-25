@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.viewModels
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
@@ -15,7 +14,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircleOutline
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Send
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +30,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.ExperienceReservation
@@ -47,8 +44,6 @@ import com.gowtham.ratingbar.RatingBarStyle
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.*
-import kotlin.math.exp
 
 class ExperienceHistoryActivity : ComponentActivity() {
     @ExperimentalFoundationApi
@@ -67,17 +62,6 @@ class ExperienceHistoryActivity : ComponentActivity() {
 fun ShowPastExperiences(reservationViewModel: ReservationViewModel = viewModel()) {
     reservationViewModel.getPastExperiences()
     LazyColumn(Modifier.fillMaxSize())  {
-        stickyHeader {
-            Text(
-                text = stringResource(id = R.string.past_experiences),
-                style = MaterialTheme.typography.h5,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colors.onSecondary,
-                modifier = Modifier
-                    .padding(start = 10.dp)
-                    .padding(vertical = 25.dp)
-            )
-        }
         if (reservationViewModel.pastExperienceReservations.inProgress) {
             item {
                 Box(modifier = Modifier.fillMaxSize()) {

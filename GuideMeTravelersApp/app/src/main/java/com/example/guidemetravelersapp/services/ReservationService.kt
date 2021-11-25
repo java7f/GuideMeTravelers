@@ -21,6 +21,20 @@ class ReservationService(context: Context) {
         }
     }
 
+    suspend fun getUpcomingExperiences(touristId: String): List<ExperienceReservation> {
+        return coroutineScope {
+            val getPastReservationsTask = async { apiService.getUpcomingExperiencesForTourist("api/Reservations/getTouristReservations/$touristId").body() }
+            getPastReservationsTask.await()!!
+        }
+    }
+
+    suspend fun getRequestReservationsForTourist(touristId: String): List<ExperienceReservationRequest> {
+        return coroutineScope {
+            val getPastReservationsTask = async { apiService.getRequestReservationsForTourist("api/Reservations/requestForTourist/$touristId").body() }
+            getPastReservationsTask.await()!!
+        }
+    }
+
     suspend fun insertReservationRequest(experienceReservationRequest: ExperienceReservationRequest) {
         coroutineScope {
             val insertReservationRequestTask = async { apiService.insertReservationRequest("api/Reservations/insertReservationRequest", experienceReservationRequest) }
@@ -56,6 +70,13 @@ class ReservationService(context: Context) {
     suspend fun acceptGuideOffer(guideOfferId: String) {
         return  coroutineScope {
             val getReservationTask = async { apiService.acceptGuideOffer("api/TouristAlert/guideOffers/accept/$guideOfferId").body() }
+            getReservationTask.await()!!
+        }
+    }
+
+    suspend fun deleteTouristAlert(touristAlertId: String) {
+        return  coroutineScope {
+            val getReservationTask = async { apiService.deleteTouristAlert("api/TouristAlert/delete/$touristAlertId").body() }
             getReservationTask.await()!!
         }
     }

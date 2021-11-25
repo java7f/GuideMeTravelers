@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.DoNotDisturb
 import androidx.compose.material.icons.filled.EventAvailable
 import androidx.compose.material.icons.filled.Explore
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,7 +29,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.dataModels.TouristAlert
+import com.example.guidemetravelersapp.helpers.commonComposables.Failed
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
+import com.example.guidemetravelersapp.helpers.commonComposables.SuccessCheckmark
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.viewModels.ReservationViewModel
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
@@ -93,6 +96,11 @@ fun TouristAlert(touristAlert: TouristAlert, touristAlertViewModel: ReservationV
     val simpleDateFormat = SimpleDateFormat(pattern)
     val from: String = simpleDateFormat.format(touristAlert.fromDate)
     val to: String = simpleDateFormat.format(touristAlert.toDate)
+    val openConfirmationDialog = remember { mutableStateOf(false) }
+
+    if (openConfirmationDialog.value) {
+        DeleteAlertConfirmation(openDialog = openConfirmationDialog, touristAlert = touristAlert, touristAlertViewModel = touristAlertViewModel)
+    }
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -119,7 +127,7 @@ fun TouristAlert(touristAlert: TouristAlert, touristAlertViewModel: ReservationV
                                 modifier = Modifier.weight(1f)
                             )
                             OutlinedButton(
-                                onClick = {  },
+                                onClick = { openConfirmationDialog.value = true },
                                 border = BorderStroke(1.dp, color = CancelRed),
                                 content = {
                                     Icon(imageVector = Icons.Default.DoNotDisturb,
@@ -170,5 +178,49 @@ fun TouristAlert(touristAlert: TouristAlert, touristAlertViewModel: ReservationV
                 }
             )
         }
+    )
+}
+
+@Composable
+fun DeleteAlertConfirmation(openDialog: MutableState<Boolean>, touristAlert: TouristAlert, touristAlertViewModel: ReservationViewModel) {
+    AlertDialog(
+        onDismissRequest = { openDialog.value = false },
+        title = {
+            Text(text = stringResource(id = R.string.delete_alert_title), fontWeight = FontWeight.Bold)
+        },
+        text = {
+            Column {
+                Text(stringResource(id = R.string.delete_alert_content) , Modifier.padding(bottom = 10.dp))
+                if(touristAlertViewModel.deleteTouristAlertStatus.inProgress) {
+                    LoadingSpinner()
+                }
+                else if (!touristAlertViewModel.deleteTouristAlertStatus.inProgress
+                    && !touristAlertViewModel.deleteTouristAlertStatus.hasError
+                    && touristAlertViewModel.deleteTouristAlertStatus.data!!) {
+                    SuccessCheckmark()
+                }
+                else if (!touristAlertViewModel.deleteTouristAlertStatus.inProgress && touristAlertViewModel.deleteTouristAlertStatus.hasError) {
+                    Failed()
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = {
+                    touristAlertViewModel.deleteTouristAlert(touristAlert.id)
+                }
+            ) {
+                Text(text = stringResource(id = R.string.confirm_permission), color = MaterialTheme.colors.onSecondary)
+            }
+        },
+        dismissButton = {
+            TextButton(
+                onClick = {
+                    openDialog.value = false
+                }
+            ) {
+                Text(text = stringResource(id = R.string.dismiss_permission), color = MaterialTheme.colors.onError)
+            }
+        },
     )
 }

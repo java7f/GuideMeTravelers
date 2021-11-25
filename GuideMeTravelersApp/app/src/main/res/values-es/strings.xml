@@ -21,7 +21,7 @@
     <string name="description">Descripción</string>
     <string name="country">País</string>
     <string name="Save">Guardar</string>
-    <string name="past_experiences">Experiencias pasadas</string>
+    <string name="reservations_overview">Experiencias pasadas</string>
     <string name="destination">Destino</string>
     <string name="from_to">Fecha</string>
     <string name="guide_name">Experiencia con</string>
@@ -72,4 +72,12 @@
     <string name="add_alert">Crear alerta</string>
     <string name="accept_request">Aceptar</string>
     <string name="rejet_request">Rechazar</string>
+    <string name="delete_alert_title">Eliminación de alerta</string>
+    <string name="delete_alert_content">¿Seguro que quieres eliminar esta alerta?</string>
+    <string name="upcoming_reservations">Reservaciones abiertas</string>
+    <string name="pending">Pendiente</string>
+    <string name="accepted">Aceptada</string>
+    <string name="rejected">Rechazada</string>
+    <string name="reservation_requests">Peticiones de reserva</string>
+    <string name="past_experiences">Experiencias Pasadas</string>
 </resources>

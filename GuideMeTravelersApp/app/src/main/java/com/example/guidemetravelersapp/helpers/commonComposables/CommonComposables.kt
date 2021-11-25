@@ -10,7 +10,9 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -27,6 +29,8 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.guidemetravelersapp.R
+import com.example.guidemetravelersapp.ui.theme.AcceptGreen
+import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.skydoves.landscapist.coil.CoilImage
 
 @Composable
@@ -159,5 +163,30 @@ fun <T> AutoCompleteTextView(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun SuccessCheckmark() {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+        Icon(
+            imageVector = Icons.Default.CheckCircleOutline,
+            contentDescription = "Success",
+            tint = AcceptGreen,
+            modifier = Modifier.size(20.dp)
+        )
+    }
+}
+
+@Composable
+fun Failed() {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+        Icon(
+            imageVector = Icons.Default.ErrorOutline,
+            contentDescription = "Error",
+            tint = CancelRed,
+            modifier = Modifier.size(20.dp)
+        )
+        Text(text = "Error", color = CancelRed)
     }
 }
