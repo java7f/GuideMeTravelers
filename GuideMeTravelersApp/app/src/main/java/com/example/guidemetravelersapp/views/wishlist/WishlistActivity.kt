@@ -63,30 +63,33 @@ fun WishlistContent(
         modifier = Modifier
             .padding(top = 20.dp, start = 20.dp, end = 20.dp)
             .fillMaxSize(),
-        content = { item {
-            Text(
-                text = stringResource(id = R.string.possible_guides),
-                color = MaterialTheme.colors.onSecondary,
-                fontSize = 30.sp,
-                modifier = Modifier.padding(bottom = 20.dp)
-            )
-            if(experienceModel.userGuideExps.data.isNullOrEmpty()) {
-                Text(text = stringResource(id = R.string.no_guides_wishlist))
-            }
-        }
-            itemsIndexed(experienceModel.userGuideExps.data!!) {index, item ->
-                UserCard(
-                    name = item.guideFirstName,
-                    lastname = item.guideLastName,
-                    imageUrl = item.guidePhotoUrl,
-                    imgSize = 70.dp,
-                    rating = item.guideRating,
-                    tags = item.experienceTags,
-                    experienceId = item.id,
-                    navController = navHostController!!,
-                    profileViewModel = profileViewModel
+        content = {
+            item {
+                Text(
+                    text = stringResource(id = R.string.possible_guides),
+                    color = MaterialTheme.colors.onSecondary,
+                    fontSize = 30.sp,
+                    modifier = Modifier.padding(bottom = 20.dp)
                 )
-                Spacer(modifier = Modifier.height(15.dp))
+                if(experienceModel.userGuideExps.data.isNullOrEmpty()) {
+                    Text(text = stringResource(id = R.string.no_guides_wishlist))
+                }
+            }
+            if(!experienceModel.userGuideExps.data.isNullOrEmpty()) {
+                itemsIndexed(experienceModel.userGuideExps.data!!) {index, item ->
+                    UserCard(
+                        name = item.guideFirstName,
+                        lastname = item.guideLastName,
+                        imageUrl = item.guidePhotoUrl,
+                        imgSize = 70.dp,
+                        rating = item.guideRating,
+                        tags = item.experienceTags,
+                        experienceId = item.id,
+                        navController = navHostController!!,
+                        profileViewModel = profileViewModel
+                    )
+                    Spacer(modifier = Modifier.height(15.dp))
+                }
             }
         }
     )

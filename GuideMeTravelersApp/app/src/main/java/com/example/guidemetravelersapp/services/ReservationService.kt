@@ -3,6 +3,7 @@ package com.example.guidemetravelersapp.services
 import android.content.Context
 import com.example.guidemetravelersapp.dataModels.ExperienceReservation
 import com.example.guidemetravelersapp.dataModels.ExperienceReservationRequest
+import com.example.guidemetravelersapp.dataModels.GuidingOffer
 import com.example.guidemetravelersapp.dataModels.TouristAlert
 import com.example.guidemetravelersapp.helpers.RetrofitInstance
 import com.example.guidemetravelersapp.interfaces.IReservationService
@@ -35,6 +36,34 @@ class ReservationService(context: Context) {
     suspend fun rateExperience(experienceReservation: ExperienceReservation) {
         coroutineScope {
             val rateExperienceTask = async { apiService.rateExperience("api/Reservations/rateReservation", experienceReservation) }
+        }
+    }
+
+    suspend fun getTouristAlerts(currentUserId: String): List<TouristAlert> {
+        return coroutineScope {
+            val alertsTask = async { apiService.getTouristAlerts("api/TouristAlert/alerts/$currentUserId").body() }
+            alertsTask.await()!!
+        }
+    }
+
+    suspend fun getGuideOffersForTourist(currentUserId: String): List<GuidingOffer> {
+        return coroutineScope {
+            val offersTask = async { apiService.getGuideOffersForTourist("api/TouristAlert/guideOffers/$currentUserId").body() }
+            offersTask.await()!!
+        }
+    }
+
+    suspend fun acceptGuideOffer(guideOfferId: String) {
+        return  coroutineScope {
+            val getReservationTask = async { apiService.acceptGuideOffer("api/TouristAlert/guideOffers/accept/$guideOfferId").body() }
+            getReservationTask.await()!!
+        }
+    }
+
+    suspend fun rejectGuideOffer(guideOfferId: String) {
+        return  coroutineScope {
+            val getReservationTask = async { apiService.rejectGuideOffer("api/TouristAlert/guideOffers/reject/$guideOfferId").body() }
+            getReservationTask.await()!!
         }
     }
 }

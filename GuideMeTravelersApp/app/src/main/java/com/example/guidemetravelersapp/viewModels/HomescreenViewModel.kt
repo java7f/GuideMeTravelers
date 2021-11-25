@@ -27,6 +27,7 @@ import com.example.guidemetravelersapp.helpers.ASBLeScannerWrapper
 import com.example.guidemetravelersapp.helpers.RoutineManager
 import com.example.guidemetravelersapp.helpers.models.ApiResponse
 import com.example.guidemetravelersapp.helpers.utils.Utils
+import com.example.guidemetravelersapp.services.AuthenticationService
 import com.example.guidemetravelersapp.services.GuideExperieceViewDataService
 import com.example.guidemetravelersapp.services.GuideExperienceService
 import com.google.android.gms.common.api.ApiException
@@ -47,6 +48,7 @@ import java.util.*
 
 class HomescreenViewModel(application: Application) : AndroidViewModel(application) {
     private val guideExperienceViewDataService: GuideExperieceViewDataService = GuideExperieceViewDataService(application)
+    private val profileService: AuthenticationService = AuthenticationService(application)
     private var notificationManager: NotificationManager? = null
     private var fusedLocationClient: FusedLocationProviderClient
 
@@ -84,8 +86,9 @@ class HomescreenViewModel(application: Application) : AndroidViewModel(applicati
                     val geocoder = Geocoder(getApplication(), Locale.getDefault())
                     val addresses = geocoder.getFromLocation(currentLocation.latitude, currentLocation.longitude, 1);
                     if (addresses.size > 0) {
+                        val currentTouristId = profileService.getCurrentFirebaseUserId()
                         currentCityLocation = addresses[0].locality
-                        val result = guideExperienceViewDataService.searchExperiences(currentCityLocation)
+                        val result = guideExperienceViewDataService.searchExperiences(currentCityLocation, currentTouristId!!)
                         guideExperienceViewData = ApiResponse(data = result, inProgress = false)
                     }
                 }
@@ -101,7 +104,8 @@ class HomescreenViewModel(application: Application) : AndroidViewModel(applicati
         viewModelScope.launch {
             try {
                 guideExperienceViewData = ApiResponse(inProgress = true)
-                val result = guideExperienceViewDataService.searchExperiences(inputText)
+                var currentTouristId = profileService.getCurrentFirebaseUserId()
+                val result = guideExperienceViewDataService.searchExperiences(inputText, currentTouristId!!)
                 guideExperienceViewData = ApiResponse(data = result, inProgress = false)
             }
             catch (e: Exception) {

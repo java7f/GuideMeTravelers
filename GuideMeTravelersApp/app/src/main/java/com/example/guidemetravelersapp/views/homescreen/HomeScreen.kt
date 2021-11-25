@@ -80,6 +80,7 @@ import com.example.guidemetravelersapp.views.chatView.ChatView
 import com.example.guidemetravelersapp.views.experienceDetailsView.reservationRequest.ReservationRequestContent
 import com.example.guidemetravelersapp.views.profileView.EditProfileContent
 import com.example.guidemetravelersapp.views.profileView.UserProfileInformation
+import com.example.guidemetravelersapp.views.touristAlertsViews.AlertsManagement
 import com.example.guidemetravelersapp.views.touristAlertsViews.CreateTouristAlert
 import com.example.guidemetravelersapp.views.wishlist.WishlistContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -92,7 +93,7 @@ import kotlinx.coroutines.launch
 
 class HomeScreen : ComponentActivity() {
 
-    @RequiresApi(Build.VERSION_CODES.M)
+    @RequiresApi(Build.VERSION_CODES.O)
     @ExperimentalFoundationApi
     @ExperimentalMaterialApi
     @ExperimentalPermissionsApi
@@ -108,7 +109,7 @@ class HomeScreen : ComponentActivity() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.M)
+@RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
@@ -536,7 +537,7 @@ fun BottomBar(navController: NavHostController) {
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.M)
+@RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi
@@ -547,7 +548,8 @@ fun ScreenController(navController: NavHostController) {
         startDestination = "guides",
         builder = {
             composable(route = "guides", content = { ScaffoldContent(navController) })
-            composable(route = "tourist_alerts", content = { CreateTouristAlert(navController) })
+            composable(route = "tourist_alerts", content = { AlertsManagement(navController) })
+            composable(route = "add_tourist_alert", content = { CreateTouristAlert(navController) })
             composable(route = "map", content = { AudioGuideMapContent(navController = navController) })
             composable(route = "chat", content = { ChatList(navController = navController) })
             composable(route = "wishlist", content = { WishlistContent(navHostController = navController) })
@@ -581,7 +583,7 @@ fun ChatRouteTest() {
     Text("Chat Guide Route Text")
 }
 
-@RequiresApi(Build.VERSION_CODES.M)
+@RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalFoundationApi
 @ExperimentalMaterialApi
 @ExperimentalPermissionsApi

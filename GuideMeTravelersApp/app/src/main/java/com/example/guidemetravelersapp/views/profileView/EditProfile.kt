@@ -76,6 +76,7 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
     val birthday = remember { mutableStateOf(TextFieldValue(Instant.ofEpochMilli(profileViewModel.editableUser.birthdate.time).atZone(ZoneId.systemDefault()).toLocalDate().toString())) }
     val description = remember { mutableStateOf(TextFieldValue(text = profileViewModel.editableUser.aboutUser)) }
     var profileUri by remember { mutableStateOf<Uri?>(null) }
+    val languages = remember { mutableStateOf(profileViewModel.editableUser.languages) }
 
     val textState = remember { mutableStateOf(TextFieldValue("")) }
 
@@ -83,6 +84,7 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
     lastname.value = TextFieldValue(profileViewModel.editableUser.lastName)
     phone.value = TextFieldValue(profileViewModel.editableUser.phone)
     description.value = TextFieldValue(profileViewModel.editableUser.aboutUser)
+    languages.value = profileViewModel.editableUser.languages
     birthday.value = TextFieldValue(Instant.ofEpochMilli(profileViewModel.editableUser.birthdate.time).atZone(ZoneId.systemDefault()).toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")))
 
     val focusManager = LocalFocusManager.current
@@ -234,21 +236,43 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                 maxLines = 5
             )
             Spacer(modifier = Modifier.height(20.dp))
+            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth().padding(bottom = 20.dp)){
+                if(profileViewModel.editableUser.languages != null) {
+                    Text(
+                        text = stringResource(id = R.string.languages) + ": ",
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.onSecondary,
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                    for (lang in languages.value) {
+                        Text(
+                            text = "$lang, ",
+                            style = MaterialTheme.typography.body1,
+                            color = MaterialTheme.colors.onSecondary,
+                        )
+                    }
+                }
+            }
+            Languages(profileViewModel = profileViewModel, languages)
+            Spacer(modifier = Modifier.height(30.dp))
             Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()){
-                Text(
-                    text = stringResource(id = R.string.country) + ": ",
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.onSecondary,
-                    modifier = Modifier.padding(start = 15.dp)
-                )
-                Text(
-                    text = profileViewModel.editableUser.country,
-                    style = MaterialTheme.typography.body1,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colors.onSecondary,
-                    modifier = Modifier.padding(start = 15.dp)
-                )
+                if(profileViewModel.editableUser.address != null) {
+                    Text(
+                        text = stringResource(id = R.string.country) + ": ",
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.onSecondary,
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                    Text(
+                        text = profileViewModel.editableUser.address.country,
+                        style = MaterialTheme.typography.body1,
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colors.onSecondary,
+                        modifier = Modifier.padding(start = 15.dp)
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(20.dp))
             SearchView(
@@ -329,9 +353,9 @@ fun DateField(birthday: MutableState<TextFieldValue>, user: User) {
 }
 
 @Composable
-fun CustomDropDown() {
+fun Languages(profileViewModel: ProfileViewModel, languages: MutableState<MutableList<String>>) {
     var expanded by remember { mutableStateOf(false) }
-    val suggestions = listOf("Dominican Republic","United States","France")
+    val suggestions = mutableMapOf("English" to "EN","Español" to "ES","Français" to "FR", "Italiano" to "IT")
     var selectedCountry by remember { mutableStateOf("") }
     var dropDownWidth by remember { mutableStateOf(0) }
 
@@ -351,7 +375,7 @@ fun CustomDropDown() {
                         modifier = Modifier
                             .fillMaxWidth()
                             .onSizeChanged { dropDownWidth = it.width },
-                        label = {Text(text = stringResource(id = R.string.country))},
+                        label = {Text(text = stringResource(id = R.string.languages))},
                         trailingIcon = { Icon(icon,"country") }
                     )
                     Box(
@@ -369,8 +393,16 @@ fun CustomDropDown() {
             ) {
                 suggestions.forEach { label ->
                     DropdownMenuItem(
-                        onClick = { selectedCountry = label },
-                        content = { Text(text = label) },
+                        onClick = {
+                            selectedCountry = label.key
+                            if(label.key !in profileViewModel.editableUser.languages
+                                && label.key !in languages.value) {
+                                languages.value.add(label.value)
+                                profileViewModel.editableUser.languages.add(label.value)
+                            }
+                            expanded = false
+                        },
+                        content = { Text(text = label.key) },
                     )
                 }
             }

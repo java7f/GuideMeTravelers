@@ -2,7 +2,7 @@
     <string name="app_name">Guide Me Travelers</string>
     <string name="title_activity_login" translatable="false">LoginActivity</string>
     <string name="authorization_header" translatable="false">Authorization</string>
-    <string name="username_label" translatable="false">Username</string>
+    <string name="username_label">Username</string>
     <string name="password_label">Password</string>
     <string name="login_button">Login</string>
     <string name="title_activity_experience_details" translatable="false">ExperienceDetailsActivity</string>
@@ -72,4 +72,12 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="create_new_alert">Create new alert</string>
     <string name="select_trip_dates">Select your desired dates</string>
     <string name="tourist_alert_location">Where are you going?</string>
+    <string name="languages">Languages</string>
+    <string name="add_tag">Add tag</string>
+    <string name="open_alerts">Open alerts</string>
+    <string name="guiding_offers">Guiding Offers</string>
+    <string name="alert_in">Alert in</string>
+    <string name="add_alert">Create alert</string>
+    <string name="accept_request">Accept</string>
+    <string name="rejet_request">Reject</string>
 </resources>

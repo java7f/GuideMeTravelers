@@ -10,13 +10,18 @@ import androidx.compose.runtime.setValue
 import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.guidemetravelersapp.dataModels.Address
 import com.example.guidemetravelersapp.dataModels.User
 import com.example.guidemetravelersapp.helpers.SessionManager
 import com.example.guidemetravelersapp.helpers.models.ApiResponse
+import com.example.guidemetravelersapp.helpers.models.Coordinate
 import com.example.guidemetravelersapp.services.AuthenticationService
 import com.example.guidemetravelersapp.views.homescreen.HomeScreen
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.TypeFilter
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
@@ -115,6 +120,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         locationSearchValue = inputText
         val request =
             FindAutocompletePredictionsRequest.builder()
+                .setTypeFilter(TypeFilter.REGIONS)
                 .setQuery(inputText)
                 .build()
 
@@ -130,6 +136,17 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     fun onPlaceItemSelected(placeItem: AutocompletePrediction) {
         locationSearchValue = placeItem.getPrimaryText(null).toString()
         predictions = mutableListOf()
-        editableUser.country = locationSearchValue
+        placesClient.fetchPlace(
+            FetchPlaceRequest.newInstance(placeItem.placeId, mutableListOf(Place.Field.LAT_LNG))
+        ).addOnSuccessListener {
+            editableUser.address = Address(
+                city = placeItem.getPrimaryText(null).toString(),
+                country = placeItem.getSecondaryText(null).toString(),
+                coordinates = Coordinate(
+                    latitude = it.place.latLng!!.latitude,
+                    longitude = it.place.latLng!!.longitude,
+                )
+            )
+        }
     }
 }

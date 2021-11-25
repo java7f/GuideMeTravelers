@@ -24,9 +24,9 @@ class GuideExperieceViewDataService(context: Context) {
         }
     }
 
-    suspend fun searchExperiences(searchInput: String): List<GuideExperienceViewData> {
+    suspend fun searchExperiences(searchInput: String, currentTouristId: String): List<GuideExperienceViewData> {
         return coroutineScope {
-            val searchExperiencesViewDataTask = async { apiService.getAll("api/GuideExperienceViewData/getAll/$searchInput").body() }
+            val searchExperiencesViewDataTask = async { apiService.getAll("api/GuideExperienceViewData/getAll/$searchInput/$currentTouristId").body() }
             searchExperiencesViewDataTask.await()!!
         }
     }

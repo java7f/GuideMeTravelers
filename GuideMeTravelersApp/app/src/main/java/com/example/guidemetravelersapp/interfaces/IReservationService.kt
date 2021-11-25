@@ -1,9 +1,6 @@
 package com.example.guidemetravelersapp.interfaces
 
-import com.example.guidemetravelersapp.dataModels.ExperienceReservation
-import com.example.guidemetravelersapp.dataModels.ExperienceReservationRequest
-import com.example.guidemetravelersapp.dataModels.GuideExperience
-import com.example.guidemetravelersapp.dataModels.TouristAlert
+import com.example.guidemetravelersapp.dataModels.*
 import retrofit2.Response
 import retrofit2.http.*
 
@@ -20,6 +17,15 @@ interface IReservationService {
     @GET
     suspend fun getTouristAlerts(@Url url:String) : Response<List<TouristAlert>>
 
+    @GET
+    suspend fun getGuideOffersForTourist(@Url url:String) : Response<List<GuidingOffer>>
+
     @POST
     suspend fun insertTouristAlert(@Url url:String, @Body body: TouristAlert) : Response<Unit>
+
+    @GET
+    suspend fun acceptGuideOffer(@Url url: String) : Response<Unit>
+
+    @GET
+    suspend fun rejectGuideOffer(@Url url: String) : Response<Unit>
 }

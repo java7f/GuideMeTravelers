@@ -18,6 +18,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,7 @@ import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.helpers.commonComposables.AutoCompleteTextView
 import com.example.guidemetravelersapp.viewModels.HomescreenViewModel
 import com.example.guidemetravelersapp.viewModels.ReservationViewModel
+import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
 import com.example.guidemetravelersapp.views.experienceDetailsView.reservationRequest.DateField
 import java.time.Instant
 import java.time.ZoneId
@@ -43,6 +45,10 @@ fun CreateTouristAlert(navHostController: NavHostController, reservationViewMode
     val comment = remember { mutableStateOf(TextFieldValue(text = reservationViewModel.currentTouristAlert.alertComment)) }
     val focusManager = LocalFocusManager.current
     val textState = remember { mutableStateOf(TextFieldValue("")) }
+
+    val tag = remember { mutableStateOf(TextFieldValue(text = "")) }
+    val tags = remember { mutableStateOf(reservationViewModel.currentTouristAlert.experienceTags) }
+    tags.value = reservationViewModel.currentTouristAlert.experienceTags
 
     Column(
         Modifier
@@ -163,6 +169,54 @@ fun CreateTouristAlert(navHostController: NavHostController, reservationViewMode
         }
 
         Row(
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth(),
+        ) {
+            for (tagItem in tags.value) {
+                DescriptionTags(tagName = tagItem)
+            }
+        }
+
+        Row(
+            modifier = Modifier
+                .padding(vertical = 10.dp)
+                .fillMaxWidth(),
+        ) {
+            OutlinedTextField(
+                value = tag.value,
+                onValueChange = { value ->
+                    tag.value = value
+                },
+                label = { Text(text = stringResource(id = R.string.add_tag)) },
+                modifier = Modifier.fillMaxWidth(),
+                textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
+                colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Text,
+                    imeAction = ImeAction.Done,
+                    capitalization = KeyboardCapitalization.Sentences
+                ),
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                maxLines = 1,
+                trailingIcon = {
+                    TextButton(onClick = {
+                        tags.value.add(tag.value.text)
+                        tag.value = TextFieldValue("")
+                        focusManager.clearFocus()
+                    }) {
+                        Text(
+                            text = stringResource(id = R.string.add_tag),
+                            color = MaterialTheme.colors.onSecondary,
+                            style = MaterialTheme.typography.caption,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+            )
+        }
+
+        Row(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -182,7 +236,7 @@ fun CreateTouristAlert(navHostController: NavHostController, reservationViewMode
             }
 
             Button(
-                onClick = { reservationViewModel.insertTouristAlert(navHostController) },
+                onClick = { reservationViewModel.insertTouristAlert(navHostController, tags.value) },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = MaterialTheme.colors.primary
                 ),

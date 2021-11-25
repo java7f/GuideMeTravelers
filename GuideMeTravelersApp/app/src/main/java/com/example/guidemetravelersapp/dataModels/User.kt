@@ -14,11 +14,12 @@ data class User (
     var email: String = "",
     var sex: String = "",
     var birthdate: Date = Date(),
-    var country: String = "",
+    var address: Address = Address(),
     var phone: String = "",
     var aboutUser: String = "",
     var profilePhotoUrl: String = "",
     var roles: List<String> = emptyList(),
     var reviews: List<Review> = emptyList(),
-    var wishlist: MutableList<String> = mutableListOf()
+    var wishlist: MutableList<String> = mutableListOf(),
+    var languages: MutableList<String> = mutableListOf(),
 )

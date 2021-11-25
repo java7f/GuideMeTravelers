@@ -22,7 +22,6 @@
     <string name="country">Pays</string>
     <string name="Save">Sauvez</string>
     <string name="past_experiences">Expériences passées</string>
-    <string name="destination">Destination</string>
     <string name="from_to">Date</string>
     <string name="guide_name">Expérience avec</string>
     <string name="price">Prix</string>
@@ -63,4 +62,14 @@
     <string name="create_new_alert">Créer une nouvelle alerte</string>
     <string name="select_trip_dates">Sélectionnez vos dates souhaitées</string>
     <string name="tourist_alert_location">Où allez-vous?</string>
+    <string name="username_label" translatable="false">Username</string>
+    <string name="destination">Destination</string>
+    <string name="languages">Lingue</string>
+    <string name="add_tag">Ajouter une étiquette</string>
+    <string name="open_alerts">Alertes ouvertes</string>
+    <string name="guiding_offers">Offres de guidage</string>
+    <string name="alert_in">Alerte en</string>
+    <string name="add_alert">Créer une alerte</string>
+    <string name="accept_request">Accepter</string>
+    <string name="rejet_request">Rejeter</string>
 </resources>
