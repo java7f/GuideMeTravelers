@@ -40,7 +40,7 @@
     <string name="experiences_history">Expériences Histoire</string>
     <string name="wishlist">Liste de souhaits</string>
     <string name="tourist_alerts">Mes alertes</string>
-    <string name="guide_purposal">Guide des propositions</string>
+    <string name="guide_purposal">Propositions de guides</string>
     <string name="available_guides">Guides disponibles en</string>
     <string name="logout">Déconnexion</string>
     <string name="available_places">Lieux disponibles avec audioguides</string>
@@ -80,4 +80,5 @@
     <string name="rejected">Rejeté</string>
     <string name="reservation_requests">Demandes de réservation</string>
     <string name="past_experiences">Expériences passées</string>
+    <string name="no_guides">Aucun guide près de chez vous</string>
 </resources>

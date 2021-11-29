@@ -50,7 +50,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="experiences_history">Experiences History</string>
     <string name="wishlist">Wishlist</string>
     <string name="tourist_alerts">My Alerts</string>
-    <string name="guide_purposal">Guide Purposals</string>
+    <string name="guide_purposal">Guide Proposals</string>
     <string name="available_guides">Available Guides in</string>
     <string name="logout">Logout</string>
     <string name="available_places">Available places with audioguides</string>
@@ -80,7 +80,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="add_alert">Create alert</string>
     <string name="accept_request">Accept</string>
     <string name="rejet_request">Reject</string>
-    <string name="delete_alert_title">Delete alert confiirmation</string>
+    <string name="delete_alert_title">Delete alert confirmation</string>
     <string name="delete_alert_content">Are you sure you want to delete this alert?</string>
     <string name="upcoming_reservations">Upcoming reservations</string>
     <string name="pending">Pending</string>
@@ -88,4 +88,5 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="rejected">Rejected</string>
     <string name="reservation_requests">Reservation Requests</string>
     <string name="past_experiences">Past Experiences</string>
+    <string name="no_guides">No guides near you</string>
 </resources>
