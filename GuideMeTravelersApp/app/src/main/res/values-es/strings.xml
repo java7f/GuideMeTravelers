@@ -80,4 +80,5 @@
     <string name="rejected">Rechazada</string>
     <string name="reservation_requests">Peticiones de reserva</string>
     <string name="past_experiences">Experiencias Pasadas</string>
+    <string name="no_guides">No hay guías cerca de ti</string>
 </resources>

@@ -235,6 +235,9 @@ fun ScaffoldContent(navController: NavHostController, model: HomescreenViewModel
                         style = MaterialTheme.typography.subtitle1,
                         color = MaterialTheme.colors.onSecondary,
                         fontWeight = FontWeight.Bold)
+                    if (model.guideExperienceViewData.data.isNullOrEmpty() && !model.guideExperienceViewData.inProgress) {
+                        Text(text = stringResource(id = R.string.no_guides))
+                    }
                 }
                 if (model.guideExperienceViewData.inProgress) {
                     item {
@@ -243,7 +246,7 @@ fun ScaffoldContent(navController: NavHostController, model: HomescreenViewModel
                         }
                     }
                 } else {
-                    if (model.guideExperienceViewData.data != null) {
+                    if (!model.guideExperienceViewData.data.isNullOrEmpty()) {
                         itemsIndexed(model.guideExperienceViewData.data!!) { index, item ->
                             UserCard(item, imgSize = 70.dp, navController = navController)
                             Spacer(modifier = Modifier.height(15.dp))

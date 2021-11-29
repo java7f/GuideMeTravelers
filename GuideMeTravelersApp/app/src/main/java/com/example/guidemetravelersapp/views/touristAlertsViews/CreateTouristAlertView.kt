@@ -1,5 +1,6 @@
 package com.example.guidemetravelersapp.views.touristAlertsViews
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -13,6 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -36,6 +38,7 @@ import java.util.*
 
 @Composable
 fun CreateTouristAlert(navHostController: NavHostController, reservationViewModel: ReservationViewModel = viewModel()) {
+    val context = LocalContext.current
     val from = remember { mutableStateOf(TextFieldValue(
         Instant.ofEpochMilli(Date().time).atZone(
             ZoneId.systemDefault()).toLocalDate().toString())) }
@@ -236,7 +239,13 @@ fun CreateTouristAlert(navHostController: NavHostController, reservationViewMode
             }
 
             Button(
-                onClick = { reservationViewModel.insertTouristAlert(navHostController, tags.value) },
+                onClick = {
+                    reservationViewModel.insertTouristAlert(navHostController, tags.value)
+                    if (!reservationViewModel.newTouristAlertStatus.hasError) {
+                        Toast.makeText(context, "Alert created successfully!", Toast.LENGTH_LONG).show()
+                    } else {
+                        Toast.makeText(context, reservationViewModel.newTouristAlertStatus.errorMessage, Toast.LENGTH_LONG).show()
+                    } },
                 colors = ButtonDefaults.buttonColors(
                     backgroundColor = MaterialTheme.colors.primary
                 ),
