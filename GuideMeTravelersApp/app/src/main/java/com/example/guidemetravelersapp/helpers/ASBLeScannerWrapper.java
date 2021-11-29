@@ -20,7 +20,8 @@ import java.util.Map;
 public class ASBLeScannerWrapper {
 
     static ASBleScanner scanner;
-    public static Map<String, Integer> scannedDevicesList = new HashMap<>();
+    public static Map<String, List<Integer>> scannedDevicesList = new HashMap<>();
+    public static int measuredPower = 0;
     private static ASBLeScannerWrapper single_instance = null;
 
     private ASBLeScannerWrapper(Activity activity, ASScannerCallback scannerCallback) {
@@ -45,7 +46,7 @@ public class ASBLeScannerWrapper {
             return;
         }
         try {
-            Thread.sleep(2000);
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

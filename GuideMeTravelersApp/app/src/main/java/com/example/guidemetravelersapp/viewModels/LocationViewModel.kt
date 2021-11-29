@@ -38,7 +38,9 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.io.File
 import java.lang.Exception
+import java.lang.Math.pow
 import java.util.*
+import kotlin.system.measureTimeMillis
 
 class LocationViewModel(application: Application): AndroidViewModel(application), OnDownloadListener {
 
@@ -155,10 +157,9 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
         viewModelScope.launch {
             if(!ASBLeScannerWrapper.scannedDevicesList.isNullOrEmpty()) {
                 try {
-                    var top3ScannedDevices = ASBLeScannerWrapper.scannedDevicesList.toSortedMap(
-                        compareByDescending { ASBLeScannerWrapper.scannedDevicesList[it] })
+                    var top3ScannedDevices = sortBeaconsByDistance()
                     val result =
-                        locationService.getProximityAudioguides(currentLocation.data!!.id, top3ScannedDevices.keys.toList().take(3))
+                        locationService.getProximityAudioguides(currentLocation.data!!.id, top3ScannedDevices)
                     proximityRecommendedAudioguides =
                         ApiResponse(data = result, inProgress = false)
                 } catch (e: Exception) {
@@ -169,7 +170,7 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
                     proximityRecommendedAudioguides = ApiResponse(
                         inProgress = false,
                         hasError = true,
-                        errorMessage = e.localizedMessage
+                        errorMessage = e.toString()
                     )
                 }
             }
@@ -183,9 +184,8 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
         viewModelScope.launch {
             if(!ASBLeScannerWrapper.scannedDevicesList.isNullOrEmpty()) {
                 try {
-                    var top3ScannedDevices = ASBLeScannerWrapper.scannedDevicesList.toSortedMap(
-                        compareByDescending { ASBLeScannerWrapper.scannedDevicesList[it] })
-                    val result = offlineDatabase.audioguideDao().getProximityAudioguide(currentLocation.data!!.id, top3ScannedDevices.keys.toList().take(3))
+                    var top3ScannedDevices = sortBeaconsByDistance()
+                    val result = offlineDatabase.audioguideDao().getProximityAudioguide(currentLocation.data!!.id, top3ScannedDevices)
                     proximityRecommendedAudioguides = ApiResponse(data = result, inProgress = false)
                 } catch (e: Exception) {
                     Log.d(LocationViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
@@ -336,12 +336,16 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
     private suspend fun encryptAudio() {
         Log.i(DownloadTestActivity::class.simpleName, "File is being encrypted")
         try {
-            val filePath = FileUtils.buildFilePath(context, currentEncryptingAudio.audiofileName)
-            val fileData = FileUtils.readFile(filePath)
-            val fileEncoded = EncryptDecryptHelper.encode(fileData)
-            FileUtils.saveFile(fileEncoded, filePath)
-            currentEncryptingAudio.audioguideUrl = filePath
-            Log.i(DownloadTestActivity::class.simpleName, "File encrypted")
+            val timeMeasured = measureTimeMillis{
+                val filePath =
+                    FileUtils.buildFilePath(context, currentEncryptingAudio.audiofileName)
+                val fileData = FileUtils.readFile(filePath)
+                val fileEncoded = EncryptDecryptHelper.encode(fileData)
+                FileUtils.saveFile(fileEncoded, filePath)
+                currentEncryptingAudio.audioguideUrl = filePath
+                Log.i(DownloadTestActivity::class.simpleName, "File encrypted")
+            }
+            Log.i(DownloadTestActivity::class.simpleName, "TIME: $timeMeasured")
         }
         catch (e: Exception) {
             Log.e(DownloadTestActivity::class.simpleName, e.message!!)
@@ -352,12 +356,15 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
     @RequiresApi(Build.VERSION_CODES.M)
     suspend fun decryptAudio(audioguideName: String) {
         try {
-            isLoadingDecrypting = true
-            val fileData = FileUtils.readFile(FileUtils.buildFilePath(context, audioguideName))
-            val fileDecoded = EncryptDecryptHelper.decode(fileData)
-            Log.i(DownloadTestActivity::class.simpleName, "File decoded!!")
-            currentDecryptedAudio = fileDecoded
-            isLoadingDecrypting = false
+            val timeMeasured = measureTimeMillis{
+                isLoadingDecrypting = true
+                val fileData = FileUtils.readFile(FileUtils.buildFilePath(context, audioguideName))
+                val fileDecoded = EncryptDecryptHelper.decode(fileData)
+                Log.i(DownloadTestActivity::class.simpleName, "File decoded!!")
+                currentDecryptedAudio = fileDecoded
+                isLoadingDecrypting = false
+            }
+            Log.i(DownloadTestActivity::class.simpleName, "TIME: $timeMeasured")
         }
         catch (e: Exception) {
             Log.e(DownloadTestActivity::class.simpleName, e.message!!)
@@ -428,7 +435,7 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
                     scanBeaconsTask.join()
                     getProximityAudioguides()
                 }
-                RoutineManager.mainHandler.postDelayed(this, 15000)
+                RoutineManager.mainHandler.postDelayed(this, 5000)
             }
         })
     }
@@ -456,5 +463,28 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
                 }
             }
         }
+    }
+
+    private fun sortBeaconsByDistance(): List<String> {
+
+        val beaconAverage = mutableMapOf<String, Double>()
+        ASBLeScannerWrapper.scannedDevicesList?.forEach { t, u ->
+            val rssiAverage = u.average()
+            beaconAverage[t] = getDistanceByRssi(rssiAverage)
+        }
+
+        var top3ScannedDevices = beaconAverage.toSortedMap(
+            compareBy { beaconAverage[it] })
+
+        Log.e(DownloadTestActivity::class.simpleName, top3ScannedDevices.toString())
+
+        return top3ScannedDevices.keys.toList().take(3)
+    }
+
+    private fun getDistanceByRssi(rssi: Double): Double {
+        val exp = (ASBLeScannerWrapper.measuredPower - rssi) / (10*2)
+        val distance = pow(10.0, exp)
+
+        return distance
     }
 }
