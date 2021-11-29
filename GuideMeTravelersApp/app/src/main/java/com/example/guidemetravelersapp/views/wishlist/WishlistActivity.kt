@@ -32,6 +32,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.navArgument
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.GuideExperience
+import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.viewModels.GuideExperienceViewModel
 import com.example.guidemetravelersapp.viewModels.ProfileViewModel
@@ -71,24 +72,32 @@ fun WishlistContent(
                     fontSize = 30.sp,
                     modifier = Modifier.padding(bottom = 20.dp)
                 )
-                if(experienceModel.userGuideExps.data.isNullOrEmpty()) {
+                if(experienceModel.userGuideExps.data.isNullOrEmpty() && !experienceModel.userGuideExps.inProgress) {
                     Text(text = stringResource(id = R.string.no_guides_wishlist))
                 }
             }
-            if(!experienceModel.userGuideExps.data.isNullOrEmpty()) {
-                itemsIndexed(experienceModel.userGuideExps.data!!) {index, item ->
-                    UserCard(
-                        name = item.guideFirstName,
-                        lastname = item.guideLastName,
-                        imageUrl = item.guidePhotoUrl,
-                        imgSize = 70.dp,
-                        rating = item.guideRating,
-                        tags = item.experienceTags,
-                        experienceId = item.id,
-                        navController = navHostController!!,
-                        profileViewModel = profileViewModel
-                    )
-                    Spacer(modifier = Modifier.height(15.dp))
+            if (experienceModel.userGuideExps.inProgress) {
+                item {
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        LoadingSpinner()
+                    }
+                }
+            } else {
+                if(!experienceModel.userGuideExps.data.isNullOrEmpty()) {
+                    itemsIndexed(experienceModel.userGuideExps.data!!) {index, item ->
+                        UserCard(
+                            name = item.guideFirstName,
+                            lastname = item.guideLastName,
+                            imageUrl = item.guidePhotoUrl,
+                            imgSize = 70.dp,
+                            rating = item.guideRating,
+                            tags = item.experienceTags,
+                            experienceId = item.id,
+                            navController = navHostController!!,
+                            profileViewModel = profileViewModel
+                        )
+                        Spacer(modifier = Modifier.height(15.dp))
+                    }
                 }
             }
         }
