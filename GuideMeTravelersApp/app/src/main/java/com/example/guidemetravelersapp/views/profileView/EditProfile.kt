@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
@@ -168,8 +169,8 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                         label = { Text(text = stringResource(id = R.string.name_label)) },
                         textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
                         colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Right) }),
                         singleLine = true
                     )
                 }
@@ -184,8 +185,8 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                         label = { Text(text = stringResource(id = R.string.lastname_label)) },
                         textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
                         colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
-                        keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                        keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                         singleLine = true
                     )
                 }
@@ -198,8 +199,8 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
                 colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email, imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 singleLine = true,
                 enabled = false
             )
@@ -214,8 +215,8 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
                 colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus()}),
                 singleLine = true
             )
             Spacer(modifier = Modifier.height(10.dp))
@@ -231,8 +232,8 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
                 colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
-                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 maxLines = 5
             )
             Spacer(modifier = Modifier.height(20.dp))

@@ -9,6 +9,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -18,12 +19,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -84,6 +88,7 @@ class LoginActivity : ComponentActivity() {
     fun Username() {
         var username = remember { mutableStateOf(TextFieldValue())}
         var password = remember { mutableStateOf(TextFieldValue())}
+        val focusManager = LocalFocusManager.current
 
         com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme {
             Column(modifier = Modifier
@@ -104,7 +109,9 @@ class LoginActivity : ComponentActivity() {
                     label = { Text(text = stringResource(id = R.string.username_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(color = MaterialTheme.colors.onSecondary, fontSize = 15.sp),
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary)
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
                 )
                 Spacer(modifier = Modifier.height(40.dp))
                 OutlinedTextField(
@@ -113,6 +120,7 @@ class LoginActivity : ComponentActivity() {
                     label = { Text(text = stringResource(id = R.string.password_label)) },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(color = MaterialTheme.colors.onSecondary, fontSize = 15.sp)
                 )

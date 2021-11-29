@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -16,12 +17,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.chat.Message
 import com.example.guidemetravelersapp.ui.theme.GuideMeTravelersAppTheme
 import com.example.guidemetravelersapp.viewModels.ChatViewModel
@@ -44,6 +48,7 @@ fun ChatView(sentTo_Id: String = "", chatViewModel: ChatViewModel = viewModel())
     chatViewModel.initChat(sentTo_Id)
     var message: String = chatViewModel.currentMessage
     val messages: List<Message> = chatViewModel.messageList
+    val focusManager = LocalFocusManager.current
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -80,32 +85,28 @@ fun ChatView(sentTo_Id: String = "", chatViewModel: ChatViewModel = viewModel())
             }
         }
         Row(
-            Modifier.fillMaxWidth().padding(bottom = 10.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 10.dp),
             verticalAlignment = Alignment.Bottom
         ) {
             OutlinedTextField(
                 value = message,
-                onValueChange = {
-                    chatViewModel.messageInputHandler(it)
-                },
-                label = {
-                    Text(
-                        "Type Your Message"
-                    )
-                },
+                onValueChange = { chatViewModel.messageInputHandler(it) },
+                label = { Text(text = stringResource(id = R.string.type_message)) },
                 maxLines = 1,
                 modifier = Modifier
                     .padding(horizontal = 15.dp, vertical = 1.dp)
                     .fillMaxWidth(),
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Text
-                ),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+                keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                 singleLine = false,
                 trailingIcon = {
                     IconButton(
                         onClick = {
                             chatViewModel.addMessage()
                             message = ""
+                            chatViewModel.messageInputHandler("")
                         }
                     ) {
                         Icon(

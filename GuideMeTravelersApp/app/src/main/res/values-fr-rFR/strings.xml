@@ -81,4 +81,5 @@
     <string name="reservation_requests">Demandes de réservation</string>
     <string name="past_experiences">Expériences passées</string>
     <string name="no_guides">Aucun guide près de chez vous</string>
+    <string name="type_message">Tapez votre message ici</string>
 </resources>

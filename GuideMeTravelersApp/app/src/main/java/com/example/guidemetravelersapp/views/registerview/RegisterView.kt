@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
@@ -15,13 +16,16 @@ import androidx.compose.material.MaterialTheme.typography
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
@@ -78,6 +82,8 @@ class RegisterView : ComponentActivity() {
             val lastname = remember { mutableStateOf(TextFieldValue()) }
             val email = remember { mutableStateOf(TextFieldValue()) }
             val coroutineScope = rememberCoroutineScope()
+            val focusManager = LocalFocusManager.current
+
             Column(modifier = Modifier
                 .padding(horizontal = 20.dp)
                 .verticalScroll(rememberScrollState())){
@@ -100,7 +106,9 @@ class RegisterView : ComponentActivity() {
                                             newUser.value.firstName = it.text},
                             label = { Text(text = stringResource(id = R.string.name_label)) },
                             textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                            colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary)
+                            colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Right) })
                         )
                     }
                     Spacer(modifier = Modifier.weight(0.1f))
@@ -111,7 +119,9 @@ class RegisterView : ComponentActivity() {
                                 newUser.value.lastName = it.text },
                             label = { Text(text = stringResource(id = R.string.lastname_label)) },
                             textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                            colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary)
+                            colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                            keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
                         )
                     }
                 }
@@ -123,7 +133,9 @@ class RegisterView : ComponentActivity() {
                     label = { Text(text = stringResource(id = R.string.username_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary)
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 OutlinedTextField(
@@ -134,7 +146,9 @@ class RegisterView : ComponentActivity() {
                     label = { Text(text = stringResource(id = R.string.email_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary)
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) })
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 OutlinedTextField(
@@ -143,9 +157,11 @@ class RegisterView : ComponentActivity() {
                     label = { Text(text = stringResource(id = R.string.password_label)) },
                     visualTransformation = PasswordVisualTransformation(),
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+                    keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                    colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary)
+                    colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
+
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Row(horizontalArrangement = Arrangement.SpaceEvenly) {

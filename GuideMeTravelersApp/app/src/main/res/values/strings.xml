@@ -89,4 +89,5 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="reservation_requests">Reservation Requests</string>
     <string name="past_experiences">Past Experiences</string>
     <string name="no_guides">No guides near you</string>
+    <string name="type_message">Type your message here</string>
 </resources>
