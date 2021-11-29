@@ -16,11 +16,17 @@ class ScannerCallback  {
                 ASUtils.TYPE_IBEACON ->
                 {
                     val parsingResult = ASResultParser.getDataFromAdvertising(result)
-                    if(parsingResult["UUID"] == BuildConfig.BEACON_UUID && !ASBLeScannerWrapper.scannedDevicesList.contains(result!!.device.address)) {
-                        ASBLeScannerWrapper.scannedDevicesList.put(result.device.address, result.rssi)
+                    if(parsingResult["UUID"] == BuildConfig.BEACON_UUID) {
+                        if(!ASBLeScannerWrapper.scannedDevicesList.contains(result!!.device.address)) {
+                            ASBLeScannerWrapper.scannedDevicesList.set(result.device.address, mutableListOf(result.rssi))
+                        }
+                        else {
+                            ASBLeScannerWrapper.scannedDevicesList[result.device.address]?.add(result.rssi)
+                        }
+                        ASBLeScannerWrapper.measuredPower = parsingResult["AdvTxPower"] as Int
                     }
-                    Log.i(BeaconTestActivity::class.simpleName, result!!.device.name + " - iBEACON - " + parsingResult.toString())
-                    Log.i(BeaconTestActivity::class.simpleName, " - iBEACON - ${ASBLeScannerWrapper.scannedDevicesList} - ${parsingResult["UUID"]}")
+                    Log.i(BeaconTestActivity::class.simpleName, result!!.device.name + " - iBEACON - " + parsingResult)
+                    Log.i(BeaconTestActivity::class.simpleName, " - iBEACON - ${ASBLeScannerWrapper.scannedDevicesList} - ${parsingResult["UUID"]} - ${ASBLeScannerWrapper.measuredPower}")
 
                 }
                 ASUtils.TYPE_DEVICE_CONNECTABLE -> Log.i(
