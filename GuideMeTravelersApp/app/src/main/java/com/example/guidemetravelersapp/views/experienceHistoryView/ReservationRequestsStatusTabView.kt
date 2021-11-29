@@ -39,6 +39,11 @@ import java.time.format.DateTimeFormatter
 fun ShowReservationRequests(reservationViewModel: ReservationViewModel = viewModel()) {
     reservationViewModel.getRequestReservationsForTourist()
     LazyColumn(Modifier.fillMaxSize())  {
+        item {
+            if(reservationViewModel.touristReservationRequests.data.isNullOrEmpty() && !reservationViewModel.touristReservationRequests.inProgress) {
+                Text(modifier = Modifier.padding(15.dp),text = stringResource(id = R.string.no_request))
+            }
+        }
         if (reservationViewModel.touristReservationRequests.inProgress) {
             item {
                 Box(modifier = Modifier.fillMaxSize()) {

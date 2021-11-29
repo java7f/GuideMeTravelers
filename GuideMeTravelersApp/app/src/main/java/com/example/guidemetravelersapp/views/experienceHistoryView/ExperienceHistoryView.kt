@@ -61,7 +61,12 @@ class ExperienceHistoryActivity : ComponentActivity() {
 @Composable
 fun ShowPastExperiences(reservationViewModel: ReservationViewModel = viewModel()) {
     reservationViewModel.getPastExperiences()
-    LazyColumn(Modifier.fillMaxSize())  {
+    LazyColumn(modifier = Modifier.fillMaxSize())  {
+        item {
+            if(reservationViewModel.pastExperienceReservations.data.isNullOrEmpty() && !reservationViewModel.pastExperienceReservations.inProgress) {
+                Text(modifier = Modifier.padding(15.dp), text = stringResource(id = R.string.no_past_trips))
+            }
+        }
         if (reservationViewModel.pastExperienceReservations.inProgress) {
             item {
                 Box(modifier = Modifier.fillMaxSize()) {

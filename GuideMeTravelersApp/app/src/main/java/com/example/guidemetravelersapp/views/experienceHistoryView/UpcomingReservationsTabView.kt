@@ -28,7 +28,13 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun ShowUpcomingReservations(reservationViewModel: ReservationViewModel = viewModel()) {
     reservationViewModel.getUpcomingExperiences()
-    LazyColumn(Modifier.fillMaxSize())  {
+    LazyColumn(
+        modifier = Modifier.fillMaxSize())  {
+        item {
+            if(reservationViewModel.upcomingExperienceReservations.data.isNullOrEmpty() && !reservationViewModel.upcomingExperienceReservations.inProgress) {
+                Text(modifier = Modifier.padding(15.dp), text = stringResource(id = R.string.no_upcoming_trips))
+            }
+        }
         if (reservationViewModel.upcomingExperienceReservations.inProgress) {
             item {
                 Box(modifier = Modifier.fillMaxSize()) {

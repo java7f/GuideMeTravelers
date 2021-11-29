@@ -90,4 +90,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="past_experiences">Past Experiences</string>
     <string name="no_guides">No guides near you</string>
     <string name="type_message">Type your message here</string>
+    <string name="no_upcoming_trips">You have no upcoming reservations</string>
+    <string name="no_past_trips">You have no past experiences</string>
+    <string name="no_request">You have no reservation requests</string>
 </resources>

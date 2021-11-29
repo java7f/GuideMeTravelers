@@ -82,4 +82,7 @@
     <string name="past_experiences">Expériences passées</string>
     <string name="no_guides">Aucun guide près de chez vous</string>
     <string name="type_message">Tapez votre message ici</string>
+    <string name="no_upcoming_trips">Vous n\'avez aucune réservation à venir</string>
+    <string name="no_past_trips">Vous n\'avez pas d\'expériences passées</string>
+    <string name="no_request">Vous n\'avez pas de demande de réservation</string>
 </resources>
