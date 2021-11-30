@@ -94,7 +94,6 @@ fun ChatView(sentTo_Id: String = "", chatViewModel: ChatViewModel = viewModel())
                 value = message,
                 onValueChange = { chatViewModel.messageInputHandler(it) },
                 label = { Text(text = stringResource(id = R.string.type_message)) },
-                maxLines = 1,
                 modifier = Modifier
                     .padding(horizontal = 15.dp, vertical = 1.dp)
                     .fillMaxWidth(),
@@ -130,7 +129,7 @@ fun SingleMessage(message: String, isCurrentUser: Boolean) {
             text = message,
             textAlign =
             if (isCurrentUser)
-                TextAlign.End
+                TextAlign.Start
             else
                 TextAlign.Start,
             modifier = Modifier
