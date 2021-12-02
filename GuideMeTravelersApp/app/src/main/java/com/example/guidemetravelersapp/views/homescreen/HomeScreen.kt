@@ -157,7 +157,7 @@ fun AppBar(scaffoldState: ScaffoldState, scope: CoroutineScope) {
                 Icon(imageVector = Icons.Default.Language, contentDescription = "Translate", tint = Color.Transparent)
             }
             IconButton(onClick = { /*TODO*/ }) {
-                Icon(imageVector = Icons.Default.Notifications, contentDescription = "Notifications")
+                Icon(imageVector = Icons.Default.Notifications, contentDescription = "Notifications", tint = Color.Transparent)
             }
         },
         contentColor = MaterialTheme.colors.primary,
