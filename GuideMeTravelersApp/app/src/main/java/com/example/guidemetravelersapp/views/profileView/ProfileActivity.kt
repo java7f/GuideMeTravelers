@@ -191,27 +191,34 @@ fun UserOverviewRating(reviewsCount: Int = 0) {
 }
 
 @Composable
-fun UserReview(touristReview: Review = Review()) {
+fun UserReview(userReview: Review = Review()) {
     Row(verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier.padding(15.dp)) {
         Box(modifier = Modifier.size(50.dp)) {
-            Image(
-                painter = painterResource(R.drawable.dummy_avatar),
-                contentDescription = "Temporal dummy avatar",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier.clip(CircleShape)
-            )
+            if (userReview.profilePhotoUrl.isNotEmpty()) {
+                CoilImage(imageModel = userReview.profilePhotoUrl,
+                    contentDescription = "User profile photo",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.clip(CircleShape))
+            } else {
+                Image(
+                    painter = painterResource(R.drawable.dummy_avatar),
+                    contentDescription = "Temporal dummy avatar",
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier.clip(CircleShape)
+                )
+            }
         }
         Column(modifier = Modifier.padding(start = 15.dp)) {
             Text(
-                text = touristReview.userName,
+                text = userReview.userName,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colors.onSecondary,
                 fontSize = 15.sp
             )
-            RatingBar(value = touristReview.ratingValue, size = 15.dp, isIndicator = true) {
+            RatingBar(value = userReview.ratingValue, size = 15.dp, isIndicator = true) {
             }
-            Text(text = stringResource(R.string.loremipsum_test),
+            Text(text = userReview.ratingComment,
                 color = MaterialTheme.colors.onPrimary,
                 overflow = TextOverflow.Ellipsis,
                 maxLines = 3

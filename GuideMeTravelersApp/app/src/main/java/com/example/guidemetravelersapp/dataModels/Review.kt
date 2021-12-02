@@ -4,5 +4,6 @@ data class Review(
     var userId: String = "",
     var userName: String = "",
     var ratingComment: String = "",
-    var ratingValue: Float = 0.0f
+    var ratingValue: Float = 0.0f,
+    var profilePhotoUrl: String = ""
 )
