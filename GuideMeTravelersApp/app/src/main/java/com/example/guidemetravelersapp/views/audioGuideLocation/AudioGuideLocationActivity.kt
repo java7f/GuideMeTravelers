@@ -230,7 +230,6 @@ fun LocationContent(locationId: String = "", model: LocationViewModel = viewMode
                                 )
                             }
                             itemsIndexed(model.proximityRecommendedAudioguides.data!!) { index, item ->
-                                model.isAudioguideDownloaded(item.id)
                                 Box(modifier = Modifier.border(2.dp, RecommendationOrange, RoundedCornerShape(8.dp))) {
                                     LocationCard(item, scaffoldState, scope, model)
                                 }
@@ -250,7 +249,7 @@ fun LocationContent(locationId: String = "", model: LocationViewModel = viewMode
                             )
                         }
                         itemsIndexed(model.audioguides.data!!) { index, item ->
-                            model.isAudioguideDownloaded(item.id)
+                            //model.isAudioguideDownloaded(item.id)
                             LocationCard(item, scaffoldState, scope, model)
                         }
                         item {
@@ -278,6 +277,7 @@ fun AudioGuideLocationPreview() {
 @Composable
 fun LocationCard(audioguide: Audioguide, scaffoldState: BottomSheetScaffoldState,
                  scope: CoroutineScope, model: LocationViewModel) {
+    val isDownloaded = remember { mutableStateOf(true) }
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -301,20 +301,21 @@ fun LocationCard(audioguide: Audioguide, scaffoldState: BottomSheetScaffoldState
                 horizontalArrangement = Arrangement.SpaceBetween,
                 modifier = Modifier.padding(20.dp),
                 content = {
+                    scope.launch { isDownloaded.value = model.isAudioguideDownloaded(audioId = audioguide.id) }
                     Icon(
                         imageVector = Icons.Default.PlayCircle,
                         contentDescription = "Play audio guide",
                         modifier = Modifier.size(50.dp),
                         tint = MaterialTheme.colors.secondary
                     )
-                    Column(modifier = Modifier.padding(start = 20.dp)) {
+                    Column(modifier = Modifier.padding(start = 20.dp).weight(1f)) {
                         Text(
                             text = audioguide.name,
                             style = MaterialTheme.typography.subtitle1,
                             fontWeight = FontWeight.Bold
                         )
                     }
-                    if(audioguide.isDownloaded)
+                    if(isDownloaded.value)
                         Icon(
                             imageVector = Icons.Default.DownloadDone,
                             contentDescription = "IsDownloaded",

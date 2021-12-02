@@ -19,11 +19,11 @@ class ScannerCallback  {
                     if(parsingResult["UUID"] == BuildConfig.BEACON_UUID) {
                         if(!ASBLeScannerWrapper.scannedDevicesList.contains(result!!.device.address)) {
                             ASBLeScannerWrapper.scannedDevicesList.set(result.device.address, mutableListOf(result.rssi))
+                            ASBLeScannerWrapper.measuredPower.set(result.device.address, parsingResult["AdvTxPower"] as Int)
                         }
                         else {
                             ASBLeScannerWrapper.scannedDevicesList[result.device.address]?.add(result.rssi)
                         }
-                        ASBLeScannerWrapper.measuredPower = parsingResult["AdvTxPower"] as Int
                     }
                     Log.i(BeaconTestActivity::class.simpleName, result!!.device.name + " - iBEACON - " + parsingResult)
                     Log.i(BeaconTestActivity::class.simpleName, " - iBEACON - ${ASBLeScannerWrapper.scannedDevicesList} - ${parsingResult["UUID"]} - ${ASBLeScannerWrapper.measuredPower}")
