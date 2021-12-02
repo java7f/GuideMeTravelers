@@ -55,9 +55,9 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
 
     fun getPastExperiences() {
         viewModelScope.launch {
-            val userEmail = authService.getCurrentFirebaseUserEmail()
+            val currentTouristId = authService.getCurrentFirebaseUserId()
             try {
-                val result = userEmail?.let { reservationService.getPastExperiences(it) }
+                val result = currentTouristId?.let { reservationService.getPastExperiences(it) }
                 pastExperienceReservations = ApiResponse(data = result, inProgress = false)
             }
             catch (e: Exception) {

@@ -106,7 +106,7 @@ class LoginActivity : ComponentActivity() {
                 OutlinedTextField(
                     value = username.value,
                     onValueChange = { username.value = it },
-                    label = { Text(text = stringResource(id = R.string.username_label)) },
+                    label = { Text(text = stringResource(id = R.string.email_label)) },
                     modifier = Modifier.fillMaxWidth(),
                     textStyle = TextStyle(color = MaterialTheme.colors.onSecondary, fontSize = 15.sp),
                     colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
