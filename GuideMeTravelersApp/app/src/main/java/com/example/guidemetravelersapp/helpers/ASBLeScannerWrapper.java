@@ -21,7 +21,7 @@ public class ASBLeScannerWrapper {
 
     static ASBleScanner scanner;
     public static Map<String, List<Integer>> scannedDevicesList = new HashMap<>();
-    public static int measuredPower = 0;
+    public static Map<String, Integer> measuredPower = new HashMap<>();
     private static ASBLeScannerWrapper single_instance = null;
 
     private ASBLeScannerWrapper(Activity activity, ASScannerCallback scannerCallback) {

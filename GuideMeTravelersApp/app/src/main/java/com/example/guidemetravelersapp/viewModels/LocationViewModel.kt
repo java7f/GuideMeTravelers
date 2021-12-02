@@ -55,7 +55,7 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
     var currentCityLocation: android.location.Address? by mutableStateOf(null)
 
     var locations: ApiResponse<List<Location>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
-    var audioguides: ApiResponse<List<Audioguide>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
+    var audioguides: ApiResponse<MutableList<Audioguide>> by mutableStateOf(ApiResponse(data = mutableListOf(), inProgress = true))
     var proximityRecommendedAudioguides: ApiResponse<List<Audioguide>> by mutableStateOf(ApiResponse(data = emptyList(), inProgress = true))
     var currentLocation: ApiResponse<Location> by mutableStateOf(ApiResponse(data = Location(), inProgress = true))
     var currentAudioguideUrl: String by mutableStateOf("")
@@ -124,7 +124,10 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
         viewModelScope.launch {
             try {
                 val result = locationService.getAllAudioguideForLocation(locationId)
-                audioguides = ApiResponse(data = result, inProgress = false)
+                audioguides = ApiResponse(data = result.toMutableList(), inProgress = false)
+                audioguides.data?.forEachIndexed { index, audioguide ->
+                    audioguide.isDownloaded = isAudioguideDownloaded(audioguide.id)
+                }
             }
             catch (e: Exception) {
                 Log.d(LocationViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
@@ -137,7 +140,7 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
         viewModelScope.launch {
             try {
                 val result = offlineDatabase.audioguideDao().getAudioguidesForLocation(locationId)
-                audioguides = ApiResponse(data = result, inProgress = false)
+                audioguides = ApiResponse(data = result.toMutableList(), inProgress = false)
             }
             catch (e: Exception) {
                 Log.d(LocationViewModel::class.simpleName, "ERROR: ${e.localizedMessage}")
@@ -266,12 +269,9 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
         }
     }
 
-    fun isAudioguideDownloaded(audioId: String) {
-        viewModelScope.launch {
-            val audioguide = offlineDatabase.audioguideDao().getAudioguide(audioId)
-            if(audioguide != null)
-                audioguides.data!!.find { it.id == audioguide.id }?.isDownloaded = true
-        }
+    suspend fun isAudioguideDownloaded(audioId: String): Boolean {
+        val audioguide = offlineDatabase.audioguideDao().getAudioguide(audioId)
+        return audioguide != null
     }
 
     fun searchLocationsByPlace(query: String) {
@@ -313,7 +313,7 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
     fun downloadFile() {
         saveLocation()
         if (audioguides.data?.isNotEmpty() == true) {
-            audioguidesToDownload = (audioguides.data as MutableList<Audioguide>?)!!
+            audioguidesToDownload = (audioguides.data?.filter { audioguide -> !audioguide.isDownloaded } as MutableList<Audioguide>?)!!
             currentEncryptingAudio = audioguidesToDownload.removeFirst()
             PRDownloader.download(
                 currentEncryptingAudio.audioguideUrl,
@@ -470,7 +470,7 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
         val beaconAverage = mutableMapOf<String, Double>()
         ASBLeScannerWrapper.scannedDevicesList?.forEach { t, u ->
             val rssiAverage = u.average()
-            beaconAverage[t] = getDistanceByRssi(rssiAverage)
+            beaconAverage[t] = getDistanceByRssi(rssiAverage, t)
         }
 
         var top3ScannedDevices = beaconAverage.toSortedMap(
@@ -481,8 +481,8 @@ class LocationViewModel(application: Application): AndroidViewModel(application)
         return top3ScannedDevices.keys.toList().take(3)
     }
 
-    private fun getDistanceByRssi(rssi: Double): Double {
-        val exp = (ASBLeScannerWrapper.measuredPower - rssi) / (10*2)
+    private fun getDistanceByRssi(rssi: Double, audioId: String): Double {
+        val exp = (ASBLeScannerWrapper.measuredPower[audioId]!! - rssi) / (10*2)
         val distance = pow(10.0, exp)
 
         return distance
