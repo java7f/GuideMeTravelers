@@ -193,7 +193,7 @@ fun UserOverviewRating(reviewsCount: Int = 0) {
 @Composable
 fun UserReview(userReview: Review = Review()) {
     Row(verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier.padding(15.dp)) {
+        modifier = Modifier.padding(15.dp).fillMaxWidth()) {
         Box(modifier = Modifier.size(50.dp)) {
             if (userReview.profilePhotoUrl.isNotEmpty()) {
                 CoilImage(imageModel = userReview.profilePhotoUrl,
