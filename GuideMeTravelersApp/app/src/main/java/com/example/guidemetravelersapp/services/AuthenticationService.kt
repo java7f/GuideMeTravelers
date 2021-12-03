@@ -184,7 +184,7 @@ class AuthenticationService(context: Context) {
 
     suspend fun getInstanceId(userId: String): String? {
         return coroutineScope {
-            val user = async { apiService.getInstanceId("api/User/getGuideInstanceId/$userId").body() }
+            val user = async { apiService.getInstanceId("api/User/getGuideInstanceId/$userId").body().toString() }
             user.await()
         }
     }
