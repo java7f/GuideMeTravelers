@@ -88,33 +88,33 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
 
     fun refreshReservationRequests() {
         viewModelScope.launch {
-            _isRefreshingUpcomingExperiences.emit(true)
+            _isRefreshingReservationRequests.emit(true)
             getRequestReservationsForTourist()
-            _isRefreshingUpcomingExperiences.emit(false)
+            _isRefreshingReservationRequests.emit(false)
         }
     }
 
     fun refreshPastExperiences() {
         viewModelScope.launch {
-            _isRefreshingUpcomingExperiences.emit(true)
+            _isRefreshingPastExperiences.emit(true)
             getPastExperiences()
-            _isRefreshingUpcomingExperiences.emit(false)
+            _isRefreshingPastExperiences.emit(false)
         }
     }
 
     fun refreshGuideOffers() {
         viewModelScope.launch {
-            _isRefreshingUpcomingExperiences.emit(true)
+            _isRefreshingGuideOffers.emit(true)
             getGuideOffersForTourist()
-            _isRefreshingUpcomingExperiences.emit(false)
+            _isRefreshingGuideOffers.emit(false)
         }
     }
 
     fun refreshTouristAlert() {
         viewModelScope.launch {
-            _isRefreshingUpcomingExperiences.emit(true)
+            _isRefreshingTouristAlerts.emit(true)
             getTouristAlerts()
-            _isRefreshingUpcomingExperiences.emit(false)
+            _isRefreshingTouristAlerts.emit(false)
         }
     }
 
