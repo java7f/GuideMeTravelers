@@ -6,10 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.R
 
+@ExperimentalMaterialApi
 @ExperimentalFoundationApi
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -48,7 +46,7 @@ fun AlertsManagement(navHostController: NavHostController) {
         }
         when(tabIndex) {
             0 -> TouristAlertsList(navHostController)
-            1 -> GuidingOffers()
+            1 -> GuidingOffers(navHostController)
         }
     }
 }

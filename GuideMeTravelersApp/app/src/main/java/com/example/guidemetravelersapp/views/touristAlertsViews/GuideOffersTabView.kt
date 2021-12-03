@@ -5,11 +5,13 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavHostController
 import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.GuidingOffer
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
@@ -33,10 +36,11 @@ import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+@ExperimentalMaterialApi
 @RequiresApi(Build.VERSION_CODES.O)
 @ExperimentalFoundationApi
 @Composable
-fun GuidingOffers(reservationViewModel: ReservationViewModel = viewModel()) {
+fun GuidingOffers(navController: NavHostController, reservationViewModel: ReservationViewModel = viewModel()) {
     reservationViewModel.getGuideOffersForTourist()
     LazyColumn(
         Modifier
@@ -53,6 +57,9 @@ fun GuidingOffers(reservationViewModel: ReservationViewModel = viewModel()) {
                 itemsIndexed(reservationViewModel.guideOffersForTourist.data!!) { index, item ->
                     Card(
                         elevation = 15.dp,
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = rememberRipple(color = MaterialTheme.colors.secondary),
+                        onClick = { navController.navigate("guideExperience/${item.guideExperienceId}") },
                         content = {
                             GuideOfferCardContent(item, reservationViewModel)
                         }
