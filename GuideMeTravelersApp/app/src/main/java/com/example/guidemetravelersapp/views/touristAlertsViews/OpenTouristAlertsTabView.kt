@@ -14,10 +14,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DoNotDisturb
 import androidx.compose.material.icons.filled.EventAvailable
 import androidx.compose.material.icons.filled.Explore
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.example.guidemetravelersapp.R
@@ -35,57 +32,67 @@ import com.example.guidemetravelersapp.helpers.commonComposables.SuccessCheckmar
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.viewModels.ReservationViewModel
 import com.example.guidemetravelersapp.views.experienceDetailsView.DescriptionTags
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import java.text.SimpleDateFormat
 
 @ExperimentalFoundationApi
 @Composable
 fun TouristAlertsList(navHostController: NavHostController, reservationViewModel: ReservationViewModel = viewModel()) {
-    LazyColumn(
-        modifier = Modifier
-            .padding(top = 20.dp, start = 20.dp, end = 20.dp)
-            .fillMaxSize(),
+    val isRefreshingTouristAlerts by reservationViewModel.isRefreshingTouristAlerts.collectAsState()
+
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshingTouristAlerts),
+        onRefresh = { reservationViewModel.refreshTouristAlert() },
         content = {
-            reservationViewModel.getTouristAlerts()
-            stickyHeader {
-                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
-                    OutlinedButton(
-                        onClick = {
-                            navHostController.navigate("add_tourist_alert")
-                        },
-                        modifier = Modifier.padding(bottom = 20.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = "Add alert",
-                            tint = MaterialTheme.colors.primary
-                        )
-                        Text(
-                            text = stringResource(id = R.string.add_alert),
-                            color = MaterialTheme.colors.primary,
-                            modifier = Modifier.padding(start = 5.dp),
-                            style = MaterialTheme.typography.caption
-                        )
+            LazyColumn(
+                modifier = Modifier
+                    .padding(top = 20.dp, start = 20.dp, end = 20.dp)
+                    .fillMaxSize(),
+                content = {
+                    reservationViewModel.getTouristAlerts()
+                    stickyHeader {
+                        Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End){
+                            OutlinedButton(
+                                onClick = {
+                                    navHostController.navigate("add_tourist_alert")
+                                },
+                                modifier = Modifier.padding(bottom = 20.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "Add alert",
+                                    tint = MaterialTheme.colors.primary
+                                )
+                                Text(
+                                    text = stringResource(id = R.string.add_alert),
+                                    color = MaterialTheme.colors.primary,
+                                    modifier = Modifier.padding(start = 5.dp),
+                                    style = MaterialTheme.typography.caption
+                                )
+                            }
+                        }
+                    }
+                    if (reservationViewModel.touristAlerts.inProgress) {
+                        item {
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                LoadingSpinner()
+                            }
+                        }
+                    }
+                    else {
+                        if(!reservationViewModel.touristAlerts.data.isNullOrEmpty()) {
+                            itemsIndexed(reservationViewModel.touristAlerts.data!!) { _, item ->
+                                TouristAlert(
+                                    touristAlert = item,
+                                    touristAlertViewModel = reservationViewModel
+                                )
+                                Spacer(modifier = Modifier.padding(bottom = 10.dp))
+                            }
+                        }
                     }
                 }
-            }
-            if (reservationViewModel.touristAlerts.inProgress) {
-                item {
-                    Box(modifier = Modifier.fillMaxSize()) {
-                        LoadingSpinner()
-                    }
-                }
-            }
-            else {
-                if(!reservationViewModel.touristAlerts.data.isNullOrEmpty()) {
-                    itemsIndexed(reservationViewModel.touristAlerts.data!!) { _, item ->
-                        TouristAlert(
-                            touristAlert = item,
-                            touristAlertViewModel = reservationViewModel
-                        )
-                        Spacer(modifier = Modifier.padding(bottom = 10.dp))
-                    }
-                }
-            }
+            )
         }
     )
 }

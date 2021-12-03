@@ -12,9 +12,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.*
 import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,6 +29,8 @@ import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.GuidingOffer
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
 import com.example.guidemetravelersapp.viewModels.ReservationViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.skydoves.landscapist.coil.CoilImage
 import java.time.Instant
 import java.time.ZoneId
@@ -41,34 +41,42 @@ import java.time.format.DateTimeFormatter
 @ExperimentalFoundationApi
 @Composable
 fun GuidingOffers(navController: NavHostController, reservationViewModel: ReservationViewModel = viewModel()) {
+    val isRefreshingGuideOffers by reservationViewModel.isRefreshingGuideOffers.collectAsState()
     reservationViewModel.getGuideOffersForTourist()
-    LazyColumn(
-        Modifier
-            .fillMaxSize()
-            .padding(20.dp))  {
-        if (reservationViewModel.guideOffersForTourist.inProgress) {
-            item {
-                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    LoadingSpinner()
-                }
-            }
-        } else {
-            if(!reservationViewModel.guideOffersForTourist.data.isNullOrEmpty()) {
-                itemsIndexed(reservationViewModel.guideOffersForTourist.data!!) { index, item ->
-                    Card(
-                        elevation = 15.dp,
-                        modifier = Modifier.padding(vertical = 10.dp),
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = rememberRipple(color = MaterialTheme.colors.secondary),
-                        onClick = { navController.navigate("guideExperience/${item.guideExperienceId}") },
-                        content = {
-                            GuideOfferCardContent(item, reservationViewModel)
+
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshingGuideOffers),
+        onRefresh = { reservationViewModel.refreshGuideOffers() },
+        content = {
+            LazyColumn(
+                Modifier
+                    .fillMaxSize()
+                    .padding(20.dp))  {
+                if (reservationViewModel.guideOffersForTourist.inProgress) {
+                    item {
+                        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                            LoadingSpinner()
                         }
-                    )
+                    }
+                } else {
+                    if(!reservationViewModel.guideOffersForTourist.data.isNullOrEmpty()) {
+                        itemsIndexed(reservationViewModel.guideOffersForTourist.data!!) { index, item ->
+                            Card(
+                                elevation = 15.dp,
+                                modifier = Modifier.padding(vertical = 10.dp),
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = rememberRipple(color = MaterialTheme.colors.secondary),
+                                onClick = { navController.navigate("guideExperience/${item.guideExperienceId}") },
+                                content = {
+                                    GuideOfferCardContent(item, reservationViewModel)
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
-    }
+    )
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

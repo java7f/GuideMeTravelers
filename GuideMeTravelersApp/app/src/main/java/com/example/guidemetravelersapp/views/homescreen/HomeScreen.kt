@@ -87,6 +87,8 @@ import com.example.guidemetravelersapp.views.wishlist.WishlistContent
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionRequired
 import com.google.accompanist.permissions.rememberPermissionState
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.google.android.libraries.places.api.Places
 import com.skydoves.landscapist.coil.CoilImage
 import kotlinx.coroutines.CoroutineScope
@@ -175,85 +177,93 @@ fun ScaffoldContent(navController: NavHostController, model: HomescreenViewModel
     val openDialog = remember { mutableStateOf(true) }
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)    // Track if the user doesn't want to see the rationale any more
     var doNotShowRationale by rememberSaveable { mutableStateOf(false) }
+    val isRefreshing by model.isRefreshing.collectAsState()
 
-    PermissionRequired(
-        permissionState = locationPermissionState,
-        permissionNotGrantedContent = {
-            if (openDialog.value) {
-                AlertDialog(
-                    onDismissRequest = { openDialog.value = false },
-                    title = { Text(text = stringResource(id = R.string.location_permission_title), fontWeight = FontWeight.Bold) },
-                    text = { Text(stringResource(id = R.string.location_permission_content)) },
-                    confirmButton = {
-                        TextButton(
-                            onClick = {
-                                openDialog.value = false
-                                locationPermissionState.launchPermissionRequest()
-                            }) {
-                            Text(text = stringResource(id = R.string.confirm_request), color = MaterialTheme.colors.primaryVariant)
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(
-                            onClick = {
-                                openDialog.value = false
-                                doNotShowRationale = true
-                            }
-                        ) {
-                            Text(text = stringResource(id = R.string.dismiss_permission), color = MaterialTheme.colors.primaryVariant)
-                        }
-                    },
-                )
-            }
-        },
-        permissionNotAvailableContent = {
-            Column {
-                Toast.makeText(context, stringResource(id = R.string.ondismiss_message), Toast.LENGTH_LONG).show()
-                Text(text = stringResource(id = R.string.ondismiss_message),
-                    modifier = Modifier.padding(bottom = 15.dp),
-                    style = MaterialTheme.typography.h6,
-                    color = MaterialTheme.colors.onSecondary,
-                    fontWeight = FontWeight.Bold)
-            }
-        },
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshing),
+        onRefresh = { model.refresh() },
         content = {
-            // user has location permission enabled
-            model.fetchExperiencesViewData()
-            LazyColumn(modifier = Modifier
-                .fillMaxSize()
-                .padding(15.dp),
-                state = listState) {
-                item {
-                    SearchView(textState,
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 20.dp),
-                        model
-                    )
-                    Text(text = stringResource(id = R.string.available_guides) + " ${model.currentCityLocation}",
-                        modifier = Modifier.padding(bottom = 15.dp),
-                        style = MaterialTheme.typography.subtitle1,
-                        color = MaterialTheme.colors.onSecondary,
-                        fontWeight = FontWeight.Bold)
-                    if (model.guideExperienceViewData.data.isNullOrEmpty() && !model.guideExperienceViewData.inProgress) {
-                        Text(text = stringResource(id = R.string.no_guides))
+            PermissionRequired(
+                permissionState = locationPermissionState,
+                permissionNotGrantedContent = {
+                    if (openDialog.value) {
+                        AlertDialog(
+                            onDismissRequest = { openDialog.value = false },
+                            title = { Text(text = stringResource(id = R.string.location_permission_title), fontWeight = FontWeight.Bold) },
+                            text = { Text(stringResource(id = R.string.location_permission_content)) },
+                            confirmButton = {
+                                TextButton(
+                                    onClick = {
+                                        openDialog.value = false
+                                        locationPermissionState.launchPermissionRequest()
+                                    }) {
+                                    Text(text = stringResource(id = R.string.confirm_request), color = MaterialTheme.colors.primaryVariant)
+                                }
+                            },
+                            dismissButton = {
+                                TextButton(
+                                    onClick = {
+                                        openDialog.value = false
+                                        doNotShowRationale = true
+                                    }
+                                ) {
+                                    Text(text = stringResource(id = R.string.dismiss_permission), color = MaterialTheme.colors.primaryVariant)
+                                }
+                            },
+                        )
                     }
-                }
-                if (model.guideExperienceViewData.inProgress) {
-                    item {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            LoadingSpinner()
+                },
+                permissionNotAvailableContent = {
+                    Column {
+                        Toast.makeText(context, stringResource(id = R.string.ondismiss_message), Toast.LENGTH_LONG).show()
+                        Text(text = stringResource(id = R.string.ondismiss_message),
+                            modifier = Modifier.padding(bottom = 15.dp),
+                            style = MaterialTheme.typography.h6,
+                            color = MaterialTheme.colors.onSecondary,
+                            fontWeight = FontWeight.Bold)
+                    }
+                },
+                content = {
+                    // user has location permission enabled
+                    model.fetchExperiencesViewData()
+                    LazyColumn(modifier = Modifier
+                        .fillMaxSize()
+                        .padding(15.dp),
+                        state = listState) {
+                        item {
+                            SearchView(textState,
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(bottom = 20.dp),
+                                model
+                            )
+                            Text(text = stringResource(id = R.string.available_guides) + " ${model.currentCityLocation}",
+                                modifier = Modifier.padding(bottom = 15.dp),
+                                style = MaterialTheme.typography.subtitle1,
+                                color = MaterialTheme.colors.onSecondary,
+                                fontWeight = FontWeight.Bold)
+                            if (model.guideExperienceViewData.data.isNullOrEmpty() && !model.guideExperienceViewData.inProgress) {
+                                Text(text = stringResource(id = R.string.no_guides))
+                            }
+                        }
+                        if (model.guideExperienceViewData.inProgress) {
+                            item {
+                                Box(modifier = Modifier.fillMaxSize()) {
+                                    LoadingSpinner()
+                                }
+                            }
+                        } else {
+                            if (!model.guideExperienceViewData.data.isNullOrEmpty()) {
+                                itemsIndexed(model.guideExperienceViewData.data!!) { index, item ->
+                                    UserCard(item, imgSize = 70.dp, navController = navController)
+                                    Spacer(modifier = Modifier.height(15.dp))
+                                }
+                            }
                         }
                     }
-                } else {
-                    if (!model.guideExperienceViewData.data.isNullOrEmpty()) {
-                        itemsIndexed(model.guideExperienceViewData.data!!) { index, item ->
-                            UserCard(item, imgSize = 70.dp, navController = navController)
-                            Spacer(modifier = Modifier.height(15.dp))
-                        }
-                    }
                 }
-            }
+            )
+
         }
     )
 }

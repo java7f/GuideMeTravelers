@@ -41,6 +41,9 @@ import com.google.android.libraries.places.api.net.PlacesClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.lang.Exception
@@ -51,6 +54,7 @@ class HomescreenViewModel(application: Application) : AndroidViewModel(applicati
     private val profileService: AuthenticationService = AuthenticationService(application)
     private var notificationManager: NotificationManager? = null
     private var fusedLocationClient: FusedLocationProviderClient
+    private val _isRefreshing = MutableStateFlow(false)
 
     var guideExperienceViewData: ApiResponse<List<GuideExperienceViewData>> by mutableStateOf(ApiResponse(data = listOf(), inProgress = true))
 
@@ -58,6 +62,18 @@ class HomescreenViewModel(application: Application) : AndroidViewModel(applicati
     var currentCityLocation: String by mutableStateOf("")
     var placesClient: PlacesClient
     var predictions: MutableList<AutocompletePrediction> = mutableListOf()
+
+    val isRefreshing: StateFlow<Boolean>
+        get() = _isRefreshing.asStateFlow()
+
+    fun refresh() {
+        viewModelScope.launch {
+            // getting guides
+            _isRefreshing.emit(true)
+            fetchExperiencesViewData()
+            _isRefreshing.emit(false)
+        }
+    }
 
     init {
         placesClient = Places.createClient(application)

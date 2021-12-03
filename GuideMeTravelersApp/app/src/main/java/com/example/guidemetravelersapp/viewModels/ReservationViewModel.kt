@@ -20,6 +20,9 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsResponse
 import com.google.android.libraries.places.api.net.PlacesClient
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.lang.Exception
 import java.util.*
@@ -28,6 +31,11 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
     private val reservationService: ReservationService = ReservationService(application)
     private val guideExperienceService: GuideExperienceService = GuideExperienceService(application)
     private val authService: AuthenticationService = AuthenticationService(application)
+    private val _isRefreshingUpcomingExperiences = MutableStateFlow(false)
+    private val _isRefreshingReservationRequests = MutableStateFlow(false)
+    private val _isRefreshingPastExperiences = MutableStateFlow(false)
+    private val _isRefreshingGuideOffers = MutableStateFlow(false)
+    private val _isRefreshingTouristAlerts = MutableStateFlow(false)
 
     var placesClient: PlacesClient = Places.createClient(application)
     var locationSearchValue: String by mutableStateOf("")
@@ -53,6 +61,61 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
 
     init {
         initCurrentTouristAlert()
+    }
+
+    val isRefreshingUpcomingExperiences: StateFlow<Boolean>
+        get() = _isRefreshingUpcomingExperiences.asStateFlow()
+
+    val isRefreshingReservationRequests: StateFlow<Boolean>
+        get() = _isRefreshingReservationRequests.asStateFlow()
+
+    val isRefreshingPastExperiences: StateFlow<Boolean>
+        get() = _isRefreshingPastExperiences.asStateFlow()
+
+    val isRefreshingGuideOffers: StateFlow<Boolean>
+        get() = _isRefreshingGuideOffers.asStateFlow()
+
+    val isRefreshingTouristAlerts: StateFlow<Boolean>
+        get() = _isRefreshingTouristAlerts.asStateFlow()
+
+    fun refreshUpcomingExperiences() {
+        viewModelScope.launch {
+            _isRefreshingUpcomingExperiences.emit(true)
+            getUpcomingExperiences()
+            _isRefreshingUpcomingExperiences.emit(false)
+        }
+    }
+
+    fun refreshReservationRequests() {
+        viewModelScope.launch {
+            _isRefreshingUpcomingExperiences.emit(true)
+            getRequestReservationsForTourist()
+            _isRefreshingUpcomingExperiences.emit(false)
+        }
+    }
+
+    fun refreshPastExperiences() {
+        viewModelScope.launch {
+            _isRefreshingUpcomingExperiences.emit(true)
+            getPastExperiences()
+            _isRefreshingUpcomingExperiences.emit(false)
+        }
+    }
+
+    fun refreshGuideOffers() {
+        viewModelScope.launch {
+            _isRefreshingUpcomingExperiences.emit(true)
+            getGuideOffersForTourist()
+            _isRefreshingUpcomingExperiences.emit(false)
+        }
+    }
+
+    fun refreshTouristAlert() {
+        viewModelScope.launch {
+            _isRefreshingUpcomingExperiences.emit(true)
+            getTouristAlerts()
+            _isRefreshingUpcomingExperiences.emit(false)
+        }
     }
 
     fun getPastExperiences() {

@@ -9,9 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material.icons.filled.DoNotDisturb
 import androidx.compose.material.icons.filled.Warning
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,6 +28,8 @@ import com.example.guidemetravelersapp.ui.theme.AcceptGreen
 import com.example.guidemetravelersapp.ui.theme.CancelRed
 import com.example.guidemetravelersapp.ui.theme.RecommendationOrange
 import com.example.guidemetravelersapp.viewModels.ReservationViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -37,33 +37,42 @@ import java.time.format.DateTimeFormatter
 @ExperimentalFoundationApi
 @Composable
 fun ShowReservationRequests(reservationViewModel: ReservationViewModel = viewModel()) {
+    val isRefreshingReservationRequests by reservationViewModel.isRefreshingReservationRequests.collectAsState()
+
     reservationViewModel.getRequestReservationsForTourist()
-    LazyColumn(Modifier.fillMaxSize())  {
-        item {
-            if(reservationViewModel.touristReservationRequests.data.isNullOrEmpty() && !reservationViewModel.touristReservationRequests.inProgress) {
-                Text(modifier = Modifier.padding(15.dp),text = stringResource(id = R.string.no_request))
-            }
-        }
-        if (reservationViewModel.touristReservationRequests.inProgress) {
-            item {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    LoadingSpinner()
+
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshingReservationRequests),
+        onRefresh = { reservationViewModel.refreshReservationRequests() },
+        content = {
+            LazyColumn(Modifier.fillMaxSize())  {
+                item {
+                    if(reservationViewModel.touristReservationRequests.data.isNullOrEmpty() && !reservationViewModel.touristReservationRequests.inProgress) {
+                        Text(modifier = Modifier.padding(15.dp),text = stringResource(id = R.string.no_request))
+                    }
                 }
-            }
-        } else {
-            if(!reservationViewModel.touristReservationRequests.data.isNullOrEmpty()) {
-                itemsIndexed(reservationViewModel.touristReservationRequests.data!!) { index, item ->
-                    Card(
-                        modifier = Modifier.padding(15.dp),
-                        elevation = 15.dp,
-                        content = {
-                            ReservationRequestsCardContent(item)
+                if (reservationViewModel.touristReservationRequests.inProgress) {
+                    item {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            LoadingSpinner()
                         }
-                    )
+                    }
+                } else {
+                    if(!reservationViewModel.touristReservationRequests.data.isNullOrEmpty()) {
+                        itemsIndexed(reservationViewModel.touristReservationRequests.data!!) { index, item ->
+                            Card(
+                                modifier = Modifier.padding(15.dp),
+                                elevation = 15.dp,
+                                content = {
+                                    ReservationRequestsCardContent(item)
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
-    }
+    )
 }
 
 @Composable

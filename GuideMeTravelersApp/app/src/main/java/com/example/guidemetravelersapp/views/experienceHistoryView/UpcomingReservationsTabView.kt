@@ -5,9 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,6 +18,8 @@ import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.ExperienceReservation
 import com.example.guidemetravelersapp.helpers.commonComposables.LoadingSpinner
 import com.example.guidemetravelersapp.viewModels.ReservationViewModel
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -27,34 +27,43 @@ import java.time.format.DateTimeFormatter
 @ExperimentalFoundationApi
 @Composable
 fun ShowUpcomingReservations(reservationViewModel: ReservationViewModel = viewModel()) {
+    val isRefreshingUpcomingExperiences by reservationViewModel.isRefreshingUpcomingExperiences.collectAsState()
+
     reservationViewModel.getUpcomingExperiences()
-    LazyColumn(
-        modifier = Modifier.fillMaxSize())  {
-        item {
-            if(reservationViewModel.upcomingExperienceReservations.data.isNullOrEmpty() && !reservationViewModel.upcomingExperienceReservations.inProgress) {
-                Text(modifier = Modifier.padding(15.dp), text = stringResource(id = R.string.no_upcoming_trips))
-            }
-        }
-        if (reservationViewModel.upcomingExperienceReservations.inProgress) {
-            item {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    LoadingSpinner()
+
+    SwipeRefresh(
+        state = rememberSwipeRefreshState(isRefreshingUpcomingExperiences),
+        onRefresh = { reservationViewModel.refreshUpcomingExperiences() },
+        content = {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize())  {
+                item {
+                    if(reservationViewModel.upcomingExperienceReservations.data.isNullOrEmpty() && !reservationViewModel.upcomingExperienceReservations.inProgress) {
+                        Text(modifier = Modifier.padding(15.dp), text = stringResource(id = R.string.no_upcoming_trips))
+                    }
                 }
-            }
-        } else {
-            if(!reservationViewModel.upcomingExperienceReservations.data.isNullOrEmpty()) {
-                itemsIndexed(reservationViewModel.upcomingExperienceReservations.data!!) { index, item ->
-                    Card(
-                        modifier = Modifier.padding(15.dp),
-                        elevation = 15.dp,
-                        content = {
-                            UpcomingReservationsCardContent(item)
+                if (reservationViewModel.upcomingExperienceReservations.inProgress) {
+                    item {
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            LoadingSpinner()
                         }
-                    )
+                    }
+                } else {
+                    if(!reservationViewModel.upcomingExperienceReservations.data.isNullOrEmpty()) {
+                        itemsIndexed(reservationViewModel.upcomingExperienceReservations.data!!) { index, item ->
+                            Card(
+                                modifier = Modifier.padding(15.dp),
+                                elevation = 15.dp,
+                                content = {
+                                    UpcomingReservationsCardContent(item)
+                                }
+                            )
+                        }
+                    }
                 }
             }
         }
-    }
+    )
 }
 
 @Composable
