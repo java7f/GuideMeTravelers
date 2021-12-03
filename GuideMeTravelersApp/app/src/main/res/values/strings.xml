@@ -93,4 +93,10 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tristique, tortor i
     <string name="no_upcoming_trips">You have no upcoming reservations</string>
     <string name="no_past_trips">You have no past experiences</string>
     <string name="no_request">You have no reservation requests</string>
+    <string name="tourist_accept_guideOffer_title">Proposal accepted</string>
+    <string name="tourist_accept_guideOffer_body">has accepted your guiding proposal</string>
+    <string name="tourist_reject_guideOffer_title">Proposal rejected</string>
+    <string name="tourist_reject_guideOffer_body">has rejected your guiding proposal</string>
+    <string name="tourist_reservation_resquest_title">New reservation request!</string>
+    <string name="tourist_reservation_resquest_body">wants your experience in</string>
 </resources>

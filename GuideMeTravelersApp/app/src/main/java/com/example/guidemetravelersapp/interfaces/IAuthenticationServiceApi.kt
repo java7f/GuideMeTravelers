@@ -19,6 +19,12 @@ interface IAuthenticationServiceApi {
     @GET
     suspend fun getById(@Url url:String) : Response<User>
 
+    @GET
+    suspend fun getInstanceId(@Url url:String) : Response<String>
+
+    @GET
+    suspend fun saveInstanceId(@Url url:String) : Response<Unit>
+
     @PUT
     suspend fun update(@Url url:String, @Body body: User) : Response<Unit>
 

@@ -8,8 +8,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
+import com.example.guidemetravelersapp.R
 import com.example.guidemetravelersapp.dataModels.*
 import com.example.guidemetravelersapp.helpers.models.ApiResponse
+import com.example.guidemetravelersapp.helpers.pushNotifications.FirebaseNotificationMessagingService
 import com.example.guidemetravelersapp.services.AuthenticationService
 import com.example.guidemetravelersapp.services.GuideExperienceService
 import com.example.guidemetravelersapp.services.ReservationService
@@ -129,6 +131,11 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
                 newReservationRequestStatus = ApiResponse(false, true)
                 reservationService.insertReservationRequest(currentReservationRequest)
                 newReservationRequestStatus = ApiResponse(true, false)
+                val instanceId = authService.getInstanceId(currentReservationRequest.guideUserId)
+                FirebaseNotificationMessagingService.sendNotification(
+                    getApplication<Application>().resources.getString(R.string.tourist_reservation_resquest_title),
+                    "${currentReservationRequest.touristFirstName} ${getApplication<Application>().resources.getString(R.string.tourist_reservation_resquest_body)} ${currentReservationRequest.address.city}",
+                    instanceId!!)
                 navHostController.popBackStack()
             }
             catch (e: Exception) {
@@ -154,13 +161,18 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun acceptGuideOffer(guideOfferId: String) {
+    fun acceptGuideOffer(guideOffer: GuidingOffer) {
         viewModelScope.launch {
             try {
                 acceptGuideOffer = ApiResponse(false, true)
-                reservationService.acceptGuideOffer(guideOfferId)
+                reservationService.acceptGuideOffer(guideOffer.id)
                 acceptGuideOffer = ApiResponse(true, false)
                 getGuideOffersForTourist()
+                val instanceId = authService.getInstanceId(guideOffer.guideId)
+                FirebaseNotificationMessagingService.sendNotification(
+                    getApplication<Application>().resources.getString(R.string.tourist_accept_guideOffer_title),
+                    "${guideOffer.touristFirstName} ${getApplication<Application>().resources.getString(R.string.tourist_accept_guideOffer_body)} ${guideOffer.touristDestination}",
+                    instanceId!!)
             }
             catch (e: Exception) {
                 acceptGuideOffer = ApiResponse(true, false)
@@ -169,13 +181,18 @@ class ReservationViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
-    fun rejectGuideOffer(guideOfferId: String) {
+    fun rejectGuideOffer(guideOffer: GuidingOffer) {
         viewModelScope.launch {
             try {
                 rejectGuideOffer = ApiResponse(false, true)
-                reservationService.rejectGuideOffer(guideOfferId)
+                reservationService.rejectGuideOffer(guideOffer.id)
                 rejectGuideOffer = ApiResponse(true, false)
                 getGuideOffersForTourist()
+                val instanceId = authService.getInstanceId(guideOffer.guideId)
+                FirebaseNotificationMessagingService.sendNotification(
+                    getApplication<Application>().resources.getString(R.string.tourist_reject_guideOffer_title),
+                    "${guideOffer.touristFirstName} ${getApplication<Application>().resources.getString(R.string.tourist_reject_guideOffer_body)}",
+                    instanceId!!)
             }
             catch (e: Exception) {
                 rejectGuideOffer = ApiResponse(true, false)

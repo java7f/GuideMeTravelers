@@ -38,4 +38,8 @@ object Utils {
     const val CHANNEL_DESCRIPTION = "For recommended proximity audioguides"
     const val NOTIFICATION_ID = 77
     const val NOTIFICATION_TITLE = "Audioguides were detected near you!"
+
+    //---------------------- NOTIFICATION KEYS ----------------------//
+    const val TITLE_NOTIFICATION_KEY = "title"
+    const val BODY_NOTIFICATION_KEY = "body"
 }

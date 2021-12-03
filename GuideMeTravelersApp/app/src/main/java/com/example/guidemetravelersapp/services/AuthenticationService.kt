@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.tasks.await
@@ -50,6 +51,8 @@ class AuthenticationService(context: Context) {
         Log.d(TAG, accessToken!!)
         if (accessToken != null) {
             sessionManager.saveAuthToken(accessToken)
+            val instanceId = FirebaseMessaging.getInstance().token.await()
+            saveInstanceId(instanceId = instanceId, userId = auth.currentUser!!.uid)
         }
 
         return result
@@ -175,6 +178,20 @@ class AuthenticationService(context: Context) {
     suspend fun getUserById(id: String): User? {
         return coroutineScope {
             val user = async { apiService.getByEmail("api/User/$id").body() }
+            user.await()
+        }
+    }
+
+    suspend fun getInstanceId(userId: String): String? {
+        return coroutineScope {
+            val user = async { apiService.getInstanceId("api/User/getGuideInstanceId/$userId").body() }
+            user.await()
+        }
+    }
+
+    suspend fun saveInstanceId(instanceId: String, userId: String) {
+        return coroutineScope {
+            val user = async { apiService.saveInstanceId("api/User/saveTouristInstanceId/$instanceId/$userId").body() }
             user.await()
         }
     }

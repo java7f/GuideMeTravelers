@@ -85,4 +85,10 @@
     <string name="no_upcoming_trips">No tienes ninguna reserva próxima</string>
     <string name="no_past_trips">No tienes experiencias pasadas</string>
     <string name="no_request">No tiene solicitudes de reserva</string>
+    <string name="tourist_accept_guideOffer_title">Propuesta de guía aceptada</string>
+    <string name="tourist_accept_guideOffer_body">ha aceptado tu propuesta de guía</string>
+    <string name="tourist_reject_guideOffer_title">Propuesta de guía rechazada</string>
+    <string name="tourist_reject_guideOffer_body">ha rechazado tu propuesta de guía</string>
+    <string name="tourist_reservation_resquest_title">Nueva petición de reserva</string>
+    <string name="tourist_reservation_resquest_body">quiere reservar tu experiencia en</string>
 </resources>

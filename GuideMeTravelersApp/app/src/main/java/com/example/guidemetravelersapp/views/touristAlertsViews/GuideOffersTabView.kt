@@ -53,6 +53,7 @@ fun GuidingOffers(reservationViewModel: ReservationViewModel = viewModel()) {
                 itemsIndexed(reservationViewModel.guideOffersForTourist.data!!) { index, item ->
                     Card(
                         elevation = 15.dp,
+                        modifier = Modifier.padding(vertical = 10.dp),
                         content = {
                             GuideOfferCardContent(item, reservationViewModel)
                         }
@@ -168,7 +169,7 @@ fun AcceptRejectGuideOffer(guideOffer: GuidingOffer, reservationViewModel: Reser
     ) {
 
         OutlinedButton(
-            onClick = { reservationViewModel.rejectGuideOffer(guideOffer.id) },
+            onClick = { reservationViewModel.rejectGuideOffer(guideOffer) },
             enabled = !reservationViewModel.rejectGuideOffer.inProgress,
         ) {
             Text(
@@ -188,7 +189,7 @@ fun AcceptRejectGuideOffer(guideOffer: GuidingOffer, reservationViewModel: Reser
         }
 
         Button(
-            onClick = { reservationViewModel.acceptGuideOffer(guideOffer.id) },
+            onClick = { reservationViewModel.acceptGuideOffer(guideOffer) },
             colors = ButtonDefaults.buttonColors(
                 backgroundColor = MaterialTheme.colors.primary
             ),
