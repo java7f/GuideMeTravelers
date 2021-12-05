@@ -168,7 +168,6 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                         },
                         label = { Text(text = stringResource(id = R.string.name_label)) },
                         textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                        colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Right) }),
                         singleLine = true
@@ -184,7 +183,6 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                         },
                         label = { Text(text = stringResource(id = R.string.lastname_label)) },
                         textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                        colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                         singleLine = true
@@ -198,7 +196,6 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                 label = { Text(text = stringResource(id = R.string.email_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 singleLine = true,
@@ -214,7 +211,6 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                 label = { Text(text = stringResource(id = R.string.phone_label)) },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Done),
                 keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus()}),
                 singleLine = true
@@ -231,7 +227,6 @@ fun EditProfileContent(profileViewModel: ProfileViewModel = viewModel()) {
                 label = { Text(text = stringResource(id = R.string.description)) },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text, imeAction = ImeAction.Next),
                 keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Down) }),
                 maxLines = 5

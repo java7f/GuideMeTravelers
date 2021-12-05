@@ -161,7 +161,6 @@ fun CreateTouristAlert(navHostController: NavHostController, reservationViewMode
                 label = { Text(text = stringResource(id = R.string.write_comment)) },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done
@@ -194,7 +193,6 @@ fun CreateTouristAlert(navHostController: NavHostController, reservationViewMode
                 label = { Text(text = stringResource(id = R.string.add_tag)) },
                 modifier = Modifier.fillMaxWidth(),
                 textStyle = TextStyle(color = MaterialTheme.colors.onSecondary),
-                colors = TextFieldDefaults.textFieldColors(backgroundColor = MaterialTheme.colors.secondary),
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Done,
