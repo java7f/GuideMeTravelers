@@ -63,7 +63,7 @@
     <string name="create_new_alert">Crear nueva alerta</string>
     <string name="select_trip_dates">Escoge las fechas deseadas</string>
     <string name="tourist_alert_location">A dónde vas?</string>
-    <string name="username_label" translatable="false">Correo</string>
+    <string name="username_label" translatable="false">Nombre de usuario</string>
     <string name="languages">Idiomas</string>
     <string name="add_tag">Agregar etiqueta</string>
     <string name="open_alerts">Alertas activas</string>
