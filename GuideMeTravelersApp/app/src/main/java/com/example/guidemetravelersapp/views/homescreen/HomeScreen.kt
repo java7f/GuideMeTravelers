@@ -299,6 +299,9 @@ fun NavDrawer(scaffoldState: ScaffoldState,
               scope: CoroutineScope,
               navController: NavHostController,
               profileViewModel: ProfileViewModel = viewModel()) {
+    if(scaffoldState.drawerState.isOpen)
+        profileViewModel.getCurrentUserProfile()
+
     val isOffLineMode = remember { mutableStateOf(profileViewModel.getOfflineMode())}
     Column(modifier = Modifier
         .padding(20.dp)

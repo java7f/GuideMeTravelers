@@ -44,7 +44,7 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         getCurrentUserProfile()
     }
 
-    private fun getCurrentUserProfile() {
+    fun getCurrentUserProfile() {
         viewModelScope.launch {
             try {
                 var currentUser = profileService.getCurrentFirebaseUser()
