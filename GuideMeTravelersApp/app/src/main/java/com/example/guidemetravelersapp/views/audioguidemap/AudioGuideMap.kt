@@ -147,7 +147,7 @@ fun AudioGuideMapContent(navController: NavHostController? = null, locationViewM
                 locationViewModel)
                 if(locationViewModel.currentCityLocation != null) {
                     MapScreen(
-                        modifier = Modifier.fillMaxHeight(),
+                        modifier = Modifier.height(500.dp),
                         locationViewModel
                     )
                 }
